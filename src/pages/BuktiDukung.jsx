@@ -210,19 +210,21 @@ export default function BuktiDukung() {
               </div>
               <div className="p-4 space-y-4">
                 {/* Upload actions */}
-                {!isKasubbag && (
-                  <div className="flex gap-2 flex-wrap">
-                    <label className={`btn-primary btn-sm cursor-pointer ${uploading ? 'opacity-60' : ''}`}>
-                      <Upload className="w-3.5 h-3.5" />
-                      {uploading ? 'Mengunggah...' : 'Upload File'}
-                      <input type="file" className="hidden" multiple accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip" onChange={handleFileUpload} disabled={uploading} />
-                    </label>
-                    <button onClick={() => setLinkModal(true)} className="btn-secondary btn-sm">
-                      <Link className="w-3.5 h-3.5" /> Tambah Link
-                    </button>
-                  </div>
+                {isAnggota && (
+                  <>
+                    <div className="flex gap-2 flex-wrap">
+                      <label className={`btn-primary btn-sm cursor-pointer ${uploading ? 'opacity-60' : ''}`}>
+                        <Upload className="w-3.5 h-3.5" />
+                        {uploading ? 'Mengunggah...' : 'Upload File'}
+                        <input type="file" className="hidden" multiple accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip" onChange={handleFileUpload} disabled={uploading} />
+                      </label>
+                      <button onClick={() => setLinkModal(true)} className="btn-secondary btn-sm">
+                        <Link className="w-3.5 h-3.5" /> Tambah Link
+                      </button>
+                    </div>
+                    <p className="text-xs text-slate-400">Format: JPG, PNG, PDF, DOC, XLS, PPT, ZIP (maks 10MB)</p>
+                  </>
                 )}
-                <p className="text-xs text-slate-400">Format: JPG, PNG, PDF, DOC, XLS, PPT, ZIP (maks 10MB)</p>
 
                 {/* Files */}
                 {evidence.files.length > 0 && (
@@ -240,7 +242,7 @@ export default function BuktiDukung() {
                             <a href={f.path_file} target="_blank" rel="noopener noreferrer" className="btn-icon btn-secondary btn-sm">
                               <ExternalLink className="w-3.5 h-3.5" />
                             </a>
-                            {!isKasubbag && (
+                            {isAnggota && (
                               <button onClick={() => handleDeleteFile(f.id)} className="btn-icon btn-danger btn-sm">
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>
@@ -269,7 +271,7 @@ export default function BuktiDukung() {
                             <a href={l.url} target="_blank" rel="noopener noreferrer" className="btn-icon btn-secondary btn-sm">
                               <ExternalLink className="w-3.5 h-3.5" />
                             </a>
-                            {!isKasubbag && (
+                            {isAnggota && (
                               <button onClick={() => handleDeleteLink(l.id)} className="btn-icon btn-danger btn-sm">
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>

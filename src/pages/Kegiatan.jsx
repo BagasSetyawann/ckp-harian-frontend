@@ -691,12 +691,12 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                         )}
-                        {(isKPA || isKasubbag) && !act.verif_status && (
+                        {isKasubbag && !act.verif_status && (
                           <button onClick={() => handleVerify(act.id, 'terverifikasi')} className="btn-icon btn-success btn-sm" title="Verifikasi">
                             <Check className="w-3.5 h-3.5" />
                           </button>
                         )}
-                        {isKPA && (
+                        {isAnggota && !act.verif_status && (
                           <button onClick={() => handleDelete(act.id)} className="btn-icon btn-danger btn-sm" title="Hapus">
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -752,7 +752,7 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
 
 export default function Kegiatan() {
   const { isKPA, isKasubbag, isAnggota, user } = useAuth();
-  const canEdit = isKPA || isAnggota;
+  const canEdit = isAnggota;
   const canSeeAll = isKPA || isKasubbag;
 
   const [activeTab, setActiveTab] = useState('daftar');
