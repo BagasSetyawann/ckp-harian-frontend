@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Shield, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Shield, Eye, EyeOff, AlertCircle, Smartphone, Monitor } from 'lucide-react';
 
 export default function Login() {
   const [form, setForm] = useState({ username: '', password: '' });
@@ -50,16 +50,30 @@ export default function Login() {
           {/* Header stripe */}
           <div className="bg-gradient-to-r from-primary-600 to-primary-800 p-6 text-white text-center">
             <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-3 backdrop-blur-sm">
-              <Shield className="w-8 h-8 text-white" />
+              <Monitor className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-xl font-bold">SI-CKP</h1>
-            <p className="text-primary-200 text-sm mt-1">Sistem Informasi Capaian Kinerja Pegawai</p>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 text-primary-100 text-[11px] font-medium mb-1.5">
+              <span>Web Monitoring Portal</span>
+            </div>
+            <h1 className="text-xl font-bold">SI-CKP Monitoring</h1>
+            <p className="text-primary-200 text-sm mt-1">Portal Monitoring & Evaluasi Capaian Kinerja Pegawai</p>
             <p className="text-primary-300 text-xs mt-0.5">Dinas Statistik Daerah</p>
           </div>
 
           {/* Form */}
           <div className="p-6">
-            <h2 className="text-lg font-semibold text-slate-800 mb-5">Masuk ke Sistem</h2>
+            <h2 className="text-lg font-semibold text-slate-800 mb-3">Masuk ke Portal Monitoring</h2>
+
+            {/* Mobile ecosystem info banner */}
+            <div className="flex items-start gap-2.5 p-3 bg-blue-50 border border-blue-100 rounded-xl text-blue-800 text-xs mb-4">
+              <Smartphone className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold">Input CKP Harian via Aplikasi Mobile</p>
+                <p className="text-blue-600 mt-0.5 leading-relaxed">
+                  Portal web ini dikhususkan untuk <strong>monitoring & evaluasi</strong>. Pengisian kegiatan harian dan unggah bukti dukung dilakukan lebih praktis melalui <strong>Aplikasi Mobile SI-CKP</strong>.
+                </p>
+              </div>
+            </div>
 
             {error && (
               <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm mb-4">

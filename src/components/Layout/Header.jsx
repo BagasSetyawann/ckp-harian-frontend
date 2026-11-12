@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Menu, Bell } from 'lucide-react';
+import { Menu, Bell, Smartphone } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const PAGE_TITLES = {
-  '/': 'Dashboard',
-  '/kegiatan': 'Kegiatan Harian',
-  '/rencana-kinerja': 'Rencana Kinerja',
-  '/bukti-dukung': 'Bukti Dukung',
-  '/nilai-ckp': 'Nilai CKP',
+  '/': 'Dashboard Monitoring',
+  '/kegiatan': 'Monitoring Kegiatan Harian',
+  '/rencana-kinerja': 'Rencana Kinerja (RK)',
+  '/bukti-dukung': 'Monitoring Bukti Dukung',
+  '/nilai-ckp': 'Nilai & Evaluasi CKP',
   '/pengaturan': 'Pengaturan Sistem',
   '/audit-log': 'Riwayat Aktivitas',
 };
@@ -38,8 +38,13 @@ export default function Header({ setMobileOpen, unreadNotifications }) {
         </div>
       </div>
 
-      {/* Right: Notifications + User */}
+      {/* Right: Mobile Sync Badge + Notifications + User */}
       <div className="flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium">
+          <Smartphone className="w-3.5 h-3.5" />
+          <span>Sinkron dengan SI-CKP Mobile</span>
+        </div>
+
         {/* Notification bell */}
         <button className="relative p-2 rounded-lg hover:bg-slate-100 transition-colors">
           <Bell className="w-4 h-4 text-slate-600" />

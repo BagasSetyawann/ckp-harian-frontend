@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import {
   CheckCircle, XCircle, Clock, Users, ClipboardList, BarChart3,
-  Award, TrendingUp, AlertTriangle, FileText, RefreshCw
+  Award, TrendingUp, AlertTriangle, FileText, RefreshCw, Smartphone
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend
@@ -72,13 +72,28 @@ function KPADashboard() {
 
   return (
     <div className="space-y-5">
+      {/* Ecosystem Info Banner */}
+      <div className="flex items-center justify-between gap-4 p-4 bg-gradient-to-r from-primary-600 to-primary-800 text-white rounded-xl shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-white/15 rounded-xl flex items-center justify-center flex-shrink-0">
+            <Smartphone className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h2 className="text-sm sm:text-base font-bold">Portal Monitoring & Evaluasi SI-CKP</h2>
+            <p className="text-xs text-primary-100 mt-0.5">
+              Seluruh data kegiatan harian dan bukti dukung pegawai disinkronkan secara real-time dari <strong>Aplikasi Mobile SI-CKP</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Alert */}
       {stats.belum_isi > 0 && (
         <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
           <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-semibold text-amber-800">
-              {stats.belum_isi} pegawai belum mengisi CKP hari ini
+              {stats.belum_isi} pegawai belum menginput CKP di Aplikasi Mobile hari ini
             </p>
             <p className="text-xs text-amber-600 mt-1">
               {belum_isi_list.map(e => e.nama).join(', ')}
@@ -205,36 +220,41 @@ function PegawaiDashboard() {
   return (
     <div className="space-y-5">
       {/* Today status banner */}
-      <div className={`p-4 rounded-xl border flex items-center gap-4 ${
+      <div className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center gap-4 ${
         sudah_isi_hari_ini
           ? 'bg-emerald-50 border-emerald-200'
           : 'bg-amber-50 border-amber-300'
       }`}>
-        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl ${
-          sudah_isi_hari_ini ? 'bg-emerald-100' : 'bg-amber-100'
-        }`}>
-          {sudah_isi_hari_ini ? '🟢' : '🔴'}
+        <div className="flex items-center gap-4 flex-1">
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 ${
+            sudah_isi_hari_ini ? 'bg-emerald-100' : 'bg-amber-100'
+          }`}>
+            {sudah_isi_hari_ini ? '🟢' : '🔴'}
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-slate-700">{todayDate}</p>
+            {sudah_isi_hari_ini ? (
+              <>
+                <p className="text-base font-bold text-emerald-700">✓ CKP Hari Ini Sudah Diinput via Mobile</p>
+                <p className="text-xs text-emerald-600">
+                  {today_activities.length} kegiatan · Rata-rata capaian {today_avg_capaian}%
+                  {today_activities.some(a => !a.verif_status) && ' · Menunggu verifikasi'}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-base font-bold text-amber-700">⚠️ Belum Mengisi CKP Hari Ini</p>
+                <p className="text-xs text-amber-700 mt-0.5">
+                  Silakan buka <strong>Aplikasi Mobile SI-CKP</strong> di smartphone Anda untuk menginput kegiatan harian & bukti dukung secara praktis.
+                </p>
+              </>
+            )}
+          </div>
         </div>
-        <div className="flex-1">
-          <p className="text-sm font-semibold text-slate-700">{todayDate}</p>
-          {sudah_isi_hari_ini ? (
-            <>
-              <p className="text-base font-bold text-emerald-700">✓ CKP Hari Ini Sudah Diisi</p>
-              <p className="text-xs text-emerald-600">
-                {today_activities.length} kegiatan · Rata-rata capaian {today_avg_capaian}%
-                {today_activities.some(a => !a.verif_status) && ' · Menunggu verifikasi'}
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="text-base font-bold text-amber-700">⚠️ Belum Mengisi CKP Hari Ini</p>
-              <p className="text-xs text-amber-600">Segera isi kegiatan harian Anda</p>
-            </>
-          )}
+        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/80 border border-slate-200 text-slate-700 text-xs font-medium flex-shrink-0">
+          <Smartphone className="w-4 h-4 text-primary-600" />
+          <span>Input via Aplikasi Mobile SI-CKP</span>
         </div>
-        {!sudah_isi_hari_ini && (
-          <Link to="/kegiatan" className="btn-primary btn-sm flex-shrink-0">+ Isi Sekarang</Link>
-        )}
       </div>
 
       {/* Stats */}

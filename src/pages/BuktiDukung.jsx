@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
-import { Upload, Link, Trash2, X, ExternalLink, FileText, Image, File } from 'lucide-react';
+import { Upload, Link, Trash2, X, ExternalLink, FileText, Image, File, Smartphone } from 'lucide-react';
 
 function Modal({ open, onClose, title, children, size = 'md' }) {
   if (!open) return null;
@@ -140,9 +140,17 @@ export default function BuktiDukung() {
     <div className="space-y-5">
       <div className="page-header">
         <div>
-          <h2 className="page-title">Bukti Dukung</h2>
-          <p className="page-subtitle">Upload file dan link bukti dukung kegiatan</p>
+          <h2 className="page-title">Monitoring Bukti Dukung</h2>
+          <p className="page-subtitle">Pemantauan dokumentasi file, foto, dan tautan bukti kegiatan dari Aplikasi Mobile SI-CKP</p>
         </div>
+      </div>
+
+      {/* Info Banner Mobile Upload */}
+      <div className="flex items-center gap-3 p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 text-xs sm:text-sm">
+        <Smartphone className="w-5 h-5 text-blue-600 flex-shrink-0" />
+        <p>
+          <strong>Mode Monitoring Web:</strong> Unggah foto dokumentasi, dokumen, atau tautan bukti dukung dilakukan langsung melalui <strong>Aplikasi Mobile SI-CKP</strong>. Halaman web ini digunakan untuk memantau dan memeriksa bukti dukung.
+        </p>
       </div>
 
       {/* Filters */}
@@ -209,22 +217,11 @@ export default function BuktiDukung() {
                 <p className="text-xs text-slate-400 mt-1">{selectedActivity.tanggal}</p>
               </div>
               <div className="p-4 space-y-4">
-                {/* Upload actions */}
-                {isAnggota && (
-                  <>
-                    <div className="flex gap-2 flex-wrap">
-                      <label className={`btn-primary btn-sm cursor-pointer ${uploading ? 'opacity-60' : ''}`}>
-                        <Upload className="w-3.5 h-3.5" />
-                        {uploading ? 'Mengunggah...' : 'Upload File'}
-                        <input type="file" className="hidden" multiple accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip" onChange={handleFileUpload} disabled={uploading} />
-                      </label>
-                      <button onClick={() => setLinkModal(true)} className="btn-secondary btn-sm">
-                        <Link className="w-3.5 h-3.5" /> Tambah Link
-                      </button>
-                    </div>
-                    <p className="text-xs text-slate-400">Format: JPG, PNG, PDF, DOC, XLS, PPT, ZIP (maks 10MB)</p>
-                  </>
-                )}
+                {/* Mobile upload notice */}
+                <div className="flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-600">
+                  <Smartphone className="w-4 h-4 text-primary-600 flex-shrink-0" />
+                  <span>Penambahan atau penghapusan bukti dukung dilakukan melalui <strong>Aplikasi Mobile SI-CKP</strong>.</span>
+                </div>
 
                 {/* Files */}
                 {evidence.files.length > 0 && (
@@ -239,14 +236,9 @@ export default function BuktiDukung() {
                             <p className="text-xs text-slate-400">{f.jenis} · {formatFileSize(f.ukuran_file)}</p>
                           </div>
                           <div className="flex gap-1">
-                            <a href={f.path_file} target="_blank" rel="noopener noreferrer" className="btn-icon btn-secondary btn-sm">
+                            <a href={f.path_file} target="_blank" rel="noopener noreferrer" className="btn-icon btn-secondary btn-sm" title="Buka File">
                               <ExternalLink className="w-3.5 h-3.5" />
                             </a>
-                            {isAnggota && (
-                              <button onClick={() => handleDeleteFile(f.id)} className="btn-icon btn-danger btn-sm">
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            )}
                           </div>
                         </div>
                       ))}
@@ -268,14 +260,9 @@ export default function BuktiDukung() {
                             {l.platform && <span className="badge-purple text-xs">{l.platform}</span>}
                           </div>
                           <div className="flex gap-1">
-                            <a href={l.url} target="_blank" rel="noopener noreferrer" className="btn-icon btn-secondary btn-sm">
+                            <a href={l.url} target="_blank" rel="noopener noreferrer" className="btn-icon btn-secondary btn-sm" title="Buka Tautan">
                               <ExternalLink className="w-3.5 h-3.5" />
                             </a>
-                            {isAnggota && (
-                              <button onClick={() => handleDeleteLink(l.id)} className="btn-icon btn-danger btn-sm">
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            )}
                           </div>
                         </div>
                       ))}
@@ -294,7 +281,7 @@ export default function BuktiDukung() {
           ) : (
             <div className="flex flex-col items-center justify-center py-16 px-8 text-center">
               <FileText className="w-12 h-12 text-slate-200 mb-3" />
-              <p className="text-slate-400">Pilih kegiatan dari daftar sebelah kiri untuk mengelola bukti dukung</p>
+              <p className="text-slate-400">Pilih kegiatan dari daftar sebelah kiri untuk melihat bukti dukung yang diunggah dari Aplikasi Mobile</p>
             </div>
           )}
         </div>

@@ -3,7 +3,7 @@ import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import {
   Plus, Edit2, Trash2, Eye, X, Check, Clock, ChevronLeft, ChevronRight,
-  CalendarDays, List, RefreshCw, Upload, Link as LinkIcon
+  CalendarDays, List, RefreshCw, Upload, Link as LinkIcon, Smartphone
 } from 'lucide-react';
 
 // ─── Shared Components ───
@@ -614,13 +614,12 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
 
       {/* Table */}
       <div className="card">
-        <div className="p-4 border-b border-slate-50 flex items-center justify-between">
-          <p className="text-sm text-slate-500">{activities.length} kegiatan</p>
-          {canEdit && (
-            <button onClick={() => { setEditData(null); setModalOpen(true); }} className="btn-primary btn-sm">
-              <Plus className="w-4 h-4" /> Tambah Kegiatan
-            </button>
-          )}
+        <div className="p-4 border-b border-slate-50 flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm text-slate-500">{activities.length} kegiatan tercatat</p>
+          <div className="flex items-center gap-1.5 text-xs font-medium text-primary-700 bg-primary-50 border border-primary-100 px-3 py-1.5 rounded-lg">
+            <Smartphone className="w-3.5 h-3.5" />
+            <span>Input & Edit Kegiatan melalui Aplikasi Mobile SI-CKP</span>
+          </div>
         </div>
         {loading ? (
           <div className="flex justify-center py-10"><div className="w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" style={{borderWidth:'2px'}}></div></div>
@@ -752,7 +751,8 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
 
 export default function Kegiatan() {
   const { isKPA, isKasubbag, isAnggota, user } = useAuth();
-  const canEdit = isAnggota;
+  // Web hanya untuk monitoring; input kegiatan harian dilakukan lewat Aplikasi Mobile
+  const canEdit = false;
   const canSeeAll = isKPA || isKasubbag;
 
   const [activeTab, setActiveTab] = useState('daftar');
@@ -784,10 +784,18 @@ export default function Kegiatan() {
     <div className="space-y-5">
       <div className="page-header">
         <div>
-          <h2 className="page-title">Kegiatan Harian</h2>
-          <p className="page-subtitle">Daftar dan kalender kegiatan harian pegawai</p>
+          <h2 className="page-title">Monitoring Kegiatan Harian</h2>
+          <p className="page-subtitle">Pemantauan daftar dan kalender kegiatan harian pegawai dari Aplikasi Mobile SI-CKP</p>
         </div>
         <TabSwitch tabs={TABS} active={activeTab} onChange={setActiveTab} />
+      </div>
+
+      {/* Info Banner Mobile Input */}
+      <div className="flex items-center gap-3 p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 text-xs sm:text-sm">
+        <Smartphone className="w-5 h-5 text-blue-600 flex-shrink-0" />
+        <p>
+          <strong>Mode Monitoring Web:</strong> Pengisian, perubahan, dan penghapusan kegiatan harian dilakukan melalui <strong>Aplikasi Mobile SI-CKP</strong> agar lebih praktis dan cepat.
+        </p>
       </div>
 
       {activeTab === 'daftar' && (
