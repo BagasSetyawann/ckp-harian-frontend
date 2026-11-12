@@ -53,24 +53,24 @@ export default function Login() {
               <Monitor className="w-8 h-8 text-white" />
             </div>
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 text-primary-100 text-[11px] font-medium mb-1.5">
-              <span>Web Monitoring Portal</span>
+              <span>Web & Mobile Terintegrasi</span>
             </div>
-            <h1 className="text-xl font-bold">SI-CKP Monitoring</h1>
-            <p className="text-primary-200 text-sm mt-1">Portal Monitoring & Evaluasi Capaian Kinerja Pegawai</p>
+            <h1 className="text-xl font-bold">SI-CKP Harian</h1>
+            <p className="text-primary-200 text-sm mt-1">Sistem Informasi Capaian Kinerja Pegawai</p>
             <p className="text-primary-300 text-xs mt-0.5">Dinas Statistik Daerah</p>
           </div>
 
           {/* Form */}
           <div className="p-6">
-            <h2 className="text-lg font-semibold text-slate-800 mb-3">Masuk ke Portal Monitoring</h2>
+            <h2 className="text-lg font-semibold text-slate-800 mb-3">Masuk ke SI-CKP Harian</h2>
 
             {/* Mobile ecosystem info banner */}
             <div className="flex items-start gap-2.5 p-3 bg-blue-50 border border-blue-100 rounded-xl text-blue-800 text-xs mb-4">
               <Smartphone className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold">Input CKP Harian via Aplikasi Mobile</p>
+                <p className="font-semibold">Input CKP Harian via Web maupun Aplikasi Mobile</p>
                 <p className="text-blue-600 mt-0.5 leading-relaxed">
-                  Portal web ini dikhususkan untuk <strong>monitoring & evaluasi</strong>. Pengisian kegiatan harian dan unggah bukti dukung dilakukan lebih praktis melalui <strong>Aplikasi Mobile SI-CKP</strong>.
+                  Anda dapat menginput kegiatan harian, mengunggah bukti dukung, serta mengunduh laporan hasil kerja per periode langsung di <strong>Website ini</strong> maupun melalui <strong>Aplikasi Mobile SI-CKP</strong> (dilengkapi Kamera Geotag & Timestamp).
                 </p>
               </div>
             </div>

@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import {
   CheckCircle, XCircle, Clock, Users, ClipboardList, BarChart3,
-  Award, TrendingUp, AlertTriangle, FileText, RefreshCw, Smartphone
+  Award, TrendingUp, AlertTriangle, FileText, RefreshCw, Smartphone, Plus, Download
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend
@@ -70,21 +70,44 @@ function KPADashboard() {
 
   const { stats, belum_isi_list, trend_data, employee_summary, period } = data;
 
+  const handleDownloadPeriodExcel = async () => {
+    if (!period?.id) return;
+    try {
+      const response = await api.get('/export/excel', { params: { period_id: period.id }, responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Hasil_Kerja_${(period.nama || period.id).replace(/\s+/g, '_')}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch {
+      alert('Gagal mengunduh hasil kerja periode ini');
+    }
+  };
+
   return (
     <div className="space-y-5">
       {/* Ecosystem Info Banner */}
-      <div className="flex items-center justify-between gap-4 p-4 bg-gradient-to-r from-primary-600 to-primary-800 text-white rounded-xl shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-gradient-to-r from-primary-600 to-primary-800 text-white rounded-xl shadow-sm">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white/15 rounded-xl flex items-center justify-center flex-shrink-0">
             <Smartphone className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-sm sm:text-base font-bold">Portal Monitoring & Evaluasi SI-CKP</h2>
+            <h2 className="text-sm sm:text-base font-bold">SI-CKP Harian — Portal Web & Mobile Terintegrasi</h2>
             <p className="text-xs text-primary-100 mt-0.5">
-              Seluruh data kegiatan harian dan bukti dukung pegawai disinkronkan secara real-time dari <strong>Aplikasi Mobile SI-CKP</strong>.
+              Input kegiatan harian dan bukti dukung (termasuk foto kamera ber-koordinat GPS & timestamp) tersinkronisasi antara Web dan <strong>Aplikasi Mobile SI-CKP</strong>.
             </p>
           </div>
         </div>
+        {period?.id && (
+          <button onClick={handleDownloadPeriodExcel} className="btn-sm bg-white text-primary-700 hover:bg-primary-50 font-semibold rounded-lg px-3 py-2 flex items-center gap-1.5 shadow-sm">
+            <Download className="w-4 h-4" />
+            Download Hasil Kerja ({period.nama})
+          </button>
+        )}
       </div>
 
       {/* Alert */}
@@ -93,7 +116,7 @@ function KPADashboard() {
           <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-semibold text-amber-800">
-              {stats.belum_isi} pegawai belum menginput CKP di Aplikasi Mobile hari ini
+              {stats.belum_isi} pegawai belum menginput CKP hari ini
             </p>
             <p className="text-xs text-amber-600 mt-1">
               {belum_isi_list.map(e => e.nama).join(', ')}
@@ -214,8 +237,25 @@ function PegawaiDashboard() {
   if (loading) return <div className="flex justify-center py-20"><div className="w-7 h-7 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" style={{borderWidth:'2px'}}></div></div>;
   if (!data) return null;
 
-  const { period, sudah_isi_hari_ini, today_activities, today_avg_capaian, month_stats, plan_progress, ckp_score } = data;
+  const { period, sudah_isi_hari_ini, today_activities, today_avg_capaian, month_stats, ckp_score } = data;
   const todayDate = new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+  const handleDownloadMyExcel = async () => {
+    if (!period?.id) return;
+    try {
+      const response = await api.get('/export/excel', { params: { period_id: period.id }, responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Hasil_Kerja_${(period.nama || period.id).replace(/\s+/g, '_')}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch {
+      alert('Gagal mengunduh hasil kerja periode ini');
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -235,7 +275,7 @@ function PegawaiDashboard() {
             <p className="text-sm font-semibold text-slate-700">{todayDate}</p>
             {sudah_isi_hari_ini ? (
               <>
-                <p className="text-base font-bold text-emerald-700">✓ CKP Hari Ini Sudah Diinput via Mobile</p>
+                <p className="text-base font-bold text-emerald-700">✓ CKP Hari Ini Sudah Diisi</p>
                 <p className="text-xs text-emerald-600">
                   {today_activities.length} kegiatan · Rata-rata capaian {today_avg_capaian}%
                   {today_activities.some(a => !a.verif_status) && ' · Menunggu verifikasi'}
@@ -245,15 +285,23 @@ function PegawaiDashboard() {
               <>
                 <p className="text-base font-bold text-amber-700">⚠️ Belum Mengisi CKP Hari Ini</p>
                 <p className="text-xs text-amber-700 mt-0.5">
-                  Silakan buka <strong>Aplikasi Mobile SI-CKP</strong> di smartphone Anda untuk menginput kegiatan harian & bukti dukung secara praktis.
+                  Silakan input kegiatan harian melalui <strong>Website ini</strong> atau melalui <strong>Aplikasi Mobile SI-CKP</strong> (dilengkapi Kamera Geotag & Timestamp).
                 </p>
               </>
             )}
           </div>
         </div>
-        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/80 border border-slate-200 text-slate-700 text-xs font-medium flex-shrink-0">
-          <Smartphone className="w-4 h-4 text-primary-600" />
-          <span>Input via Aplikasi Mobile SI-CKP</span>
+        <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
+          <Link to="/kegiatan" className="btn-primary btn-sm">
+            <Plus className="w-4 h-4" />
+            Input Kegiatan Harian
+          </Link>
+          {period?.id && (
+            <button onClick={handleDownloadMyExcel} className="btn-secondary btn-sm">
+              <Download className="w-3.5 h-3.5" />
+              Unduh Hasil Kerja
+            </button>
+          )}
         </div>
       </div>
 
@@ -265,7 +313,7 @@ function PegawaiDashboard() {
         <StatCard icon={Award} label="Nilai CKP" value={ckp_score?.nilai_ckp || '—'} color="success" sub={ckp_score?.status === 'final' ? 'Final' : 'Draft'} />
       </div>
 
-      {/* Progress section */}
+      {/* Progress & Quick Actions section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Month progress */}
         <div className="card p-5 space-y-4">
@@ -278,35 +326,32 @@ function PegawaiDashboard() {
           <p className="text-xs text-slate-500">{month_stats.hari_pengisian} / {month_stats.hari_kerja} hari kerja</p>
           <ProgressBar
             value={month_stats.avg_capaian}
-            label="Rata-rata Capaian"
+            label="Rata-rata Capaian Kegiatan"
             color="success"
           />
         </div>
 
-        {/* RK Progress */}
-        <div className="card p-5">
-          <h3 className="font-semibold text-slate-700 mb-4">📋 Progress Rencana Kinerja</h3>
-          <div className="space-y-3">
-            {plan_progress.length === 0 && (
-              <p className="text-sm text-slate-400 text-center py-4">Belum ada rencana kinerja</p>
-            )}
-            {plan_progress.map(plan => (
-              <div key={plan.id}>
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-slate-600 font-medium truncate max-w-48">{plan.kode} · {plan.nama}</span>
-                  <span className="font-semibold text-slate-700 ml-2">{plan.persentase}%</span>
-                </div>
-                <div className="progress-bar">
-                  <div
-                    className={`progress-fill ${plan.persentase >= 100 ? 'bg-emerald-500' : plan.persentase >= 70 ? 'bg-primary-500' : 'bg-amber-400'}`}
-                    style={{ width: `${Math.min(plan.persentase, 100)}%` }}
-                  />
-                </div>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  {plan.total_realisasi} / {plan.target} {plan.satuan}
-                </p>
-              </div>
-            ))}
+        {/* Download Hasil Kerja & Aksi Cepat */}
+        <div className="card p-5 flex flex-col justify-between space-y-4">
+          <div>
+            <h3 className="font-semibold text-slate-700 mb-1">📥 Unduh Hasil Kerja & Aksi Cepat</h3>
+            <p className="text-xs text-slate-500">
+              Kelola kegiatan harian dan unduh laporan hasil kerja Anda untuk periode <strong>{period?.nama || 'aktif'}</strong>.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <Link to="/kegiatan" className="btn-primary justify-center text-xs py-2.5">
+              <Plus className="w-4 h-4" />
+              Tambah Kegiatan Harian
+            </Link>
+            <Link to="/bukti-dukung" className="btn-secondary justify-center text-xs py-2.5">
+              <FileText className="w-4 h-4" />
+              Kelola Bukti Dukung
+            </Link>
+            <button onClick={handleDownloadMyExcel} className="btn-success justify-center text-xs py-2.5 sm:col-span-2">
+              <Download className="w-4 h-4" />
+              Download Hasil Kerja Periode {period?.nama || ''} (.xlsx)
+            </button>
           </div>
         </div>
       </div>
@@ -326,7 +371,7 @@ function PegawaiDashboard() {
                 }`} />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-slate-700">{act.nama_kegiatan}</p>
-                  {act.pk_nama && <p className="text-xs text-slate-400">RK: {act.pk_nama}</p>}
+                  {act.deskripsi && <p className="text-xs text-slate-400 truncate">{act.deskripsi}</p>}
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <span className="text-sm font-semibold text-primary-600">{act.persentase_capaian}%</span>

@@ -4,12 +4,11 @@ import { Menu, Bell, Smartphone } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const PAGE_TITLES = {
-  '/': 'Dashboard Monitoring',
-  '/kegiatan': 'Monitoring Kegiatan Harian',
-  '/rencana-kinerja': 'Rencana Kinerja (RK)',
-  '/bukti-dukung': 'Monitoring Bukti Dukung',
+  '/': 'Dashboard SI-CKP',
+  '/kegiatan': 'Kegiatan Harian',
+  '/bukti-dukung': 'Bukti Dukung Kegiatan',
   '/nilai-ckp': 'Nilai & Evaluasi CKP',
-  '/pengaturan': 'Pengaturan Sistem',
+  '/pengaturan': 'Pengaturan & Export',
   '/audit-log': 'Riwayat Aktivitas',
 };
 

@@ -35,7 +35,7 @@ function AppRoutes() {
       <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
         <Route index element={<Dashboard />} />
         <Route path="kegiatan" element={<Kegiatan />} />
-        <Route path="rencana-kinerja" element={<RencanaKinerja />} />
+        <Route path="rencana-kinerja" element={<Navigate to="/kegiatan" replace />} />
         <Route path="bukti-dukung" element={<BuktiDukung />} />
         <Route path="nilai-ckp" element={<NilaiCKP />} />
         <Route path="pengaturan" element={<ProtectedRoute roles={['KPA']}><Pengaturan /></ProtectedRoute>} />
@@ -43,7 +43,7 @@ function AppRoutes() {
 
         {/* Redirects from old routes to new merged pages */}
         <Route path="cek-harian" element={<Navigate to="/kegiatan" replace />} />
-        <Route path="monitoring-pk" element={<Navigate to="/rencana-kinerja" replace />} />
+        <Route path="monitoring-pk" element={<Navigate to="/kegiatan" replace />} />
         <Route path="penilaian-perilaku" element={<Navigate to="/nilai-ckp" replace />} />
         <Route path="output" element={<Navigate to="/pengaturan" replace />} />
         <Route path="reminder" element={<Navigate to="/" replace />} />

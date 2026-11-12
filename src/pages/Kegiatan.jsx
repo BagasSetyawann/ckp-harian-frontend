@@ -3,7 +3,7 @@ import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import {
   Plus, Edit2, Trash2, Eye, X, Check, Clock, ChevronLeft, ChevronRight,
-  CalendarDays, List, RefreshCw, Upload, Link as LinkIcon, Smartphone
+  CalendarDays, List, RefreshCw, Upload, Link as LinkIcon, Smartphone, Download, Printer, MapPin
 } from 'lucide-react';
 
 // ─── Shared Components ───
@@ -79,12 +79,13 @@ function CalendarIcon({ className }) {
 
 // ─── Kegiatan Form ───
 
-function KegiatanForm({ periods, plans, employees, onSubmit, loading, initialData, isKPA }) {
+function KegiatanForm({ periods, employees, onSubmit, loading, initialData }) {
   const { isAnggota, user } = useAuth();
   const today = new Date().toISOString().split('T')[0];
+  const activePeriod = periods.find(p => p.is_active) || periods.find(p => p.status === 'aktif');
 
   const [form, setForm] = useState({
-    period_id: '',
+    period_id: activePeriod ? String(activePeriod.id) : '',
     employee_id: isAnggota ? user?.employeeId : '',
     performance_plan_id: '',
     tanggal: today,
@@ -108,20 +109,6 @@ function KegiatanForm({ periods, plans, employees, onSubmit, loading, initialDat
     ? Math.min(Math.round((parseFloat(form.realisasi) / parseFloat(form.target)) * 100), 100)
     : 0;
 
-  const filteredPlans = plans.filter(p =>
-    (!form.period_id || p.period_id == form.period_id) &&
-    (!form.employee_id || p.employee_id == form.employee_id)
-  );
-
-  const handlePlanChange = (pkId) => {
-    const plan = plans.find(p => p.id == pkId);
-    setForm(f => ({
-      ...f,
-      performance_plan_id: pkId,
-      satuan: plan?.satuan || f.satuan,
-    }));
-  };
-
   return (
     <form onSubmit={e => { e.preventDefault(); onSubmit(form, { files, links: links.filter(l => l.judul || l.url) }); }} className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -135,7 +122,7 @@ function KegiatanForm({ periods, plans, employees, onSubmit, loading, initialDat
         {!isAnggota && (
           <div className="form-group">
             <label className="label">Pegawai *</label>
-            <select className="input" required value={form.employee_id} onChange={e => setForm({ ...form, employee_id: e.target.value, performance_plan_id: '' })}>
+            <select className="input" required value={form.employee_id} onChange={e => setForm({ ...form, employee_id: e.target.value })}>
               <option value="">Pilih Pegawai</option>
               {employees.map(e => <option key={e.id} value={e.id}>{e.nama}</option>)}
             </select>
@@ -144,13 +131,6 @@ function KegiatanForm({ periods, plans, employees, onSubmit, loading, initialDat
         <div className="form-group">
           <label className="label">Tanggal *</label>
           <input className="input" type="date" required value={form.tanggal} onChange={e => setForm({ ...form, tanggal: e.target.value })} />
-        </div>
-        <div className="form-group">
-          <label className="label">Rencana Kinerja</label>
-          <select className="input" value={form.performance_plan_id} onChange={e => handlePlanChange(e.target.value)}>
-            <option value="">Pilih RK (opsional)</option>
-            {filteredPlans.map(p => <option key={p.id} value={p.id}>{p.kode} — {p.nama}</option>)}
-          </select>
         </div>
       </div>
 
@@ -581,34 +561,165 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
     }
   };
 
+  const handleDownloadExcel = async () => {
+    if (!filterPeriod) return alert('Pilih periode terlebih dahulu untuk mengunduh hasil kerja.');
+    try {
+      const params = { period_id: filterPeriod };
+      if (filterEmployee) params.employee_id = filterEmployee;
+      const response = await api.get('/export/excel', { params, responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      const period = periods.find(p => String(p.id) === String(filterPeriod));
+      link.setAttribute('download', `Hasil_Kerja_${(period?.nama || filterPeriod).replace(/\s+/g, '_')}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('Gagal mengunduh Excel hasil kerja');
+    }
+  };
+
+  const handlePrintPDF = async () => {
+    if (!filterPeriod) return alert('Pilih periode terlebih dahulu untuk mencetak hasil kerja.');
+    try {
+      const params = { period_id: filterPeriod };
+      if (filterEmployee) params.employee_id = filterEmployee;
+      const r = await api.get('/export/pdf-data', { params });
+      const data = r.data || [];
+      const period = periods.find(p => String(p.id) === String(filterPeriod));
+      const printWindow = window.open('', '_blank');
+      const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Hasil Kerja Pegawai — ${period?.nama || ''}</title>
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; color: #1e293b; }
+    h1 { font-size: 16px; text-align: center; margin-bottom: 4px; }
+    h2 { font-size: 13px; text-align: center; color: #555; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+    th { background: #0284c7; color: white; padding: 6px 8px; text-align: left; font-size: 11px; }
+    td { padding: 5px 8px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+    tr:nth-child(even) td { background: #f8fafc; }
+    .emp-header { background: #e0f2fe; padding: 8px 12px; border-left: 4px solid #0284c7; margin: 16px 0 8px; }
+    .score-row { background: #ecfdf5; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>LAPORAN HASIL KERJA HARIAN PEGAWAI (CKP)</h1>
+  <h2>Periode: ${period?.nama || '-'}</h2>
+  ${data.map(d => {
+    if (!d.employee) return '';
+    return `
+      <div class="emp-header">
+        <strong>${d.employee.nama}</strong> — ${d.employee.jabatan || ''} | ${d.employee.unit_kerja || ''} | NIP: ${d.employee.nip || '-'}
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Tanggal</th>
+            <th>Nama Kegiatan</th>
+            <th>Deskripsi</th>
+            <th>Target</th>
+            <th>Realisasi</th>
+            <th>Capaian</th>
+            <th>Status</th>
+            <th>Verifikasi</th>
+            <th>Bukti / Geotag</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${(d.activities || []).length === 0
+            ? '<tr><td colspan="10" style="text-align:center;color:#94a3b8;">Belum ada kegiatan tercatat</td></tr>'
+            : (d.activities || []).map((a, idx) => `
+              <tr>
+                <td>${idx + 1}</td>
+                <td>${a.tanggal}</td>
+                <td><strong>${a.nama_kegiatan}</strong></td>
+                <td>${a.deskripsi || '-'}</td>
+                <td>${a.target ?? '-'} ${a.satuan || ''}</td>
+                <td>${a.realisasi ?? '-'}</td>
+                <td>${a.persentase_capaian || 0}%</td>
+                <td>${a.status_kegiatan}</td>
+                <td>${a.verif_status || 'Belum'}</td>
+                <td>${a.info_bukti || ((a.jumlah_bukti || 0) + (a.jumlah_link || 0) > 0 ? `${(a.jumlah_bukti || 0) + (a.jumlah_link || 0)} bukti` : '-')}</td>
+              </tr>
+            `).join('')}
+        </tbody>
+      </table>
+      ${d.ckp ? `
+        <div class="score-row">
+          <table><tr>
+            <td>Nilai Capaian (PK): <strong>${d.ckp.nilai_pk}</strong></td>
+            <td>Nilai Perilaku: <strong>${d.ckp.nilai_perilaku || '—'}</strong></td>
+            <td>NILAI AKHIR CKP: <strong>${d.ckp.nilai_ckp}</strong> (${d.ckp.status})</td>
+          </tr></table>
+        </div>
+      ` : ''}
+    `;
+  }).join('<hr style="margin:20px 0;border:none;border-top:1px dashed #cbd5e1;">')}
+  <div style="margin-top:24px;text-align:right;color:#64748b;font-size:11px;">
+    Dicetak pada: ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+  </div>
+</body>
+</html>`;
+      printWindow.document.write(html);
+      printWindow.document.close();
+      printWindow.print();
+    } catch (err) {
+      alert('Gagal mencetak laporan hasil kerja');
+    }
+  };
+
   return (
     <div className="space-y-5">
-      {/* Filters */}
-      <div className="card p-4 flex flex-wrap gap-3">
-        <div>
-          <label className="label">Periode</label>
-          <select className="input w-44" value={filterPeriod} onChange={e => setFilterPeriod(e.target.value)}>
-            <option value="">Semua Periode</option>
-            {periods.map(p => <option key={p.id} value={p.id}>{p.nama}</option>)}
-          </select>
-        </div>
-        {!isAnggota && (
+      {/* Filters & Export Bar */}
+      <div className="card p-4 flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-wrap gap-3 items-end">
           <div>
-            <label className="label">Pegawai</label>
-            <select className="input w-44" value={filterEmployee} onChange={e => setFilterEmployee(e.target.value)}>
-              <option value="">Semua Pegawai</option>
-              {employees.map(e => <option key={e.id} value={e.id}>{e.nama}</option>)}
+            <label className="label">Periode</label>
+            <select className="input w-44" value={filterPeriod} onChange={e => setFilterPeriod(e.target.value)}>
+              <option value="">Semua Periode</option>
+              {periods.map(p => <option key={p.id} value={p.id}>{p.nama}</option>)}
             </select>
           </div>
-        )}
-        <div>
-          <label className="label">Tanggal</label>
-          <input className="input" type="date" value={filterDate} onChange={e => setFilterDate(e.target.value)} />
-        </div>
-        <div className="flex items-end">
+          {!isAnggota && (
+            <div>
+              <label className="label">Pegawai</label>
+              <select className="input w-44" value={filterEmployee} onChange={e => setFilterEmployee(e.target.value)}>
+                <option value="">Semua Pegawai</option>
+                {employees.map(e => <option key={e.id} value={e.id}>{e.nama}</option>)}
+              </select>
+            </div>
+          )}
+          <div>
+            <label className="label">Tanggal</label>
+            <input className="input" type="date" value={filterDate} onChange={e => setFilterDate(e.target.value)} />
+          </div>
           <button onClick={() => { setFilterDate(''); setFilterEmployee(''); }} className="btn-secondary btn-sm">
             Reset Filter
           </button>
+        </div>
+
+        {/* Download Hasil Kerja per Periode & Tambah Kegiatan */}
+        <div className="flex flex-wrap items-center gap-2">
+          <button onClick={handleDownloadExcel} className="btn-success btn-sm" title="Download Hasil Kerja Periode (.xlsx)">
+            <Download className="w-3.5 h-3.5" />
+            Download Excel Periode
+          </button>
+          <button onClick={handlePrintPDF} className="btn-secondary btn-sm" title="Cetak / Simpan PDF Hasil Kerja Periode">
+            <Printer className="w-3.5 h-3.5" />
+            Cetak / PDF
+          </button>
+          {canEdit && (
+            <button onClick={() => { setEditData(null); setModalOpen(true); }} className="btn-primary btn-sm">
+              <Plus className="w-4 h-4" />
+              Tambah Kegiatan
+            </button>
+          )}
         </div>
       </div>
 
@@ -618,7 +729,7 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
           <p className="text-sm text-slate-500">{activities.length} kegiatan tercatat</p>
           <div className="flex items-center gap-1.5 text-xs font-medium text-primary-700 bg-primary-50 border border-primary-100 px-3 py-1.5 rounded-lg">
             <Smartphone className="w-3.5 h-3.5" />
-            <span>Input & Edit Kegiatan melalui Aplikasi Mobile SI-CKP</span>
+            <span>Bisa diinput melalui Web maupun Aplikasi Mobile SI-CKP (Kamera Geotag & Timestamp)</span>
           </div>
         </div>
         {loading ? (
@@ -631,7 +742,6 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
                   <th>Tanggal</th>
                   {!isAnggota && <th>Pegawai</th>}
                   <th>Kegiatan</th>
-                  <th>RK</th>
                   <th>Target</th>
                   <th>Realisasi</th>
                   <th>Capaian</th>
@@ -642,7 +752,7 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
               </thead>
               <tbody>
                 {activities.length === 0 && (
-                  <tr><td colSpan="10" className="text-center text-slate-400 py-8">Belum ada kegiatan</td></tr>
+                  <tr><td colSpan="9" className="text-center text-slate-400 py-8">Belum ada kegiatan</td></tr>
                 )}
                 {activities.map(act => (
                   <tr key={act.id}>
@@ -651,14 +761,18 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
                     </td>
                     {!isAnggota && <td className="font-medium">{act.pegawai_nama}</td>}
                     <td>
-                      <p className="font-medium text-slate-700 max-w-48 truncate">{act.nama_kegiatan}</p>
-                      {act.jumlah_bukti > 0 && <p className="text-xs text-slate-400">📎 {act.jumlah_bukti} bukti</p>}
-                    </td>
-                    <td>
-                      {act.pk_kode
-                        ? <span className="badge-info">{act.pk_kode}</span>
-                        : <span className="text-slate-300">—</span>
-                      }
+                      <p className="font-medium text-slate-700 max-w-64 truncate">{act.nama_kegiatan}</p>
+                      {(act.jumlah_bukti > 0 || act.jumlah_link > 0) && (
+                        <p className="text-xs text-slate-500 mt-0.5">
+                          📎 {(act.jumlah_bukti || 0) + (act.jumlah_link || 0)} bukti
+                        </p>
+                      )}
+                      {act.bukti_keterangan && (
+                        <p className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-1.5 py-0.5 mt-1 inline-flex items-center gap-1 max-w-xs truncate" title={act.bukti_keterangan}>
+                          <MapPin className="w-3 h-3 flex-shrink-0" />
+                          <span className="truncate">{act.bukti_keterangan}</span>
+                        </p>
+                      )}
                     </td>
                     <td>{act.target ? `${act.target} ${act.satuan || ''}` : '—'}</td>
                     <td>{act.realisasi ?? '—'}</td>
@@ -714,12 +828,10 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
       <Modal open={modalOpen} onClose={() => { setModalOpen(false); setEditData(null); }} title={editData ? 'Edit Kegiatan' : 'Tambah Kegiatan Harian'} size="lg">
         <KegiatanForm
           periods={periods}
-          plans={plans}
           employees={employees}
           onSubmit={handleSubmit}
           loading={submitting}
           initialData={editData}
-          isKPA={isKPA}
         />
       </Modal>
 
@@ -731,12 +843,17 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
             <div><span className="text-slate-500">Tanggal:</span> <span className="font-medium">{detailData.tanggal}</span></div>
             <div><span className="text-slate-500">Kegiatan:</span> <span className="font-medium">{detailData.nama_kegiatan}</span></div>
             {detailData.deskripsi && <div><span className="text-slate-500">Deskripsi:</span> <p className="text-slate-700 mt-1">{detailData.deskripsi}</p></div>}
-            <div><span className="text-slate-500">PK:</span> <span>{detailData.pk_nama || '—'}</span></div>
             <div className="grid grid-cols-3 gap-3 bg-slate-50 p-3 rounded-lg">
               <div><p className="text-slate-500 text-xs">Target</p><p className="font-semibold">{detailData.target || '—'} {detailData.satuan}</p></div>
               <div><p className="text-slate-500 text-xs">Realisasi</p><p className="font-semibold">{detailData.realisasi || '—'}</p></div>
               <div><p className="text-slate-500 text-xs">Capaian</p><p className="font-bold text-primary-600">{detailData.persentase_capaian || 0}%</p></div>
             </div>
+            {detailData.bukti_keterangan && (
+              <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-800">
+                <p className="font-semibold mb-0.5">📍 Informasi Geotag & Timestamp Bukti Foto:</p>
+                <p>{detailData.bukti_keterangan}</p>
+              </div>
+            )}
             <div><span className="text-slate-500">Status:</span> <span className={`${STATUS_LABELS[detailData.status_kegiatan]?.class || 'badge-gray'} ml-2`}>{STATUS_LABELS[detailData.status_kegiatan]?.label}</span></div>
             <div><span className="text-slate-500">Verifikasi:</span> <span className={`ml-2 ${detailData.verif_status === 'terverifikasi' ? 'text-emerald-600 font-semibold' : 'text-amber-600'}`}>{detailData.verif_status || 'Belum diverifikasi'}</span></div>
             {detailData.catatan && <div><span className="text-slate-500">Catatan:</span> <p>{detailData.catatan}</p></div>}
@@ -750,14 +867,12 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
 // ─── Main Page ───
 
 export default function Kegiatan() {
-  const { isKPA, isKasubbag, isAnggota, user } = useAuth();
-  // Web hanya untuk monitoring; input kegiatan harian dilakukan lewat Aplikasi Mobile
-  const canEdit = false;
+  const { isKPA, isKasubbag, isAnggota } = useAuth();
+  const canEdit = isAnggota;
   const canSeeAll = isKPA || isKasubbag;
 
   const [activeTab, setActiveTab] = useState('daftar');
   const [periods, setPeriods] = useState([]);
-  const [plans, setPlans] = useState([]);
   const [employees, setEmployees] = useState([]);
 
   useEffect(() => {
@@ -765,15 +880,7 @@ export default function Kegiatan() {
     if (!isAnggota) {
       api.get('/users/employees').then(r => setEmployees(r.data.filter(e => e.role === 'Anggota')));
     }
-  }, []);
-
-  useEffect(() => {
-    const activePeriod = periods.find(p => p.is_active);
-    if (activePeriod) {
-      api.get('/performance-plans', { params: { period_id: activePeriod.id } })
-        .then(r => setPlans(r.data));
-    }
-  }, [periods]);
+  }, [isAnggota]);
 
   const TABS = [
     { id: 'daftar', label: 'Daftar Kegiatan', icon: List },
@@ -784,24 +891,15 @@ export default function Kegiatan() {
     <div className="space-y-5">
       <div className="page-header">
         <div>
-          <h2 className="page-title">Monitoring Kegiatan Harian</h2>
-          <p className="page-subtitle">Pemantauan daftar dan kalender kegiatan harian pegawai dari Aplikasi Mobile SI-CKP</p>
+          <h2 className="page-title">Kegiatan Harian</h2>
+          <p className="page-subtitle">Input, kelola, dan unduh hasil kerja kegiatan harian pegawai per periode (Web & Mobile)</p>
         </div>
         <TabSwitch tabs={TABS} active={activeTab} onChange={setActiveTab} />
-      </div>
-
-      {/* Info Banner Mobile Input */}
-      <div className="flex items-center gap-3 p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 text-xs sm:text-sm">
-        <Smartphone className="w-5 h-5 text-blue-600 flex-shrink-0" />
-        <p>
-          <strong>Mode Monitoring Web:</strong> Pengisian, perubahan, dan penghapusan kegiatan harian dilakukan melalui <strong>Aplikasi Mobile SI-CKP</strong> agar lebih praktis dan cepat.
-        </p>
       </div>
 
       {activeTab === 'daftar' && (
         <ActivityListView
           periods={periods}
-          plans={plans}
           employees={employees}
           canEdit={canEdit}
           isKPA={isKPA}

@@ -92,18 +92,11 @@ ${data.map(d => {
   <strong>${d.employee.nama}</strong> — ${d.employee.jabatan} | ${d.employee.unit_kerja}
   | NIP: ${d.employee.nip || '-'}
 </div>
-<h3>Rencana Kinerja</h3>
-<table>
-  <thead><tr><th>Kode</th><th>Nama PK</th><th>Target</th><th>Satuan</th><th>Bobot</th></tr></thead>
-  <tbody>
-    ${(d.plans || []).map(p => `<tr><td>${p.kode || '-'}</td><td>${p.nama}</td><td>${p.target}</td><td>${p.satuan}</td><td>${p.bobot}%</td></tr>`).join('')}
-  </tbody>
-</table>
 <h3>Kegiatan Harian</h3>
 <table>
-  <thead><tr><th>Tanggal</th><th>Kegiatan</th><th>PK</th><th>Target</th><th>Realisasi</th><th>Capaian</th><th>Status</th><th>Verifikasi</th></tr></thead>
+  <thead><tr><th>Tanggal</th><th>Kegiatan</th><th>Deskripsi</th><th>Target</th><th>Realisasi</th><th>Capaian</th><th>Status</th><th>Verifikasi</th><th>Bukti / Geotag</th></tr></thead>
   <tbody>
-    ${(d.activities || []).map(a => `<tr><td>${a.tanggal}</td><td>${a.nama_kegiatan}</td><td>${a.pk_kode || '-'}</td><td>${a.target || '-'} ${a.satuan || ''}</td><td>${a.realisasi || '-'}</td><td>${a.persentase_capaian || 0}%</td><td>${a.status_kegiatan}</td><td>${a.verif_status || 'Belum'}</td></tr>`).join('')}
+    ${(d.activities || []).map(a => `<tr><td>${a.tanggal}</td><td>${a.nama_kegiatan}</td><td>${a.deskripsi || '-'}</td><td>${a.target || '-'} ${a.satuan || ''}</td><td>${a.realisasi || '-'}</td><td>${a.persentase_capaian || 0}%</td><td>${a.status_kegiatan}</td><td>${a.verif_status || 'Belum'}</td><td>${a.info_bukti || '-'}</td></tr>`).join('')}
   </tbody>
 </table>
 ${d.ckp ? `

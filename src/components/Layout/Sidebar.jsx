@@ -9,12 +9,11 @@ import {
 
 const NAV_SECTIONS = [
   {
-    label: 'Monitoring & Evaluasi',
+    label: 'Menu Utama',
     items: [
-      { to: '/', label: 'Dashboard Monitoring', icon: LayoutDashboard, exact: true, roles: ['KPA', 'Kasubbag', 'Anggota'] },
-      { to: '/kegiatan', label: 'Monitoring Kegiatan', icon: ClipboardList, roles: ['KPA', 'Kasubbag', 'Anggota'] },
-      { to: '/rencana-kinerja', label: 'Rencana Kinerja', icon: Target, roles: ['KPA', 'Kasubbag', 'Anggota'] },
-      { to: '/bukti-dukung', label: 'Monitoring Bukti', icon: FileText, roles: ['KPA', 'Kasubbag', 'Anggota'] },
+      { to: '/', label: 'Dashboard', icon: LayoutDashboard, exact: true, roles: ['KPA', 'Kasubbag', 'Anggota'] },
+      { to: '/kegiatan', label: 'Kegiatan Harian', icon: ClipboardList, roles: ['KPA', 'Kasubbag', 'Anggota'] },
+      { to: '/bukti-dukung', label: 'Bukti Dukung', icon: FileText, roles: ['KPA', 'Kasubbag', 'Anggota'] },
       { to: '/nilai-ckp', label: 'Nilai & Evaluasi CKP', icon: Award, roles: ['KPA', 'Kasubbag', 'Anggota'] },
     ],
   },
@@ -22,7 +21,7 @@ const NAV_SECTIONS = [
     label: 'Admin',
     items: [
       { to: '/audit-log', label: 'Riwayat Aktivitas', icon: Activity, roles: ['KPA'] },
-      { to: '/pengaturan', label: 'Pengaturan', icon: Settings, roles: ['KPA'] },
+      { to: '/pengaturan', label: 'Pengaturan & Export', icon: Settings, roles: ['KPA'] },
     ],
   },
 ];
@@ -51,8 +50,8 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
         </div>
         {!collapsed && (
           <div className="min-w-0">
-            <div className="font-bold text-primary-700 text-sm leading-tight">SI-CKP Monitoring</div>
-            <div className="text-xs text-slate-500 leading-tight truncate">Web Monitoring Portal</div>
+            <div className="font-bold text-primary-700 text-sm leading-tight">SI-CKP Harian</div>
+            <div className="text-xs text-slate-500 leading-tight truncate">Web & Mobile Terintegrasi</div>
           </div>
         )}
       </div>
@@ -100,10 +99,10 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
           <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary-50 to-blue-50 border border-primary-100">
             <div className="flex items-center gap-2 text-primary-700 font-semibold text-xs mb-1">
               <Smartphone className="w-3.5 h-3.5 flex-shrink-0" />
-              <span>Input via Aplikasi Mobile</span>
+              <span>Web & Mobile Sinkron</span>
             </div>
             <p className="text-[11px] text-slate-600 leading-snug">
-              Pengisian CKP harian & unggah bukti dilakukan praktis melalui <strong>SI-CKP Mobile</strong>.
+              Input CKP harian & unggah bukti dukung bisa melalui <strong>Web</strong> maupun <strong>SI-CKP Mobile</strong> (Kamera GPS).
             </p>
           </div>
         )}

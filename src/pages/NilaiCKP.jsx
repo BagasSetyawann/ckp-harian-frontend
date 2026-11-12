@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
-import { Award, CheckCircle, Lock, Save, UserCheck } from 'lucide-react';
+import { Award, CheckCircle, Lock, Save, UserCheck, Download } from 'lucide-react';
 
 function TabSwitch({ tabs, active, onChange }) {
   return (
@@ -111,26 +111,52 @@ function NilaiCKPView({ periods, employees, isKPA, isKasubbag, isAnggota, user }
 
   const nilaiLabel = ckpData ? getNilaiLabel(ckpData.nilai_ckp) : null;
 
+  const handleDownloadPeriodExcel = async () => {
+    if (!filterPeriod) return alert('Pilih periode terlebih dahulu');
+    try {
+      const params = { period_id: filterPeriod };
+      if (!isAnggota && filterEmployee) params.employee_id = filterEmployee;
+      const response = await api.get('/export/excel', { params, responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      const period = periods.find(p => String(p.id) === String(filterPeriod));
+      link.setAttribute('download', `Hasil_Kerja_${(period?.nama || filterPeriod).replace(/\s+/g, '_')}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch {
+      alert('Gagal mengunduh hasil kerja periode');
+    }
+  };
+
   return (
     <div className="space-y-5">
       {/* Filters */}
-      <div className="card p-4 flex flex-wrap gap-3">
-        <div>
-          <label className="label">Periode</label>
-          <select className="input w-44" value={filterPeriod} onChange={e => setFilterPeriod(e.target.value)}>
-            <option value="">Pilih Periode</option>
-            {periods.map(p => <option key={p.id} value={p.id}>{p.nama}</option>)}
-          </select>
-        </div>
-        {!isAnggota && (
+      <div className="card p-4 flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-wrap gap-3">
           <div>
-            <label className="label">Pegawai</label>
-            <select className="input w-52" value={filterEmployee} onChange={e => setFilterEmployee(e.target.value)}>
-              <option value="">Pilih Pegawai</option>
-              {employees.map(e => <option key={e.id} value={e.id}>{e.nama}</option>)}
+            <label className="label">Periode</label>
+            <select className="input w-44" value={filterPeriod} onChange={e => setFilterPeriod(e.target.value)}>
+              <option value="">Pilih Periode</option>
+              {periods.map(p => <option key={p.id} value={p.id}>{p.nama}</option>)}
             </select>
           </div>
-        )}
+          {!isAnggota && (
+            <div>
+              <label className="label">Pegawai</label>
+              <select className="input w-52" value={filterEmployee} onChange={e => setFilterEmployee(e.target.value)}>
+                <option value="">Pilih Pegawai</option>
+                {employees.map(e => <option key={e.id} value={e.id}>{e.nama}</option>)}
+              </select>
+            </div>
+          )}
+        </div>
+        <button onClick={handleDownloadPeriodExcel} className="btn-success btn-sm">
+          <Download className="w-3.5 h-3.5" />
+          Download Hasil Kerja Periode (.xlsx)
+        </button>
       </div>
 
       {loading && <div className="flex justify-center py-10"><div className="w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" style={{borderWidth:'2px'}}></div></div>}
@@ -214,7 +240,7 @@ function NilaiCKPView({ periods, employees, isKPA, isKasubbag, isAnggota, user }
                     <div>
                       <h4 className="font-semibold text-slate-800">Input Penilaian CKP oleh KPA</h4>
                       <p className="text-xs text-slate-500">
-                        KPA dapat mengisi/mengubah Nilai Capaian Kinerja (PK) secara langsung (referensi realisasi RK: {ckpData.nilai_pk_auto ?? 0})
+                        KPA dapat mengisi/mengubah Nilai Capaian Kinerja (PK) secara langsung (referensi rata-rata capaian kegiatan harian: {ckpData.nilai_pk_auto ?? 0}%)
                       </p>
                     </div>
                   </div>

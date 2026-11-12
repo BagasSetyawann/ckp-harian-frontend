@@ -140,17 +140,9 @@ export default function BuktiDukung() {
     <div className="space-y-5">
       <div className="page-header">
         <div>
-          <h2 className="page-title">Monitoring Bukti Dukung</h2>
-          <p className="page-subtitle">Pemantauan dokumentasi file, foto, dan tautan bukti kegiatan dari Aplikasi Mobile SI-CKP</p>
+          <h2 className="page-title">Bukti Dukung Kegiatan</h2>
+          <p className="page-subtitle">Kelola dokumentasi file, foto (ber-geotag & timestamp), dan tautan bukti kegiatan (Web & Mobile)</p>
         </div>
-      </div>
-
-      {/* Info Banner Mobile Upload */}
-      <div className="flex items-center gap-3 p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 text-xs sm:text-sm">
-        <Smartphone className="w-5 h-5 text-blue-600 flex-shrink-0" />
-        <p>
-          <strong>Mode Monitoring Web:</strong> Unggah foto dokumentasi, dokumen, atau tautan bukti dukung dilakukan langsung melalui <strong>Aplikasi Mobile SI-CKP</strong>. Halaman web ini digunakan untuk memantau dan memeriksa bukti dukung.
-        </p>
       </div>
 
       {/* Filters */}
@@ -193,7 +185,6 @@ export default function BuktiDukung() {
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-slate-700 truncate">{act.nama_kegiatan}</p>
                     <p className="text-xs text-slate-400">{act.tanggal} · {act.pegawai_nama}</p>
-                    <p className="text-xs text-slate-400">{act.pk_kode ? `PK: ${act.pk_kode}` : 'Tanpa PK'}</p>
                   </div>
                   <div className="flex-shrink-0 text-right">
                     <div className="flex gap-1 justify-end">
@@ -212,17 +203,33 @@ export default function BuktiDukung() {
         <div className="card">
           {selectedActivity ? (
             <>
-              <div className="p-4 border-b border-slate-50">
-                <h3 className="font-semibold text-slate-700 truncate">{selectedActivity.nama_kegiatan}</h3>
-                <p className="text-xs text-slate-400 mt-1">{selectedActivity.tanggal}</p>
+              <div className="p-4 border-b border-slate-50 flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <h3 className="font-semibold text-slate-700 truncate">{selectedActivity.nama_kegiatan}</h3>
+                  <p className="text-xs text-slate-400 mt-1">{selectedActivity.tanggal}</p>
+                </div>
+                {isAnggota && (
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <label className="btn-primary btn-sm cursor-pointer">
+                      <Upload className="w-3.5 h-3.5" />
+                      {uploading ? 'Mengunggah...' : 'Upload File'}
+                      <input
+                        type="file"
+                        className="hidden"
+                        multiple
+                        disabled={uploading}
+                        accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip"
+                        onChange={handleFileUpload}
+                      />
+                    </label>
+                    <button onClick={() => setLinkModal(true)} className="btn-secondary btn-sm">
+                      <Link className="w-3.5 h-3.5" />
+                      Tambah Link
+                    </button>
+                  </div>
+                )}
               </div>
               <div className="p-4 space-y-4">
-                {/* Mobile upload notice */}
-                <div className="flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-600">
-                  <Smartphone className="w-4 h-4 text-primary-600 flex-shrink-0" />
-                  <span>Penambahan atau penghapusan bukti dukung dilakukan melalui <strong>Aplikasi Mobile SI-CKP</strong>.</span>
-                </div>
-
                 {/* Files */}
                 {evidence.files.length > 0 && (
                   <div>
@@ -234,11 +241,21 @@ export default function BuktiDukung() {
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-slate-700 truncate">{f.nama_file}</p>
                             <p className="text-xs text-slate-400">{f.jenis} · {formatFileSize(f.ukuran_file)}</p>
+                            {f.keterangan && (
+                              <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-2 py-0.5 mt-1 inline-block">
+                                {f.keterangan}
+                              </p>
+                            )}
                           </div>
                           <div className="flex gap-1">
                             <a href={f.path_file} target="_blank" rel="noopener noreferrer" className="btn-icon btn-secondary btn-sm" title="Buka File">
                               <ExternalLink className="w-3.5 h-3.5" />
                             </a>
+                            {isAnggota && (
+                              <button onClick={() => handleDeleteFile(f.id)} className="btn-icon btn-danger btn-sm" title="Hapus File">
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            )}
                           </div>
                         </div>
                       ))}
@@ -263,6 +280,11 @@ export default function BuktiDukung() {
                             <a href={l.url} target="_blank" rel="noopener noreferrer" className="btn-icon btn-secondary btn-sm" title="Buka Tautan">
                               <ExternalLink className="w-3.5 h-3.5" />
                             </a>
+                            {isAnggota && (
+                              <button onClick={() => handleDeleteLink(l.id)} className="btn-icon btn-danger btn-sm" title="Hapus Link">
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            )}
                           </div>
                         </div>
                       ))}
@@ -281,7 +303,7 @@ export default function BuktiDukung() {
           ) : (
             <div className="flex flex-col items-center justify-center py-16 px-8 text-center">
               <FileText className="w-12 h-12 text-slate-200 mb-3" />
-              <p className="text-slate-400">Pilih kegiatan dari daftar sebelah kiri untuk melihat bukti dukung yang diunggah dari Aplikasi Mobile</p>
+              <p className="text-slate-400">Pilih kegiatan dari daftar sebelah kiri untuk melihat atau mengunggah bukti dukung</p>
             </div>
           )}
         </div>
