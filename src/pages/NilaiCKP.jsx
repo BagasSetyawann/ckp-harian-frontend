@@ -30,7 +30,11 @@ function NilaiCKPView({ periods, employees, isKPA, isKasubbag, isAnggota, user }
   const [ckpData, setCkpData] = useState(null);
   const [summary, setSummary] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [savingScore, setSavingScore] = useState(false);
   const [finalizing, setFinalizing] = useState(false);
+
+  const [inputPK, setInputPK] = useState('');
+  const [inputCatatan, setInputCatatan] = useState('');
 
   useEffect(() => {
     const active = periods.find(p => p.is_active);
@@ -44,6 +48,8 @@ function NilaiCKPView({ periods, employees, isKPA, isKasubbag, isAnggota, user }
     try {
       const r = await api.get('/scores/ckp', { params: { period_id: filterPeriod, employee_id: empId } });
       setCkpData(r.data);
+      setInputPK(r.data?.nilai_pk ?? 0);
+      setInputCatatan(r.data?.catatan || '');
     } catch { setCkpData(null); }
     finally { setLoading(false); }
   }, [filterPeriod, filterEmployee, isAnggota, user]);
@@ -58,13 +64,37 @@ function NilaiCKPView({ periods, employees, isKPA, isKasubbag, isAnggota, user }
 
   useEffect(() => { fetchCKP(); fetchSummary(); }, [fetchCKP, fetchSummary]);
 
+  const handleSaveScore = async () => {
+    if (!filterEmployee || !filterPeriod) return;
+    setSavingScore(true);
+    try {
+      await api.put('/scores/ckp', {
+        employee_id: filterEmployee,
+        period_id: filterPeriod,
+        nilai_pk: parseFloat(inputPK) || 0,
+        catatan: inputCatatan
+      });
+      await fetchCKP();
+      await fetchSummary();
+      alert('Nilai CKP berhasil disimpan oleh KPA');
+    } catch (err) {
+      alert(err.response?.data?.error || 'Gagal menyimpan nilai CKP');
+    } finally {
+      setSavingScore(false);
+    }
+  };
+
   const handleFinalize = async () => {
     const empId = filterEmployee;
     if (!empId || !filterPeriod) return;
     if (!confirm('Finalisasi nilai CKP? Nilai akan dikunci.')) return;
     setFinalizing(true);
     try {
-      await api.post('/scores/ckp/finalize', { employee_id: empId, period_id: filterPeriod });
+      await api.post('/scores/ckp/finalize', {
+        employee_id: empId,
+        period_id: filterPeriod,
+        nilai_pk: parseFloat(inputPK) || 0
+      });
       fetchCKP();
       fetchSummary();
       alert('Nilai CKP berhasil difinalisasi');
@@ -178,12 +208,52 @@ function NilaiCKPView({ periods, employees, isKPA, isKasubbag, isAnggota, user }
                 </div>
               </div>
 
-              {isKPA && filterEmployee && ckpData.status !== 'final' && (
-                <div className="mt-4 flex gap-3">
-                  <button onClick={handleFinalize} disabled={finalizing} className="btn-success">
-                    <Lock className="w-4 h-4" />
-                    {finalizing ? 'Memproses...' : 'Finalisasi Nilai CKP'}
-                  </button>
+              {isKPA && filterEmployee && (
+                <div className="mt-5 pt-5 border-t border-slate-100 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-semibold text-slate-800">Input Penilaian CKP oleh KPA</h4>
+                      <p className="text-xs text-slate-500">
+                        KPA dapat mengisi/mengubah Nilai Capaian Kinerja (PK) secara langsung (referensi realisasi RK: {ckpData.nilai_pk_auto ?? 0})
+                      </p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="form-group">
+                      <label className="label">Nilai Capaian Kinerja / PK (0 - 100)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="120"
+                        step="0.5"
+                        className="input font-semibold text-primary-700"
+                        value={inputPK}
+                        onChange={e => setInputPK(e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="label">Catatan Penilaian CKP</label>
+                      <input
+                        type="text"
+                        className="input"
+                        placeholder="Catatan KPA untuk nilai CKP..."
+                        value={inputCatatan}
+                        onChange={e => setInputCatatan(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    <button onClick={handleSaveScore} disabled={savingScore} className="btn-primary">
+                      <Save className="w-4 h-4" />
+                      {savingScore ? 'Menyimpan...' : 'Simpan Nilai CKP'}
+                    </button>
+                    {ckpData.status !== 'final' && (
+                      <button onClick={handleFinalize} disabled={finalizing} className="btn-success">
+                        <Lock className="w-4 h-4" />
+                        {finalizing ? 'Memproses...' : 'Finalisasi Nilai CKP'}
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
