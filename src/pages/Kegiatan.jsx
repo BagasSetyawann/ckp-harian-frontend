@@ -19,7 +19,6 @@ const STATUS_CONFIG = {
   lengkap: { label: 'Sudah Diisi', emoji: '🟢', class: 'bg-emerald-100 text-emerald-800 border-emerald-200' },
   sebagian: { label: 'Belum Lengkap', emoji: '🟡', class: 'bg-amber-100 text-amber-800 border-amber-200' },
   belum: { label: 'Belum Diisi', emoji: '🔴', class: 'bg-red-100 text-red-800 border-red-200' },
-  verified: { label: 'Terverifikasi', emoji: '🔵', class: 'bg-blue-100 text-blue-800 border-blue-200' },
   weekend: { label: 'Hari Libur', emoji: '—', class: 'bg-slate-50 text-slate-400' },
 };
 
@@ -283,7 +282,6 @@ function CalendarView({ periods, employees, canSeeAll }) {
     if (isWeekend(year, month, day)) return 'weekend';
     const d = calendarData[ds];
     if (!d || d.jumlah_kegiatan === 0) return 'belum';
-    if (d.terverifikasi) return 'verified';
     if (d.avg_capaian >= 80) return 'lengkap';
     return 'sebagian';
   };
@@ -431,10 +429,6 @@ function CalendarView({ periods, employees, canSeeAll }) {
                         <span className="text-slate-500">Bukti Dukung</span>
                         <span>{calendarData[selectedDate].has_bukti ? '✅ Ada' : '❌ Belum'}</span>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-slate-500">Verifikasi</span>
-                        <span>{calendarData[selectedDate].terverifikasi ? '🔵 Terverifikasi' : '⏳ Belum'}</span>
-                      </div>
                     </div>
                   ) : (
                     <div className="text-center py-6">
@@ -552,15 +546,6 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
     }
   };
 
-  const handleVerify = async (id, status) => {
-    try {
-      await api.post(`/verifications/${id}`, { status });
-      fetchData();
-    } catch (err) {
-      alert(err.response?.data?.error || 'Gagal verifikasi');
-    }
-  };
-
   const handleDownloadExcel = async () => {
     if (!filterPeriod) return alert('Pilih periode terlebih dahulu untuk mengunduh hasil kerja.');
     try {
@@ -627,13 +612,12 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
             <th>Realisasi</th>
             <th>Capaian</th>
             <th>Status</th>
-            <th>Verifikasi</th>
             <th>Bukti / Geotag</th>
           </tr>
         </thead>
         <tbody>
           ${(d.activities || []).length === 0
-            ? '<tr><td colspan="10" style="text-align:center;color:#94a3b8;">Belum ada kegiatan tercatat</td></tr>'
+            ? '<tr><td colspan="9" style="text-align:center;color:#94a3b8;">Belum ada kegiatan tercatat</td></tr>'
             : (d.activities || []).map((a, idx) => `
               <tr>
                 <td>${idx + 1}</td>
@@ -644,7 +628,6 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
                 <td>${a.realisasi ?? '-'}</td>
                 <td>${a.persentase_capaian || 0}%</td>
                 <td>${a.status_kegiatan}</td>
-                <td>${a.verif_status || 'Belum'}</td>
                 <td>${a.info_bukti || ((a.jumlah_bukti || 0) + (a.jumlah_link || 0) > 0 ? `${(a.jumlah_bukti || 0) + (a.jumlah_link || 0)} bukti` : '-')}</td>
               </tr>
             `).join('')}
@@ -746,13 +729,12 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
                   <th>Realisasi</th>
                   <th>Capaian</th>
                   <th>Status</th>
-                  <th>Verifikasi</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 {activities.length === 0 && (
-                  <tr><td colSpan="9" className="text-center text-slate-400 py-8">Belum ada kegiatan</td></tr>
+                  <tr><td colSpan="8" className="text-center text-slate-400 py-8">Belum ada kegiatan</td></tr>
                 )}
                 {activities.map(act => (
                   <tr key={act.id}>
@@ -787,29 +769,16 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
                       </span>
                     </td>
                     <td>
-                      {act.verif_status === 'terverifikasi'
-                        ? <span className="badge-success">✓ Verified</span>
-                        : act.verif_status === 'ditolak'
-                        ? <span className="badge-danger">✗ Ditolak</span>
-                        : <span className="badge-warning">Menunggu</span>
-                      }
-                    </td>
-                    <td>
                       <div className="flex items-center gap-1">
                         <button onClick={() => setDetailData(act)} className="btn-icon btn-secondary btn-sm" title="Detail">
                           <Eye className="w-3.5 h-3.5" />
                         </button>
-                        {canEdit && !act.verif_status && (
+                        {canEdit && (
                           <button onClick={() => { setEditData(act); setModalOpen(true); }} className="btn-icon btn-secondary btn-sm" title="Edit">
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                         )}
-                        {isKasubbag && !act.verif_status && (
-                          <button onClick={() => handleVerify(act.id, 'terverifikasi')} className="btn-icon btn-success btn-sm" title="Verifikasi">
-                            <Check className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                        {isAnggota && !act.verif_status && (
+                        {isAnggota && (
                           <button onClick={() => handleDelete(act.id)} className="btn-icon btn-danger btn-sm" title="Hapus">
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -855,7 +824,6 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
               </div>
             )}
             <div><span className="text-slate-500">Status:</span> <span className={`${STATUS_LABELS[detailData.status_kegiatan]?.class || 'badge-gray'} ml-2`}>{STATUS_LABELS[detailData.status_kegiatan]?.label}</span></div>
-            <div><span className="text-slate-500">Verifikasi:</span> <span className={`ml-2 ${detailData.verif_status === 'terverifikasi' ? 'text-emerald-600 font-semibold' : 'text-amber-600'}`}>{detailData.verif_status || 'Belum diverifikasi'}</span></div>
             {detailData.catatan && <div><span className="text-slate-500">Catatan:</span> <p>{detailData.catatan}</p></div>}
           </div>
         )}

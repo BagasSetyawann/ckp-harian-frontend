@@ -9,6 +9,7 @@ import BuktiDukung from './pages/BuktiDukung';
 import NilaiCKP from './pages/NilaiCKP';
 import Pengaturan from './pages/Pengaturan';
 import AuditLog from './pages/AuditLog';
+import Changelog from './pages/Changelog';
 
 function ProtectedRoute({ children, roles }) {
   const { user, loading } = useAuth();
@@ -38,6 +39,7 @@ function AppRoutes() {
         <Route path="rencana-kinerja" element={<Navigate to="/kegiatan" replace />} />
         <Route path="bukti-dukung" element={<BuktiDukung />} />
         <Route path="nilai-ckp" element={<NilaiCKP />} />
+        <Route path="changelog" element={<Changelog />} />
         <Route path="pengaturan" element={<ProtectedRoute roles={['KPA']}><Pengaturan /></ProtectedRoute>} />
         <Route path="audit-log" element={<ProtectedRoute roles={['KPA']}><AuditLog /></ProtectedRoute>} />
 

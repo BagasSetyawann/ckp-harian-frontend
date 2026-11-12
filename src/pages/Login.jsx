@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Shield, Eye, EyeOff, AlertCircle, Smartphone, Monitor } from 'lucide-react';
+import { Shield, Eye, EyeOff, AlertCircle, Smartphone, Monitor, Sparkles, X, Tag } from 'lucide-react';
+import { FALLBACK_CHANGELOGS } from './Changelog';
 
 export default function Login() {
   const [form, setForm] = useState({ username: '', password: '' });
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showChangelog, setShowChangelog] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -135,7 +137,17 @@ export default function Login() {
 
             {/* Demo accounts */}
             <div className="mt-5 pt-4 border-t border-slate-100">
-              <p className="text-xs text-slate-500 mb-3 font-medium">Akun Demo (password: password123)</p>
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs text-slate-500 font-medium">Akun Demo (password: password123)</p>
+                <button
+                  type="button"
+                  onClick={() => setShowChangelog(true)}
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-primary-600 hover:text-primary-700"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Lihat Changelog (v1.3)
+                </button>
+              </div>
               <div className="grid grid-cols-2 gap-2">
                 {demoUsers.map(u => (
                   <button
@@ -156,6 +168,49 @@ export default function Login() {
           © 2026 SI-CKP · Dinas Statistik Daerah
         </p>
       </div>
+
+      {/* Modal Changelog Publik */}
+      {showChangelog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50 animate-fade-in" onClick={() => setShowChangelog(false)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[85vh] flex flex-col overflow-hidden animate-fade-in-up">
+            <div className="px-5 py-4 bg-gradient-to-r from-primary-600 to-primary-800 text-white flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5" />
+                <h3 className="font-bold text-sm sm:text-base">Changelog & Pembaruan Sistem SI-CKP</h3>
+              </div>
+              <button onClick={() => setShowChangelog(false)} className="p-1 hover:bg-white/20 rounded-lg">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="p-5 overflow-y-auto space-y-4">
+              {FALLBACK_CHANGELOGS.map((rel, idx) => (
+                <div key={rel.versi} className="border border-slate-100 rounded-xl overflow-hidden">
+                  <div className="px-4 py-2.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className={`px-2 py-0.5 rounded text-xs font-bold ${idx === 0 ? 'bg-primary-600 text-white' : 'bg-slate-700 text-white'}`}>
+                        {rel.versi}
+                      </span>
+                      <span className="font-semibold text-xs sm:text-sm text-slate-800">{rel.judul}</span>
+                    </div>
+                    <span className="text-[11px] text-slate-400">{rel.tanggal}</span>
+                  </div>
+                  <div className="p-3.5 space-y-2">
+                    {rel.perubahan.map((item, i) => (
+                      <div key={i} className="text-xs text-slate-600 flex items-start gap-2">
+                        <span className="px-1.5 py-0.5 rounded bg-primary-50 text-primary-700 font-semibold text-[10px] flex-shrink-0 mt-0.5">
+                          {item.kategori}
+                        </span>
+                        <span>{item.deskripsi}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

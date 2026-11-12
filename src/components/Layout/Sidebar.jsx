@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import {
   LayoutDashboard, ClipboardList, Target, FileText,
   Award, Settings, LogOut,
-  ChevronLeft, ChevronRight, Menu, X, Activity, Shield, Smartphone, Monitor
+  ChevronLeft, ChevronRight, Menu, X, Activity, Shield, Smartphone, Monitor, Sparkles
 } from 'lucide-react';
 
 const NAV_SECTIONS = [
@@ -15,6 +15,7 @@ const NAV_SECTIONS = [
       { to: '/kegiatan', label: 'Kegiatan Harian', icon: ClipboardList, roles: ['KPA', 'Kasubbag', 'Anggota'] },
       { to: '/bukti-dukung', label: 'Bukti Dukung', icon: FileText, roles: ['KPA', 'Kasubbag', 'Anggota'] },
       { to: '/nilai-ckp', label: 'Nilai & Evaluasi CKP', icon: Award, roles: ['KPA', 'Kasubbag', 'Anggota'] },
+      { to: '/changelog', label: 'Changelog Sistem', icon: Sparkles, roles: ['KPA', 'Kasubbag', 'Anggota'], badge: 'v1.3' },
     ],
   },
   {
@@ -83,7 +84,14 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
                   >
                     <item.icon className="w-4 h-4 flex-shrink-0" />
                     {!collapsed && (
-                      <span className="truncate">{item.label}</span>
+                      <>
+                        <span className="truncate flex-1">{item.label}</span>
+                        {item.badge && (
+                          <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 text-emerald-700">
+                            {item.badge}
+                          </span>
+                        )}
+                      </>
                     )}
                   </NavLink>
                 ))}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Menu, Bell, Smartphone } from 'lucide-react';
+import { useLocation, Link } from 'react-router-dom';
+import { Menu, Bell, Smartphone, Sparkles } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const PAGE_TITLES = {
@@ -8,6 +8,7 @@ const PAGE_TITLES = {
   '/kegiatan': 'Kegiatan Harian',
   '/bukti-dukung': 'Bukti Dukung Kegiatan',
   '/nilai-ckp': 'Nilai & Evaluasi CKP',
+  '/changelog': 'Changelog & Pembaruan Sistem',
   '/pengaturan': 'Pengaturan & Export',
   '/audit-log': 'Riwayat Aktivitas',
 };
@@ -37,8 +38,17 @@ export default function Header({ setMobileOpen, unreadNotifications }) {
         </div>
       </div>
 
-      {/* Right: Mobile Sync Badge + Notifications + User */}
+      {/* Right: Changelog + Mobile Sync Badge + Notifications + User */}
       <div className="flex items-center gap-2">
+        <Link
+          to="/changelog"
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-50 hover:bg-primary-100 border border-primary-200 text-primary-700 text-xs font-semibold transition-colors"
+          title="Lihat Changelog / Riwayat Pembaruan Sistem"
+        >
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>Changelog v1.3</span>
+        </Link>
+
         <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium">
           <Smartphone className="w-3.5 h-3.5" />
           <span>Sinkron dengan SI-CKP Mobile</span>

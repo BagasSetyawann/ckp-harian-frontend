@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import {
   CheckCircle, XCircle, Clock, Users, ClipboardList, BarChart3,
-  Award, TrendingUp, AlertTriangle, FileText, RefreshCw, Smartphone, Plus, Download
+  Award, TrendingUp, AlertTriangle, FileText, RefreshCw, Smartphone, Plus, Download, Sparkles
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend
@@ -102,12 +102,18 @@ function KPADashboard() {
             </p>
           </div>
         </div>
-        {period?.id && (
-          <button onClick={handleDownloadPeriodExcel} className="btn-sm bg-white text-primary-700 hover:bg-primary-50 font-semibold rounded-lg px-3 py-2 flex items-center gap-1.5 shadow-sm">
-            <Download className="w-4 h-4" />
-            Download Hasil Kerja ({period.nama})
-          </button>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          <Link to="/changelog" className="btn-sm bg-white/15 hover:bg-white/25 text-white font-semibold rounded-lg px-3 py-2 flex items-center gap-1.5 border border-white/20">
+            <Sparkles className="w-4 h-4" />
+            Changelog (v1.3)
+          </Link>
+          {period?.id && (
+            <button onClick={handleDownloadPeriodExcel} className="btn-sm bg-white text-primary-700 hover:bg-primary-50 font-semibold rounded-lg px-3 py-2 flex items-center gap-1.5 shadow-sm">
+              <Download className="w-4 h-4" />
+              Download Hasil Kerja ({period.nama})
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Alert */}
@@ -131,7 +137,7 @@ function KPADashboard() {
         <StatCard icon={CheckCircle} label="Sudah Isi" value={stats.sudah_isi} color="success" sub="Hari ini" />
         <StatCard icon={XCircle} label="Belum Isi" value={stats.belum_isi} color="danger" sub="Hari ini" />
         <StatCard icon={ClipboardList} label="Kegiatan Hari Ini" value={stats.kegiatan_hari_ini} color="info" />
-        <StatCard icon={Clock} label="Menunggu Verifikasi" value={stats.menunggu_verifikasi} color="warning" />
+        <StatCard icon={BarChart3} label="Total Kegiatan" value={stats.kegiatan_bulan_ini ?? 0} color="warning" sub={period?.nama || 'Bulan ini'} />
         <StatCard icon={Award} label="Rata-rata CKP" value={stats.rata_rata_ckp ? `${stats.rata_rata_ckp}` : '—'} color="purple" sub="Bulan ini" />
       </div>
 
@@ -278,7 +284,6 @@ function PegawaiDashboard() {
                 <p className="text-base font-bold text-emerald-700">✓ CKP Hari Ini Sudah Diisi</p>
                 <p className="text-xs text-emerald-600">
                   {today_activities.length} kegiatan · Rata-rata capaian {today_avg_capaian}%
-                  {today_activities.some(a => !a.verif_status) && ' · Menunggu verifikasi'}
                 </p>
               </>
             ) : (
@@ -375,9 +380,9 @@ function PegawaiDashboard() {
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <span className="text-sm font-semibold text-primary-600">{act.persentase_capaian}%</span>
-                  {act.verif_status === 'terverifikasi'
-                    ? <span className="badge-success">Terverifikasi</span>
-                    : <span className="badge-warning">Menunggu</span>
+                  {act.status_kegiatan === 'selesai'
+                    ? <span className="badge-success">Selesai</span>
+                    : <span className="badge-warning">{act.status_kegiatan}</span>
                   }
                 </div>
               </div>

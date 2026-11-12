@@ -94,9 +94,9 @@ ${data.map(d => {
 </div>
 <h3>Kegiatan Harian</h3>
 <table>
-  <thead><tr><th>Tanggal</th><th>Kegiatan</th><th>Deskripsi</th><th>Target</th><th>Realisasi</th><th>Capaian</th><th>Status</th><th>Verifikasi</th><th>Bukti / Geotag</th></tr></thead>
+  <thead><tr><th>Tanggal</th><th>Kegiatan</th><th>Deskripsi</th><th>Target</th><th>Realisasi</th><th>Capaian</th><th>Status</th><th>Bukti / Geotag</th></tr></thead>
   <tbody>
-    ${(d.activities || []).map(a => `<tr><td>${a.tanggal}</td><td>${a.nama_kegiatan}</td><td>${a.deskripsi || '-'}</td><td>${a.target || '-'} ${a.satuan || ''}</td><td>${a.realisasi || '-'}</td><td>${a.persentase_capaian || 0}%</td><td>${a.status_kegiatan}</td><td>${a.verif_status || 'Belum'}</td><td>${a.info_bukti || '-'}</td></tr>`).join('')}
+    ${(d.activities || []).map(a => `<tr><td>${a.tanggal}</td><td>${a.nama_kegiatan}</td><td>${a.deskripsi || '-'}</td><td>${a.target || '-'} ${a.satuan || ''}</td><td>${a.realisasi || '-'}</td><td>${a.persentase_capaian || 0}%</td><td>${a.status_kegiatan}</td><td>${a.info_bukti || '-'}</td></tr>`).join('')}
   </tbody>
 </table>
 ${d.ckp ? `
@@ -455,16 +455,6 @@ export default function Pengaturan() {
           <div className="form-group">
             <label className="label">Toleransi Keterlambatan Pengisian (hari)</label>
             <input className="input w-32" type="number" min="0" value={settings.toleransi_hari || ''} onChange={e => setSettings({ ...settings, toleransi_hari: e.target.value })} />
-          </div>
-
-          <div className="form-group">
-            <label className="label flex items-center gap-2">
-              <input type="checkbox"
-                checked={settings.kasubbag_can_verify === 'true'}
-                onChange={e => setSettings({ ...settings, kasubbag_can_verify: e.target.checked ? 'true' : 'false' })}
-              />
-              Izinkan Kasubbag melakukan verifikasi kegiatan
-            </label>
           </div>
 
           <div className="form-group">
