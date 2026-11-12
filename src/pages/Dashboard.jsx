@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import {
@@ -232,7 +233,7 @@ function PegawaiDashboard() {
           )}
         </div>
         {!sudah_isi_hari_ini && (
-          <a href="/kegiatan" className="btn-primary btn-sm flex-shrink-0">+ Isi Sekarang</a>
+          <Link to="/kegiatan" className="btn-primary btn-sm flex-shrink-0">+ Isi Sekarang</Link>
         )}
       </div>
 
