@@ -4,12 +4,12 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 
 const PAGE_TITLES = {
-  '/': 'Dashboard',
-  '/kegiatan': 'Daily Log & Kegiatan',
+  '/': 'Dashboard Kinerja',
+  '/kegiatan': 'Kegiatan Harian',
   '/bukti-dukung': 'Bukti Dukung',
-  '/nilai-ckp': 'Performance Analytics',
-  '/changelog': 'Changelog Sistem',
-  '/pengaturan': 'Pengaturan & Export',
+  '/nilai-ckp': 'Nilai & Evaluasi CKP',
+  '/changelog': 'Riwayat Pembaruan Sistem',
+  '/pengaturan': 'Pengaturan & Ekspor',
   '/audit-log': 'Riwayat Aktivitas',
 };
 
@@ -24,7 +24,7 @@ export default function Header({ setMobileOpen, unreadNotifications }) {
   const title = PAGE_TITLES[location.pathname] || 'KASI JADI';
 
   return (
-    <header className="bg-white dark:bg-[#1E293B] border-b-2 border-[#1E293B] dark:border-slate-500 px-4 lg:px-7 h-16 flex items-center justify-between flex-shrink-0 sticky top-0 z-30">
+    <header className="bg-white/95 dark:bg-[#111827]/95 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 px-4 lg:px-7 h-16 flex items-center justify-between flex-shrink-0 sticky top-0 z-30">
       {/* Left: Mobile menu + Title */}
       <div className="flex items-center gap-3 min-w-0">
         <button
@@ -32,11 +32,11 @@ export default function Header({ setMobileOpen, unreadNotifications }) {
           aria-label="Buka navigasi"
           className="lg:hidden btn-icon"
         >
-          <Menu className="w-4 h-4 text-[#1E293B] dark:text-slate-100" />
+          <Menu className="w-4 h-4 text-slate-700 dark:text-slate-200" />
         </button>
         <div className="min-w-0">
-          <h1 className="text-[15.5px] font-extrabold text-[#1E293B] dark:text-white tracking-tight truncate">{title}</h1>
-          <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 hidden sm:block leading-tight">{TODAY}</p>
+          <h1 className="text-[15.5px] font-bold text-slate-900 dark:text-white tracking-tight truncate">{title}</h1>
+          <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 hidden sm:block leading-tight">{TODAY}</p>
         </div>
       </div>
 
@@ -44,12 +44,12 @@ export default function Header({ setMobileOpen, unreadNotifications }) {
       <div className="flex items-center gap-2">
         <Link
           to="/changelog"
-          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-[#1E293B] dark:border-slate-400 bg-[#F4F6F9] dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 text-[#1E293B] dark:text-slate-100 text-xs font-bold shadow-[2px_2px_0px_#1E293B] dark:shadow-[2px_2px_0px_#020617] hover:-translate-y-0.5 transition-all"
+          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors"
           title="Lihat Changelog KASI JADI"
         >
-          <Sparkles className="w-3.5 h-3.5 text-[#FF6B35]" />
+          <Sparkles className="w-3.5 h-3.5 text-[#0052FF] dark:text-[#38BDF8]" />
           <span>Changelog</span>
-          <span className="font-mono text-[10px] text-[#0052FF] dark:text-[#00B4D8]">v1.4</span>
+          <span className="tabular-num text-[10.5px] text-[#0052FF] dark:text-[#38BDF8] font-bold">v1.4</span>
         </Link>
 
         {/* Theme Switcher */}
@@ -59,7 +59,7 @@ export default function Header({ setMobileOpen, unreadNotifications }) {
           title={isDark ? 'Mode Terang' : 'Mode Gelap'}
           className="btn-icon"
         >
-          {isDark ? <Sun className="w-4 h-4 text-[#FF6B35]" /> : <Moon className="w-4 h-4 text-[#1E293B]" />}
+          {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
         </button>
 
         {/* Notification bell */}
@@ -67,24 +67,24 @@ export default function Header({ setMobileOpen, unreadNotifications }) {
           aria-label="Notifikasi"
           className="btn-icon relative"
         >
-          <Bell className="w-4 h-4 text-[#1E293B] dark:text-slate-100" />
+          <Bell className="w-4 h-4 text-slate-600 dark:text-slate-200" />
           {unreadNotifications > 0 && (
-            <span className="font-mono absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#FF6B35] border-2 border-[#1E293B] text-white text-[10px] rounded-full flex items-center justify-center font-bold">
+            <span className="tabular-num absolute -top-1 -right-1 w-4.5 h-4.5 min-w-[18px] px-1 bg-[#0052FF] text-white text-[10px] rounded-full flex items-center justify-center font-bold border border-white dark:border-slate-900">
               {unreadNotifications > 9 ? '9+' : unreadNotifications}
             </span>
           )}
         </button>
 
         {/* User info */}
-        <div className="flex items-center gap-2.5 pl-2.5 ml-1 border-l-2 border-[#1E293B]/20 dark:border-slate-600">
-          <div className="w-8 h-8 bg-[#0052FF] border-2 border-[#1E293B] dark:border-slate-300 rounded-full flex items-center justify-center text-white font-extrabold text-xs shadow-[2px_2px_0px_#1E293B] dark:shadow-[2px_2px_0px_#020617]">
+        <div className="flex items-center gap-2.5 pl-3 ml-1 border-l border-slate-200 dark:border-slate-700/80">
+          <div className="w-8 h-8 bg-[#0052FF] rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-sm">
             {user?.employee?.nama?.charAt(0) || user?.username?.charAt(0)?.toUpperCase()}
           </div>
           <div className="hidden md:block">
-            <p className="text-xs font-extrabold text-[#1E293B] dark:text-slate-100 leading-tight max-w-36 truncate">
+            <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 leading-tight max-w-36 truncate">
               {user?.employee?.nama || user?.username}
             </p>
-            <p className="text-[11px] font-bold text-[#0052FF] dark:text-[#00B4D8] leading-tight">{user?.role}</p>
+            <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 leading-tight">{user?.role}</p>
           </div>
         </div>
       </div>

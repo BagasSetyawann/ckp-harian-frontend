@@ -21,7 +21,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.username || !form.password) {
-      setError('Username dan password wajib diisi');
+      setError('Username dan password wajib diisi.');
       return;
     }
     setLoading(true);
@@ -30,7 +30,7 @@ export default function Login() {
       await login(form.username, form.password);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login gagal. Periksa username dan password Anda.');
+      setError(err.response?.data?.error || 'Login gagal. Periksa kembali username dan password Anda.');
     } finally {
       setLoading(false);
     }
@@ -44,24 +44,20 @@ export default function Login() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0B1120] flex flex-col justify-between p-4 sm:p-6 relative overflow-hidden">
-      {/* Left & Right Geometric Tenun Borders */}
-      <div className="hidden md:block fixed left-2 top-0 bottom-0 w-5 kj-tenun-v opacity-20 pointer-events-none" />
-      <div className="hidden md:block fixed right-2 top-0 bottom-0 w-5 kj-tenun-v opacity-20 pointer-events-none" />
-
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] flex flex-col justify-between p-4 sm:p-6 relative">
       {/* Top Utility Bar */}
-      <div className="relative z-10 w-full max-w-5xl mx-auto flex items-center justify-between">
+      <div className="w-full max-w-5xl mx-auto flex items-center justify-between">
         <KjBrandLockup logoSize="w-9 h-9" />
 
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => setShowChangelog(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border-2 border-[#1E293B] dark:border-slate-400 bg-white dark:bg-[#1E293B] hover:bg-[#F4F6F9] dark:hover:bg-slate-800 text-xs font-bold text-[#1E293B] dark:text-slate-100 shadow-[2px_2px_0px_#1E293B] dark:shadow-[2px_2px_0px_#020617] hover:-translate-y-0.5 transition-all"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#111827] hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm transition-colors"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#FF6B35]" />
+            <Sparkles className="w-3.5 h-3.5 text-[#0052FF] dark:text-[#38BDF8]" />
             <span>Changelog</span>
-            <span className="font-mono text-[10px] text-[#0052FF] dark:text-[#00B4D8]">v1.4</span>
+            <span className="tabular-num text-[10.5px] font-bold text-[#0052FF] dark:text-[#38BDF8]">v1.4</span>
           </button>
 
           <button
@@ -70,31 +66,31 @@ export default function Login() {
             aria-label={isDark ? 'Ganti ke Mode Terang' : 'Ganti ke Mode Gelap'}
             className="btn-icon"
           >
-            {isDark ? <Sun className="w-4 h-4 text-[#FF6B35]" /> : <Moon className="w-4 h-4 text-[#1E293B]" />}
+            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
           </button>
         </div>
       </div>
 
       {/* Main Centered Login Card */}
-      <div className="relative z-10 w-full max-w-[430px] mx-auto my-8">
-        <div className="card overflow-hidden animate-fade-in-up">
-          <div className="h-3.5 kj-tenun-h opacity-25 border-b-2 border-[#1E293B] dark:border-slate-500" />
+      <div className="w-full max-w-[430px] mx-auto my-8">
+        <div className="card overflow-hidden animate-fade-in-up shadow-elevated">
+          <div className="h-1 bg-gradient-to-r from-[#0052FF] via-[#0D9488] to-[#0052FF]" />
           <div className="p-6 sm:p-8">
             {/* Brand Title */}
             <div className="mb-6">
-              <span className="inline-block font-mono text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#00B4D8]/15 text-[#007a94] dark:bg-[#00B4D8]/25 dark:text-[#67e8f9] border-[1.5px] border-[#1E293B] dark:border-slate-400 mb-3">
+              <span className="inline-block text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-md bg-blue-50 text-[#0052FF] dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/70 mb-3">
                 Kanal Sistem Jurnal Aktivitas Dan Kinerja
               </span>
-              <h1 className="text-2xl font-extrabold text-[#1E293B] dark:text-white tracking-tight">
-                Masuk ke KASI <span className="text-[#0052FF] dark:text-[#00B4D8]">JADI</span>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+                Masuk ke KASI <span className="text-[#0052FF] dark:text-[#38BDF8]">JADI</span>
               </h1>
-              <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 mt-1">
-                Kasi Jadi Hari Ini, Sat-Set No Drama!
+              <p className="text-sm font-normal text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
+                Sistem pencatatan jurnal aktivitas harian, dokumentasi bukti dukung, dan evaluasi capaian kinerja pegawai.
               </p>
             </div>
 
             {error && (
-              <div className="flex items-start gap-2.5 p-3 bg-rose-50 dark:bg-rose-950/60 border-2 border-[#1E293B] dark:border-rose-400 rounded-xl text-rose-700 dark:text-rose-200 text-xs font-semibold mb-5 shadow-[2px_2px_0px_#1E293B]">
+              <div className="flex items-start gap-2.5 p-3 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-lg text-rose-700 dark:text-rose-200 text-xs font-medium mb-5">
                 <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                 <span>{error}</span>
               </div>
@@ -130,7 +126,7 @@ export default function Login() {
                     type="button"
                     onClick={() => setShowPass(!showPass)}
                     aria-label="Tampilkan password"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-[#1E293B] dark:hover:text-white transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
                   >
                     {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -140,7 +136,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-orange w-full py-3 mt-2 text-sm"
+                className="btn-primary w-full py-2.5 mt-2 text-sm"
                 id="login-submit"
               >
                 {loading ? (
@@ -150,7 +146,7 @@ export default function Login() {
                   </>
                 ) : (
                   <>
-                    <span>GAS MASUK!</span>
+                    <span>Masuk</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
@@ -158,11 +154,11 @@ export default function Login() {
             </form>
 
             {/* Collapsible Demo Accounts */}
-            <div className="mt-6 pt-5 border-t-2 border-dashed border-slate-300 dark:border-slate-600">
+            <div className="mt-6 pt-5 border-t border-slate-200 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setShowDemo(!showDemo)}
-                className="w-full flex items-center justify-between text-xs font-bold text-[#1E293B] dark:text-slate-200 hover:text-[#0052FF] dark:hover:text-[#00B4D8] transition-colors"
+                className="w-full flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-[#0052FF] dark:hover:text-[#38BDF8] transition-colors"
               >
                 <span>Akses Akun Demo (Uji Coba)</span>
                 <ChevronDown className={`w-4 h-4 transition-transform duration-150 ${showDemo ? 'rotate-180' : ''}`} />
@@ -170,24 +166,24 @@ export default function Login() {
 
               {showDemo && (
                 <div className="mt-3 space-y-2.5 animate-fade-in">
-                  <div className="grid grid-cols-2 gap-2.5">
+                  <div className="grid grid-cols-2 gap-2">
                     {demoUsers.map(u => (
                       <button
                         key={u.username}
                         type="button"
                         onClick={() => setForm({ username: u.username, password: 'password123' })}
-                        className="text-left p-2.5 rounded-xl border-2 border-[#1E293B] dark:border-slate-500 bg-[#F4F6F9] dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 shadow-[2px_2px_0px_#1E293B] dark:shadow-[2px_2px_0px_#020617] hover:-translate-y-0.5 transition-all"
+                        className="text-left p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/70 hover:border-[#0052FF] dark:hover:border-[#38BDF8] hover:bg-white dark:hover:bg-slate-800 transition-all"
                       >
                         <div className="flex items-center justify-between gap-1">
-                          <p className="text-xs font-extrabold text-[#1E293B] dark:text-white truncate">{u.label}</p>
-                          <span className="font-mono text-[10px] font-bold text-[#0052FF] dark:text-[#00B4D8]">{u.tag}</span>
+                          <p className="text-xs font-semibold text-slate-800 dark:text-white truncate">{u.label}</p>
+                          <span className="text-[10px] font-semibold text-[#0052FF] dark:text-[#38BDF8]">{u.tag}</span>
                         </div>
-                        <p className="font-mono text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">@{u.username}</p>
+                        <p className="tabular-num text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">@{u.username}</p>
                       </button>
                     ))}
                   </div>
-                  <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 text-center">
-                    Password default: <code className="font-mono text-[#1E293B] dark:text-white">password123</code>
+                  <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 text-center">
+                    Password default: <span className="font-semibold text-slate-700 dark:text-slate-200">password123</span>
                   </p>
                 </div>
               )}
@@ -197,23 +193,23 @@ export default function Login() {
       </div>
 
       {/* Footer */}
-      <footer className="relative z-10 text-center text-xs font-semibold text-slate-500 dark:text-slate-400">
+      <footer className="text-center text-xs font-medium text-slate-500 dark:text-slate-400">
         © 2026 KASI JADI · Kanal Sistem Jurnal Aktivitas Dan Kinerja
       </footer>
 
       {/* Modal Changelog Publik */}
       {showChangelog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-slate-950/65 backdrop-blur-[2px] animate-fade-in" onClick={() => setShowChangelog(false)} />
-          <div className="relative bg-white dark:bg-[#1E293B] border-2 border-[#1E293B] dark:border-slate-400 rounded-2xl shadow-[6px_8px_0px_#1E293B] dark:shadow-[6px_8px_0px_#020617] w-full max-w-xl max-h-[85vh] flex flex-col overflow-hidden animate-fade-in-up">
-            <div className="px-5 py-4 border-b-2 border-[#1E293B] dark:border-slate-500 flex items-center justify-between bg-[#F4F6F9] dark:bg-slate-800">
+          <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-[2px] animate-fade-in" onClick={() => setShowChangelog(false)} />
+          <div className="relative bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-700 rounded-xl shadow-elevated w-full max-w-xl max-h-[85vh] flex flex-col overflow-hidden animate-fade-in-up">
+            <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/60">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#0052FF] border-2 border-[#1E293B] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-[#0052FF] flex items-center justify-center">
                   <Sparkles className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-sm text-[#1E293B] dark:text-white">Riwayat Pembaruan Sistem</h3>
-                  <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400">KASI JADI · Web &amp; Mobile</p>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">Riwayat Pembaruan Sistem</h3>
+                  <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">KASI JADI · Web &amp; Mobile</p>
                 </div>
               </div>
               <button
@@ -222,29 +218,28 @@ export default function Login() {
                 onClick={() => setShowChangelog(false)}
                 className="btn-icon p-1.5"
               >
-                <X className="w-4 h-4 text-[#1E293B] dark:text-slate-100" />
+                <X className="w-4 h-4 text-slate-600 dark:text-slate-200" />
               </button>
             </div>
             <div className="p-5 overflow-y-auto space-y-4">
               {FALLBACK_CHANGELOGS.map((rel, idx) => (
-                <div key={rel.versi} className="border-2 border-[#1E293B] dark:border-slate-500 rounded-xl overflow-hidden shadow-[2px_3px_0px_#1E293B] dark:shadow-[2px_3px_0px_#020617]">
-                  <div className="px-4 py-3 bg-[#F4F6F9] dark:bg-slate-800 border-b-2 border-[#1E293B] dark:border-slate-500 space-y-1.5">
+                <div key={rel.versi} className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+                  <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 space-y-1">
                     <div className="flex items-center justify-between gap-2">
-                      <span className={`font-mono px-2.5 py-0.5 rounded-full border-[1.5px] border-[#1E293B] text-xs font-bold ${
-                        idx === 0
+                      <span className={`tabular-num px-2.5 py-0.5 rounded-full text-xs font-semibold ${idx === 0
                           ? 'bg-[#0052FF] text-white'
-                          : 'bg-white text-[#1E293B] dark:bg-slate-700 dark:text-slate-100'
-                      }`}>
+                          : 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200'
+                        }`}>
                         {rel.versi}
                       </span>
-                      <span className="font-mono text-[11px] font-bold text-slate-500 dark:text-slate-400 flex-shrink-0">{rel.tanggal}</span>
+                      <span className="tabular-num text-[11px] font-medium text-slate-500 dark:text-slate-400 flex-shrink-0">{rel.tanggal}</span>
                     </div>
-                    <h4 className="font-bold text-xs sm:text-sm text-[#1E293B] dark:text-white leading-snug">{rel.judul}</h4>
+                    <h4 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white leading-snug">{rel.judul}</h4>
                   </div>
-                  <div className="p-4 space-y-2.5 bg-white dark:bg-[#1E293B]">
+                  <div className="p-4 space-y-2.5 bg-white dark:bg-[#111827]">
                     {rel.perubahan.map((item, i) => (
-                      <div key={i} className="text-xs text-[#1E293B] dark:text-slate-200 flex items-start gap-2.5 leading-relaxed">
-                        <span className="px-2 py-0.5 rounded-full bg-[#00B4D8]/15 text-[#007a94] dark:text-[#67e8f9] border border-[#1E293B] dark:border-slate-400 font-bold text-[10px] flex-shrink-0 mt-0.5">
+                      <div key={i} className="text-xs text-slate-600 dark:text-slate-300 flex items-start gap-2.5 leading-relaxed">
+                        <span className="px-2 py-0.5 rounded-md bg-blue-50 text-[#0052FF] dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/70 dark:border-blue-800/70 font-semibold text-[10px] flex-shrink-0 mt-0.5">
                           {item.kategori}
                         </span>
                         <span>{item.deskripsi}</span>

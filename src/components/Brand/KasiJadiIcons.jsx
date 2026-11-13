@@ -4,20 +4,20 @@ export function KjLogo({ className = 'w-10 h-10' }) {
       <path
         d="M20 15V85M20 50L55 15M35 35L60 85"
         stroke="#0052FF"
-        strokeWidth="14"
+        strokeWidth="13"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M90 45V65C90 78.8071 78.8071 90 65 90C55.5 90 47.5 84.5 44 76"
         stroke="#00B4D8"
-        strokeWidth="14"
+        strokeWidth="13"
         strokeLinecap="round"
       />
       <path
         d="M62 48L76 62L105 20"
         stroke="#FF6B35"
-        strokeWidth="12"
+        strokeWidth="11"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -31,10 +31,10 @@ export function KjBrandLockup({ compact = false, logoSize = 'w-9 h-9' }) {
       <KjLogo className={`${logoSize} flex-shrink-0`} />
       {!compact && (
         <div className="flex flex-col min-w-0">
-          <span className="text-lg font-extrabold tracking-tight text-[#1E293B] dark:text-white leading-none truncate">
-            KASI <span className="text-[#0052FF] dark:text-[#00B4D8]">JADI</span>
+          <span className="text-[17px] font-bold tracking-tight text-slate-900 dark:text-white leading-none truncate">
+            KASI <span className="text-[#0052FF] dark:text-[#38BDF8]">JADI</span>
           </span>
-          <span className="text-[9.5px] font-bold text-slate-500 dark:text-slate-400 tracking-wider uppercase mt-0.5 truncate">
+          <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 tracking-wide uppercase mt-1 truncate">
             Jurnal Aktivitas &amp; Kinerja
           </span>
         </div>
@@ -45,7 +45,7 @@ export function KjBrandLockup({ compact = false, logoSize = 'w-9 h-9' }) {
 
 export function KjDashboardIcon({ className = 'w-5 h-5' }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="4" width="18" height="16" rx="2" />
       <line x1="3" y1="9" x2="21" y2="9" />
       <line x1="7" y1="13" x2="10" y2="13" />
@@ -58,7 +58,7 @@ export function KjDashboardIcon({ className = 'w-5 h-5' }) {
 
 export function KjDailyLogIcon({ className = 'w-5 h-5' }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
       <rect x="8" y="2" width="8" height="4" rx="1" />
       <path d="M8 11h4" />
@@ -70,7 +70,7 @@ export function KjDailyLogIcon({ className = 'w-5 h-5' }) {
 
 export function KjAnalyticsIcon({ className = 'w-5 h-5' }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
       <path d="M22 12A10 10 0 0 0 12 2v10z" />
       <polyline points="7 15 10 12 12 14 16 10" />
@@ -80,7 +80,7 @@ export function KjAnalyticsIcon({ className = 'w-5 h-5' }) {
 
 export function KjCalendarIcon({ className = 'w-5 h-5' }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="4" width="18" height="18" rx="2" />
       <line x1="16" y1="2" x2="16" y2="6" />
       <line x1="8" y1="2" x2="8" y2="6" />
@@ -96,27 +96,26 @@ export function KjCalendarIcon({ className = 'w-5 h-5' }) {
 }
 
 export function KjReminderBanner({
-  message = 'Jangan lupa spill kerjaan hari ini, Jo!',
-  subtext,
+  message = 'Anda belum mencatat realisasi kegiatan hari ini.',
+  subtext = 'Silakan lengkapi jurnal aktivitas harian beserta bukti dukung Anda.',
   actionLabel,
   onAction,
   onDismiss,
 }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#F4F6F9] dark:bg-[#1E293B] border-2 border-[#1E293B] dark:border-slate-500 rounded-xl shadow-[3px_4px_0px_#1E293B] dark:shadow-[3px_4px_0px_#020617]">
+    <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3.5 bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/70 rounded-xl shadow-sm">
       <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
-        <span className="flex h-3 w-3 relative flex-shrink-0 mt-1 sm:mt-0">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF6B35] opacity-75" />
-          <span className="relative inline-flex rounded-full h-3 w-3 bg-[#FF6B35]" />
+        <span className="flex h-2.5 w-2.5 relative flex-shrink-0 mt-1.5 sm:mt-0">
+          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500" />
         </span>
         <div className="min-w-0">
-          <p className="text-sm font-bold text-[#1E293B] dark:text-white leading-snug">{message}</p>
+          <p className="text-sm font-semibold text-slate-900 dark:text-white leading-snug">{message}</p>
           {subtext && <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5 leading-relaxed">{subtext}</p>}
         </div>
       </div>
       <div className="flex items-center gap-2 flex-shrink-0">
         {actionLabel && onAction && (
-          <button type="button" onClick={onAction} className="btn-orange btn-sm">
+          <button type="button" onClick={onAction} className="btn-primary btn-sm">
             {actionLabel}
           </button>
         )}
@@ -125,7 +124,7 @@ export function KjReminderBanner({
             type="button"
             onClick={onDismiss}
             aria-label="Tutup pengingat"
-            className="text-slate-500 hover:text-[#1E293B] dark:text-slate-400 dark:hover:text-white font-bold text-lg leading-none px-1.5"
+            className="text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white font-semibold text-lg leading-none px-1.5"
           >
             &times;
           </button>

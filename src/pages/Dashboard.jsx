@@ -16,26 +16,26 @@ import {
 
 function StatCard({ icon: Icon, label, value, sub, tone = 'blue' }) {
   const toneMap = {
-    blue: 'bg-[#0052FF]/10 text-[#0052FF] border-[#1E293B] dark:bg-[#0052FF]/20 dark:text-[#60A5FA] dark:border-slate-500',
-    navy: 'bg-[#0052FF]/10 text-[#0052FF] border-[#1E293B] dark:bg-[#0052FF]/20 dark:text-[#60A5FA] dark:border-slate-500',
-    teal: 'bg-[#00B4D8]/15 text-[#0077B6] border-[#1E293B] dark:bg-[#00B4D8]/20 dark:text-[#00B4D8] dark:border-slate-500',
-    success: 'bg-[#00B4D8]/15 text-[#0077B6] border-[#1E293B] dark:bg-[#00B4D8]/20 dark:text-[#00B4D8] dark:border-slate-500',
-    orange: 'bg-[#FF6B35]/15 text-[#D9480F] border-[#1E293B] dark:bg-[#FF6B35]/20 dark:text-[#FF8A5C] dark:border-slate-500',
-    warning: 'bg-amber-100 text-amber-800 border-[#1E293B] dark:bg-amber-950/60 dark:text-amber-300 dark:border-slate-500',
-    danger: 'bg-rose-100 text-rose-700 border-[#1E293B] dark:bg-rose-950/60 dark:text-rose-300 dark:border-slate-500',
-    neutral: 'bg-[#F4F6F9] text-[#1E293B] border-[#1E293B] dark:bg-slate-800 dark:text-slate-200 dark:border-slate-500',
+    blue: 'bg-[#0052FF]/10 text-[#0052FF] border-blue-200/70 dark:bg-[#0052FF]/15 dark:text-blue-400 dark:border-blue-800/60',
+    navy: 'bg-[#0052FF]/10 text-[#0052FF] border-blue-200/70 dark:bg-[#0052FF]/15 dark:text-blue-400 dark:border-blue-800/60',
+    teal: 'bg-teal-50 text-teal-700 border-teal-200/70 dark:bg-teal-950/50 dark:text-teal-300 dark:border-teal-800/60',
+    success: 'bg-teal-50 text-teal-700 border-teal-200/70 dark:bg-teal-950/50 dark:text-teal-300 dark:border-teal-800/60',
+    orange: 'bg-amber-50 text-amber-700 border-amber-200/70 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800/60',
+    warning: 'bg-amber-50 text-amber-700 border-amber-200/70 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800/60',
+    danger: 'bg-rose-50 text-rose-700 border-rose-200/70 dark:bg-rose-950/50 dark:text-rose-300 dark:border-rose-800/60',
+    neutral: 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700',
   };
 
   return (
     <div className="card p-4 flex flex-col justify-between gap-3">
       <div className="flex items-start justify-between gap-2">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 leading-snug">{label}</p>
-        <div className={`w-9 h-9 rounded-lg border-2 shadow-[2px_2px_0px_#1E293B] dark:shadow-[2px_2px_0px_#020617] flex items-center justify-center flex-shrink-0 ${toneMap[tone] || toneMap.blue}`}>
-          <Icon className="w-4 h-4" strokeWidth={2.2} />
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 leading-snug">{label}</p>
+        <div className={`w-9 h-9 rounded-lg border flex items-center justify-center flex-shrink-0 ${toneMap[tone] || toneMap.blue}`}>
+          <Icon className="w-4 h-4" strokeWidth={1.9} />
         </div>
       </div>
       <div>
-        <p className="text-2xl font-extrabold text-[#1E293B] dark:text-white tabular-num tracking-tight">
+        <p className="text-2xl font-bold text-slate-900 dark:text-white tabular-num tracking-tight">
           {value ?? '—'}
         </p>
         {sub && <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-1 truncate">{sub}</p>}
@@ -48,9 +48,9 @@ function ProgressBar({ value, color = 'blue', label, meta }) {
   const colorMap = {
     blue: 'bg-[#0052FF]',
     navy: 'bg-[#0052FF]',
-    teal: 'bg-[#00B4D8]',
-    success: 'bg-[#00B4D8]',
-    orange: 'bg-[#FF6B35]',
+    teal: 'bg-teal-600',
+    success: 'bg-teal-600',
+    orange: 'bg-amber-500',
     warning: 'bg-amber-500',
     danger: 'bg-rose-600',
   };
@@ -59,10 +59,10 @@ function ProgressBar({ value, color = 'blue', label, meta }) {
     <div className="space-y-2">
       {label && (
         <div className="flex items-center justify-between text-xs">
-          <span className="font-bold text-[#1E293B] dark:text-slate-200">{label}</span>
+          <span className="font-semibold text-slate-700 dark:text-slate-200">{label}</span>
           <div className="flex items-center gap-2">
             {meta && <span className="text-slate-500 dark:text-slate-400 tabular-num font-medium">{meta}</span>}
-            <span className="font-mono font-bold text-[#0052FF] dark:text-[#00B4D8] tabular-num">{clampedValue}%</span>
+            <span className="font-semibold text-[#0052FF] dark:text-blue-400 tabular-num">{clampedValue}%</span>
           </div>
         </div>
       )}
@@ -85,7 +85,7 @@ function KPADashboard() {
   if (loading) {
     return (
       <div className="flex justify-center py-24">
-        <div className="w-8 h-8 border-2 border-[#0052FF] dark:border-[#00B4D8] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#0052FF] dark:border-blue-400 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -118,10 +118,10 @@ function KPADashboard() {
           <div className="flex items-center gap-2.5 flex-wrap">
             <h2 className="page-title">Ringkasan Kinerja Pegawai</h2>
             {period?.nama && (
-              <span className="badge-info font-mono text-[11px]">{period.nama}</span>
+              <span className="badge-info tabular-num text-[11px]">{period.nama}</span>
             )}
           </div>
-          <p className="page-subtitle">Pantau jurnal aktivitas harian &amp; capaian kinerja KASI JADI — Sat-Set No Drama!</p>
+          <p className="page-subtitle">Pemantauan jurnal aktivitas harian dan capaian kinerja pegawai pada periode aktif</p>
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
           <Link to="/kegiatan" className="btn-secondary btn-sm">
@@ -137,16 +137,13 @@ function KPADashboard() {
         </div>
       </div>
 
-      {/* Incomplete Alert Card (Neo-Brutalism) */}
+      {/* Incomplete Alert Card */}
       {stats.belum_isi > 0 && (
-        <div className="flex items-start gap-3 p-4 bg-[#FF6B35]/10 dark:bg-[#FF6B35]/15 border-2 border-[#1E293B] dark:border-slate-500 rounded-xl shadow-[3px_4px_0px_#1E293B] dark:shadow-[3px_4px_0px_#020617]">
-          <span className="flex h-3 w-3 relative mt-1 flex-shrink-0">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF6B35] opacity-75" />
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#FF6B35]" />
-          </span>
+        <div className="flex items-start gap-3 p-4 bg-amber-50/90 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 rounded-xl shadow-card">
+          <span className="w-2 h-2 rounded-full bg-amber-500 mt-1.5 flex-shrink-0" />
           <div className="min-w-0">
-            <p className="text-xs font-extrabold text-[#1E293B] dark:text-white">
-              {stats.belum_isi} pegawai belum spill kerjaan hari ini, Jo!
+            <p className="text-xs font-semibold text-amber-950 dark:text-amber-200">
+              Terdapat {stats.belum_isi} pegawai yang belum mengisi jurnal kegiatan hari ini
             </p>
             <p className="text-xs font-medium text-slate-700 dark:text-slate-300 mt-0.5 leading-relaxed">
               {belum_isi_list.map(e => e.nama).join(', ')}
@@ -171,11 +168,11 @@ function KPADashboard() {
         <div className="card p-5">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#0052FF]/10 dark:bg-[#00B4D8]/15 border-2 border-[#1E293B] dark:border-slate-500 flex items-center justify-center">
-                <KjAnalyticsIcon className="w-4 h-4 text-[#0052FF] dark:text-[#00B4D8]" />
+              <div className="w-8 h-8 rounded-lg bg-[#0052FF]/10 dark:bg-[#0052FF]/15 border border-blue-200/70 dark:border-blue-800/60 flex items-center justify-center">
+                <KjAnalyticsIcon className="w-4 h-4 text-[#0052FF] dark:text-blue-400" />
               </div>
               <div>
-                <h3 className="font-bold text-[#1E293B] dark:text-white text-sm">Tren Kegiatan Bulanan</h3>
+                <h3 className="font-semibold text-slate-900 dark:text-white text-sm">Tren Kegiatan Bulanan</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Jumlah aktivitas tercatat per periode</p>
               </div>
             </div>
@@ -185,8 +182,8 @@ function KPADashboard() {
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#334155' : '#cbd5e1'} />
               <XAxis
                 dataKey="label"
-                tick={{ fontSize: 11, fontWeight: 600, fill: isDark ? '#cbd5e1' : '#1E293B' }}
-                axisLine={{ stroke: isDark ? '#475569' : '#1E293B', strokeWidth: 1.5 }}
+                tick={{ fontSize: 11, fontWeight: 500, fill: isDark ? '#94a3b8' : '#64748b' }}
+                axisLine={{ stroke: isDark ? '#334155' : '#cbd5e1', strokeWidth: 1 }}
                 tickLine={false}
               />
               <YAxis
@@ -200,19 +197,17 @@ function KPADashboard() {
                   fontSize: 12,
                   fontWeight: 600,
                   borderRadius: 12,
-                  backgroundColor: isDark ? '#1E293B' : '#ffffff',
-                  border: isDark ? '2px solid #64748b' : '2px solid #1E293B',
-                  color: isDark ? '#f8fafc' : '#1E293B',
-                  boxShadow: isDark ? '3px 4px 0px #020617' : '3px 4px 0px #1E293B',
+                  backgroundColor: isDark ? '#111827' : '#ffffff',
+                  border: isDark ? '1px solid #334155' : '1px solid #e2e8f0',
+                  color: isDark ? '#f8fafc' : '#0f172a',
+                  boxShadow: isDark ? '0 10px 25px -5px rgba(0, 0, 0, 0.4)' : '0 10px 25px -5px rgba(15, 23, 42, 0.08)',
                 }}
               />
               <Bar
                 dataKey="total_kegiatan"
-                fill={isDark ? '#00B4D8' : '#0052FF'}
-                stroke="#1E293B"
-                strokeWidth={1.5}
+                fill={isDark ? '#3B82F6' : '#0052FF'}
                 name="Kegiatan"
-                radius={[6, 6, 0, 0]}
+                radius={[4, 4, 0, 0]}
               />
             </BarChart>
           </ResponsiveContainer>
@@ -222,27 +217,27 @@ function KPADashboard() {
         <div className="card p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="font-bold text-[#1E293B] dark:text-white text-sm">Status Pengisian Hari Ini</h3>
+              <h3 className="font-semibold text-slate-900 dark:text-white text-sm">Status Pengisian Hari Ini</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Kehadiran input aktivitas harian pegawai</p>
             </div>
-            <span className="badge-info font-mono text-xs tabular-num">
+            <span className="badge-info text-xs tabular-num">
               {stats.sudah_isi}/{stats.total_pegawai}
             </span>
           </div>
           <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
             {employee_summary.map(emp => (
-              <div key={emp.id} className="flex items-center gap-3 px-2.5 py-2 rounded-lg border border-transparent hover:border-[#1E293B]/30 dark:hover:border-slate-600 hover:bg-[#F4F6F9] dark:hover:bg-slate-800/60 transition-colors">
-                <span className={`w-2.5 h-2.5 rounded-full border border-[#1E293B] flex-shrink-0 ${emp.isi_hari_ini ? 'bg-[#00B4D8]' : 'bg-[#FF6B35]'}`} />
+              <div key={emp.id} className="flex items-center gap-3 px-2.5 py-2 rounded-lg border border-transparent hover:border-slate-200 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                <span className={`w-2 h-2 rounded-full flex-shrink-0 ${emp.isi_hari_ini ? 'bg-teal-500' : 'bg-amber-500'}`} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-[#1E293B] dark:text-slate-100 truncate">{emp.nama}</p>
+                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">{emp.nama}</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{emp.unit_kerja}</p>
                 </div>
                 <div className="flex items-center gap-2.5 flex-shrink-0">
-                  <span className="font-mono text-xs font-bold text-[#1E293B] dark:text-slate-200 tabular-num">
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 tabular-num">
                     {emp.nilai_ckp || '—'}
                   </span>
                   {emp.isi_hari_ini
-                    ? <span className="badge-success text-[10px]">BERES!</span>
+                    ? <span className="badge-success text-[10px]">Sudah Isi</span>
                     : <span className="badge-danger text-[10px]">Belum</span>
                   }
                 </div>
@@ -254,9 +249,9 @@ function KPADashboard() {
 
       {/* Employee Summary Table */}
       <div className="card overflow-hidden">
-        <div className="px-5 py-4 border-b-2 border-[#1E293B] dark:border-slate-600 flex items-center justify-between bg-[#F4F6F9]/60 dark:bg-slate-800/40">
-          <h3 className="font-bold text-[#1E293B] dark:text-white text-sm">Rekap Pegawai — {period?.nama}</h3>
-          <Link to="/nilai-ckp" className="text-xs font-bold text-[#0052FF] dark:text-[#00B4D8] hover:underline inline-flex items-center gap-1">
+        <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-800/40">
+          <h3 className="font-semibold text-slate-900 dark:text-white text-sm">Rekap Pegawai — {period?.nama}</h3>
+          <Link to="/nilai-ckp" className="text-xs font-semibold text-[#0052FF] dark:text-blue-400 hover:underline inline-flex items-center gap-1">
             <span>Evaluasi CKP</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
@@ -276,13 +271,13 @@ function KPADashboard() {
             <tbody>
               {employee_summary.map(emp => (
                 <tr key={emp.id}>
-                  <td className="font-bold text-[#1E293B] dark:text-slate-100">{emp.nama}</td>
+                  <td className="font-semibold text-slate-900 dark:text-slate-100">{emp.nama}</td>
                   <td className="text-slate-500 dark:text-slate-400">{emp.unit_kerja}</td>
                   <td>
                     {emp.isi_hari_ini ? (
                       <span className="badge-success">
                         <span className="w-1.5 h-1.5 rounded-full bg-white" />
-                        BERES!
+                        Sudah Isi
                       </span>
                     ) : (
                       <span className="badge-danger">
@@ -291,11 +286,11 @@ function KPADashboard() {
                       </span>
                     )}
                   </td>
-                  <td className="font-mono font-bold tabular-num">{emp.total_kegiatan}</td>
+                  <td className="font-semibold tabular-num">{emp.total_kegiatan}</td>
                   <td className="tabular-num">{emp.hari_pengisian} hari</td>
                   <td className="text-right">
                     {emp.nilai_ckp ? (
-                      <span className="font-mono font-extrabold text-[#0052FF] dark:text-[#00B4D8] tabular-num">{emp.nilai_ckp}</span>
+                      <span className="font-bold text-[#0052FF] dark:text-blue-400 tabular-num">{emp.nilai_ckp}</span>
                     ) : (
                       <span className="text-slate-400">—</span>
                     )}
@@ -323,7 +318,7 @@ function PegawaiDashboard() {
   if (loading) {
     return (
       <div className="flex justify-center py-24">
-        <div className="w-8 h-8 border-2 border-[#0052FF] dark:border-[#00B4D8] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#0052FF] dark:border-blue-400 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -355,12 +350,12 @@ function PegawaiDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Sulteng Reminder Banner */}
+      {/* Reminder Banner */}
       {!sudah_isi_hari_ini && !dismissReminder && (
         <KjReminderBanner
-          message="Jangan lupa spill kerjaan hari ini, Jo!"
-          subtext="Catat aktivitas harian &amp; bukti dukungmu sekarang di KASI JADI — Sat-Set No Drama!"
-          actionLabel="GAS ISI!"
+          message="Anda belum mencatat realisasi kegiatan hari ini."
+          subtext="Silakan lengkapi jurnal aktivitas harian dan bukti dukung Anda pada periode aktif."
+          actionLabel="Input Kegiatan"
           onAction={() => navigate('/kegiatan')}
           onDismiss={() => setDismissReminder(true)}
         />
@@ -369,17 +364,17 @@ function PegawaiDashboard() {
       {/* KASI JADI Today Status Card */}
       <div className="card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-start sm:items-center gap-3.5">
-          <div className={`w-11 h-11 rounded-xl border-2 border-[#1E293B] dark:border-slate-500 shadow-[2px_3px_0px_#1E293B] dark:shadow-[2px_3px_0px_#020617] flex items-center justify-center flex-shrink-0 ${
+          <div className={`w-11 h-11 rounded-xl border flex items-center justify-center flex-shrink-0 ${
             sudah_isi_hari_ini
-              ? 'bg-[#00B4D8] text-white'
-              : 'bg-[#FF6B35] text-white'
+              ? 'bg-teal-50 text-teal-600 border-teal-200 dark:bg-teal-950/50 dark:text-teal-300 dark:border-teal-800/60'
+              : 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800/60'
           }`}>
             {sudah_isi_hari_ini ? <CheckCircle2 className="w-5 h-5" strokeWidth={2.3} /> : <Clock className="w-5 h-5" strokeWidth={2.3} />}
           </div>
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{todayDate}</p>
-            <h2 className="text-base font-extrabold text-[#1E293B] dark:text-white mt-0.5">
-              {sudah_isi_hari_ini ? 'BERES! Jurnal Hari Ini Sudah Terisi' : 'Belum Spill Kerjaan Hari Ini, Jo!'}
+            <h2 className="text-base font-bold text-slate-900 dark:text-white mt-0.5">
+              {sudah_isi_hari_ini ? 'Jurnal Kegiatan Hari Ini Sudah Terisi' : 'Belum Ada Catatan Kegiatan Hari Ini'}
             </h2>
             <p className="text-xs font-medium text-slate-600 dark:text-slate-300 mt-0.5 tabular-num">
               {sudah_isi_hari_ini
@@ -397,9 +392,9 @@ function PegawaiDashboard() {
               Unduh Hasil Kerja
             </button>
           )}
-          <Link to="/kegiatan" className={sudah_isi_hari_ini ? 'btn-primary btn-sm' : 'btn-orange btn-sm'}>
+          <Link to="/kegiatan" className="btn-primary btn-sm">
             <Plus className="w-3.5 h-3.5" />
-            {sudah_isi_hari_ini ? 'Tambah Kegiatan' : 'GAS ISI!'}
+            {sudah_isi_hari_ini ? 'Tambah Kegiatan' : 'Input Kegiatan'}
           </Link>
         </div>
       </div>
@@ -409,14 +404,14 @@ function PegawaiDashboard() {
         <StatCard icon={ClipboardList} label="Kegiatan Hari Ini" value={today_activities.length} tone="blue" />
         <StatCard icon={BarChart3} label="Kegiatan Bulan Ini" value={month_stats.total_kegiatan} tone="neutral" sub={period?.nama} />
         <StatCard icon={FileText} label="Bukti Dukung" value={month_stats.bukti_dukung} tone="orange" sub="File & Tautan" />
-        <StatCard icon={Award} label="Nilai CKP" value={ckp_score?.nilai_ckp || '—'} tone="teal" sub={ckp_score?.status === 'final' ? 'BERES! Final' : 'Draft'} />
+        <StatCard icon={Award} label="Nilai CKP" value={ckp_score?.nilai_ckp || '—'} tone="teal" sub={ckp_score?.status === 'final' ? 'Final' : 'Draft'} />
       </div>
 
       {/* Progress & Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <div className="card p-5 space-y-5">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-[#1E293B] dark:text-white text-sm">Progres Periode — {period?.nama}</h3>
+            <h3 className="font-semibold text-slate-900 dark:text-white text-sm">Progres Periode — {period?.nama}</h3>
             <span className="badge-info text-[11px]">Aktif</span>
           </div>
           <ProgressBar
@@ -434,15 +429,15 @@ function PegawaiDashboard() {
 
         <div className="card p-5 flex flex-col justify-between gap-4">
           <div>
-            <h3 className="font-bold text-[#1E293B] dark:text-white text-sm">Aksi Cepat &amp; Laporan</h3>
-            <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
-              Kelola catatan harian atau ekspor rekap hasil kerja untuk periode <strong className="font-bold text-[#1E293B] dark:text-white">{period?.nama || 'aktif'}</strong>.
+            <h3 className="font-semibold text-slate-900 dark:text-white text-sm">Aksi Cepat &amp; Laporan</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Kelola catatan harian atau ekspor rekap hasil kerja untuk periode <strong className="font-semibold text-slate-800 dark:text-white">{period?.nama || 'aktif'}</strong>.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <Link to="/kegiatan" className="btn-orange btn-sm py-2.5">
+            <Link to="/kegiatan" className="btn-primary btn-sm py-2.5">
               <Plus className="w-3.5 h-3.5" />
-              GAS ISI! Kegiatan
+              Input Kegiatan Harian
             </Link>
             <Link to="/bukti-dukung" className="btn-secondary btn-sm py-2.5">
               <FileText className="w-3.5 h-3.5" />
@@ -459,29 +454,29 @@ function PegawaiDashboard() {
       {/* Today's activities list */}
       {today_activities.length > 0 && (
         <div className="card overflow-hidden">
-          <div className="px-5 py-4 border-b-2 border-[#1E293B] dark:border-slate-600 flex items-center justify-between bg-[#F4F6F9]/60 dark:bg-slate-800/40">
-            <h3 className="font-bold text-[#1E293B] dark:text-white text-sm">Daftar Kegiatan Hari Ini</h3>
-            <Link to="/kegiatan" className="text-xs font-bold text-[#0052FF] dark:text-[#00B4D8] hover:underline">
+          <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-800/40">
+            <h3 className="font-semibold text-slate-900 dark:text-white text-sm">Daftar Kegiatan Hari Ini</h3>
+            <Link to="/kegiatan" className="text-xs font-semibold text-[#0052FF] dark:text-blue-400 hover:underline">
               Lihat semua
             </Link>
           </div>
-          <div className="divide-y-2 divide-[#1E293B]/10 dark:divide-slate-700/80">
+          <div className="divide-y divide-slate-200/80 dark:divide-slate-800">
             {today_activities.map(act => (
-              <div key={act.id} className="px-5 py-3.5 flex items-start gap-3 hover:bg-[#F4F6F9]/70 dark:hover:bg-slate-800/50 transition-colors">
-                <span className={`w-2.5 h-2.5 rounded-full border border-[#1E293B] mt-1.5 flex-shrink-0 ${
-                  act.status_kegiatan === 'selesai' ? 'bg-[#00B4D8]' :
-                  act.status_kegiatan === 'dalam_proses' ? 'bg-[#FF6B35]' : 'bg-slate-300 dark:bg-slate-600'
+              <div key={act.id} className="px-5 py-3.5 flex items-start gap-3 hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
+                <span className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                  act.status_kegiatan === 'selesai' ? 'bg-teal-500' :
+                  act.status_kegiatan === 'dalam_proses' ? 'bg-amber-500' : 'bg-slate-300 dark:bg-slate-600'
                 }`} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-[#1E293B] dark:text-slate-100">{act.nama_kegiatan}</p>
+                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{act.nama_kegiatan}</p>
                   {act.deskripsi && <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">{act.deskripsi}</p>}
                 </div>
                 <div className="flex items-center gap-2.5 flex-shrink-0">
-                  <span className="font-mono text-xs font-extrabold text-[#0052FF] dark:text-[#00B4D8] tabular-num">
+                  <span className="text-xs font-bold text-[#0052FF] dark:text-blue-400 tabular-num">
                     {act.persentase_capaian}%
                   </span>
                   {act.status_kegiatan === 'selesai'
-                    ? <span className="badge-success">BERES!</span>
+                    ? <span className="badge-success">Selesai</span>
                     : <span className="badge-warning">{act.status_kegiatan}</span>
                   }
                 </div>

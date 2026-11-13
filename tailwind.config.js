@@ -10,10 +10,10 @@ export default {
       colors: {
         kj: {
           blue: '#0052FF',
-          teal: '#00B4D8',
-          orange: '#FF6B35',
-          light: '#F4F6F9',
-          dark: '#1E293B',
+          teal: '#0D9488',
+          orange: '#D97706',
+          light: '#F8FAFC',
+          dark: '#0F172A',
         },
         primary: {
           50: '#eef4ff',
@@ -31,19 +31,12 @@ export default {
       },
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        mono: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
       },
       boxShadow: {
-        'neo-xs': '2px 2px 0px #1E293B',
-        'neo-sm': '2px 3px 0px #1E293B',
-        'neo': '3px 4px 0px #1E293B',
-        'neo-lg': '5px 6px 0px #1E293B',
-        'neo-dark-xs': '2px 2px 0px #020617',
-        'neo-dark-sm': '2px 3px 0px #020617',
-        'neo-dark': '3px 4px 0px #020617',
-        'card': '3px 4px 0px #1E293B',
-        'card-hover': '5px 6px 0px #1E293B',
-        'elevated': '6px 8px 0px #1E293B',
+        'card': '0 1px 2px 0 rgba(15, 23, 42, 0.04), 0 1px 3px 0 rgba(15, 23, 42, 0.05)',
+        'card-hover': '0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04)',
+        'elevated': '0 10px 25px -5px rgba(15, 23, 42, 0.09), 0 4px 10px -6px rgba(15, 23, 42, 0.05)',
       }
     },
   },

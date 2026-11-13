@@ -67,7 +67,7 @@ export default function AuditLog() {
         </div>
         <div>
           <label className="label">Tampilkan</label>
-          <select className="input w-28 font-mono" value={limit} onChange={e => setLimit(e.target.value)}>
+          <select className="input w-28 tabular-num" value={limit} onChange={e => setLimit(e.target.value)}>
             <option value={25}>25</option>
             <option value={50}>50</option>
             <option value={100}>100</option>
@@ -79,29 +79,29 @@ export default function AuditLog() {
       <div className="card overflow-hidden">
         {loading ? (
           <div className="flex justify-center py-12">
-            <div className="w-6 h-6 border-2 border-[#0052FF] dark:border-[#00B4D8] border-t-transparent rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-[#0052FF] dark:border-[#38BDF8] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : logs.length === 0 ? (
           <div className="flex flex-col items-center py-14 text-slate-400 dark:text-slate-500">
-            <Activity className="w-8 h-8 mb-2" strokeWidth={1.8} />
+            <Activity className="w-8 h-8 mb-2" strokeWidth={1.6} />
             <p className="text-xs font-medium">Tidak ada riwayat aktivitas</p>
           </div>
         ) : (
-          <div className="divide-y-2 divide-[#1E293B]/10 dark:divide-slate-700/80">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {logs.map(log => {
               const actionConfig = ACTION_LABELS[log.action] || { label: log.action, color: 'badge-gray' };
               return (
-                <div key={log.id} className="px-5 py-3.5 flex items-start gap-3 hover:bg-[#F4F6F9]/80 dark:hover:bg-slate-800/50 transition-colors">
-                  <span className="w-2.5 h-2.5 bg-[#0052FF] dark:bg-[#00B4D8] border border-[#1E293B] rounded-full mt-1.5 flex-shrink-0" />
+                <div key={log.id} className="px-5 py-3.5 flex items-start gap-3 hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                  <span className="w-2 h-2 bg-[#0052FF] dark:bg-[#38BDF8] rounded-full mt-2 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className={actionConfig.color}>{actionConfig.label}</span>
-                      <span className="text-sm font-bold text-[#1E293B] dark:text-slate-100">{log.pegawai_nama || log.username || '—'}</span>
+                      <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">{log.pegawai_nama || log.username || '—'}</span>
                       {log.resource_type && log.resource_id && (
-                        <span className="font-mono text-xs text-slate-400">#{log.resource_id}</span>
+                        <span className="tabular-num text-xs text-slate-400">#{log.resource_id}</span>
                       )}
                     </div>
-                    <p className="font-mono text-[11px] text-slate-400 dark:text-slate-500 mt-1">
+                    <p className="tabular-num text-[11px] text-slate-400 dark:text-slate-500 mt-1">
                       {new Date(log.created_at).toLocaleDateString('id-ID', {
                         weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
                         hour: '2-digit', minute: '2-digit', second: '2-digit'
@@ -109,7 +109,7 @@ export default function AuditLog() {
                     </p>
                   </div>
                   {log.resource_type && (
-                    <span className="badge-gray font-mono text-[11px] flex-shrink-0">{log.resource_type}</span>
+                    <span className="badge-gray tabular-num text-[11px] flex-shrink-0">{log.resource_type}</span>
                   )}
                 </div>
               );
