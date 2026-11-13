@@ -7,6 +7,25 @@ import {
 
 export const FALLBACK_CHANGELOGS = [
   {
+    id: 5,
+    versi: 'v1.4.0',
+    judul: 'Redesign Identitas KASI JADI & Gaya Neo-Brutalism',
+    tanggal: '2026-11-13',
+    tipe: 'major',
+    perubahan: [
+      {
+        kategori: 'Perubahan',
+        platform: 'Web & Mobile',
+        deskripsi: 'Transformasi identitas sistem menjadi KASI JADI (Kanal Sistem Jurnal Aktivitas Dan Kinerja) dengan palet Biru Elektrik (#0052FF), Toska (#00B4D8), dan Oranye Hangat (#FF6B35).'
+      },
+      {
+        kategori: 'Fitur Baru',
+        platform: 'Web & Mobile',
+        deskripsi: 'Integrasi logo monogram KJ, ikon outline kustom, motif border tenun geometris khas Sulawesi Tengah, tombol aksi "GAS ISI!" & "BERES!", serta banner pengingat "Jangan lupa spill kerjaan hari ini, Jo!".'
+      }
+    ]
+  },
+  {
     id: 1,
     versi: 'v1.3.0',
     judul: 'Fitur Changelog Publik & Penghapusan Verifikasi KPA',
@@ -40,7 +59,7 @@ export const FALLBACK_CHANGELOGS = [
       {
         kategori: 'Fitur Baru',
         platform: 'Mobile',
-        deskripsi: 'Kamera bukti dukung pada SI-CKP Mobile otomatis menangkap titik koordinat GPS (Latitude, Longitude, Akurasi) dan Timestamp, lalu mencetak watermark langsung pada foto serta menyimpan metadatanya.'
+        deskripsi: 'Kamera bukti dukung pada KASI JADI Mobile otomatis menangkap titik koordinat GPS (Latitude, Longitude, Akurasi) dan Timestamp, lalu mencetak watermark langsung pada foto serta menyimpan metadatanya.'
       },
       {
         kategori: 'Fitur Baru',
@@ -62,14 +81,14 @@ export const FALLBACK_CHANGELOGS = [
   {
     id: 3,
     versi: 'v1.1.0',
-    judul: 'Peluncuran Aplikasi SI-CKP Mobile (Android) & Integrasi Cloud',
+    judul: 'Peluncuran Aplikasi KASI JADI Mobile (Android) & Integrasi Cloud',
     tanggal: '2026-11-12',
     tipe: 'major',
     perubahan: [
       {
         kategori: 'Fitur Baru',
         platform: 'Mobile',
-        deskripsi: 'Rilis aplikasi SI-CKP Mobile untuk Android (APK) dengan fitur Beranda, Input Kegiatan Harian, Upload Bukti Dukung, Riwayat Kegiatan, dan Monitoring Nilai CKP.'
+        deskripsi: 'Rilis aplikasi KASI JADI Mobile untuk Android (APK) dengan fitur Beranda, Input Kegiatan Harian, Upload Bukti Dukung, Riwayat Kegiatan, dan Monitoring Nilai CKP.'
       },
       {
         kategori: 'Perbaikan',
@@ -81,14 +100,14 @@ export const FALLBACK_CHANGELOGS = [
   {
     id: 4,
     versi: 'v1.0.0',
-    judul: 'Rilis Awal Sistem Informasi CKP Harian (SI-CKP)',
+    judul: 'Rilis Awal Kanal Sistem Jurnal Aktivitas Dan Kinerja (KASI JADI)',
     tanggal: '2026-11-02',
     tipe: 'major',
     perubahan: [
       {
         kategori: 'Fitur Baru',
         platform: 'Web & Backend',
-        deskripsi: 'Peluncuran perdana SI-CKP Harian meliputi pencatatan kegiatan harian pegawai, manajemen bukti dukung (file & link), kalender pengisian harian, penilaian perilaku kerja (BerAKHLAK), dan perhitungan nilai CKP bulanan.'
+        deskripsi: 'Peluncuran perdana sistem KASI JADI meliputi pencatatan kegiatan harian pegawai, manajemen bukti dukung (file & link), kalender pengisian harian, penilaian perilaku kerja (BerAKHLAK), dan perhitungan nilai CKP bulanan.'
       }
     ]
   }
@@ -111,10 +130,10 @@ const KATEGORI_STYLES = {
 
 function getPlatformIcon(platform = '') {
   const p = platform.toLowerCase();
-  if (p.includes('mobile') && p.includes('web')) return <Sparkles className="w-3 h-3 text-primary-600 dark:text-sky-400" />;
-  if (p.includes('mobile')) return <Smartphone className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />;
-  if (p.includes('web')) return <Monitor className="w-3 h-3 text-primary-600 dark:text-sky-400" />;
-  return <Server className="w-3 h-3 text-slate-500 dark:text-slate-400" />;
+  if (p.includes('mobile') && p.includes('web')) return <Sparkles className="w-3 h-3 text-[#0052FF] dark:text-[#00B4D8]" />;
+  if (p.includes('mobile')) return <Smartphone className="w-3 h-3 text-[#00B4D8]" />;
+  if (p.includes('web')) return <Monitor className="w-3 h-3 text-[#0052FF] dark:text-[#60A5FA]" />;
+  return <Server className="w-3 h-3 text-slate-600 dark:text-slate-300" />;
 }
 
 export default function Changelog() {
@@ -217,18 +236,18 @@ export default function Changelog() {
 
   return (
     <div className="space-y-6">
-      {/* Executive Header */}
+      {/* KASI JADI Header */}
       <div className="page-header mb-0">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h2 className="page-title">Changelog & Riwayat Pembaruan</h2>
-            <span className="font-mono badge-info text-[11px]">{changelogs[0]?.versi || 'v1.3.0'}</span>
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h2 className="page-title">Changelog &amp; Riwayat Pembaruan</h2>
+            <span className="font-mono badge-info text-[11px]">{changelogs[0]?.versi || 'v1.4.0'}</span>
           </div>
-          <p className="page-subtitle">Catatan rilis fitur, penyempurnaan antarmuka, dan pembaruan sistem SI-CKP</p>
+          <p className="page-subtitle">Catatan rilis fitur, penyempurnaan antarmuka, dan pembaruan sistem KASI JADI</p>
         </div>
 
         {isKPA && (
-          <button onClick={() => setModalOpen(true)} className="btn-primary btn-sm">
+          <button onClick={() => setModalOpen(true)} className="btn-orange btn-sm">
             <Plus className="w-3.5 h-3.5" />
             Tambah Catatan Rilis
           </button>
@@ -237,15 +256,15 @@ export default function Changelog() {
 
       {/* Filter Bar */}
       <div className="card p-3.5 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-2">
           {categories.map(cat => (
             <button
               key={cat}
               onClick={() => setFilterKategori(cat)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold border-2 transition-all ${
                 filterKategori === cat
-                  ? 'bg-primary-600 text-white dark:bg-sky-500 dark:text-slate-950 font-semibold'
-                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  ? 'bg-[#0052FF] text-white border-[#1E293B] dark:border-slate-400 shadow-[2px_2px_0px_#1E293B] dark:shadow-[2px_2px_0px_#020617]'
+                  : 'bg-[#F4F6F9] dark:bg-slate-800 text-[#1E293B] dark:text-slate-200 border-[#1E293B]/30 dark:border-slate-600 hover:border-[#1E293B] dark:hover:border-slate-400'
               }`}
             >
               {cat}
@@ -274,15 +293,15 @@ export default function Changelog() {
           return (
             <div
               key={release.id || release.versi}
-              className={`card overflow-hidden ${isLatest ? 'border-primary-200/80 dark:border-sky-800/60' : ''}`}
+              className={`card overflow-hidden ${isLatest ? 'ring-2 ring-[#0052FF]/30 dark:ring-[#00B4D8]/30' : ''}`}
             >
               {/* Release Header */}
-              <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 flex flex-wrap items-center justify-between gap-3">
+              <div className="px-5 py-4 border-b-2 border-[#1E293B] dark:border-slate-600 bg-[#F4F6F9] dark:bg-slate-800/80 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <span className={`font-mono px-2.5 py-1 rounded-md text-xs font-semibold inline-flex items-center gap-1.5 ${
+                  <span className={`font-mono px-3 py-1 rounded-full border-2 border-[#1E293B] dark:border-slate-400 text-xs font-extrabold inline-flex items-center gap-1.5 shadow-[1px_2px_0px_#1E293B] dark:shadow-[1px_2px_0px_#020617] ${
                     isLatest
-                      ? 'bg-primary-600 text-white dark:bg-sky-500 dark:text-slate-950'
-                      : 'bg-slate-200/80 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                      ? 'bg-[#FF6B35] text-white'
+                      : 'bg-white text-[#1E293B] dark:bg-slate-700 dark:text-slate-100'
                   }`}>
                     <Tag className="w-3 h-3" />
                     {release.versi}
@@ -290,14 +309,14 @@ export default function Changelog() {
                   {isLatest && (
                     <span className="badge-success text-[11px]">Rilis Terbaru</span>
                   )}
-                  <h3 className="font-semibold text-slate-900 dark:text-white text-sm">
+                  <h3 className="font-bold text-[#1E293B] dark:text-white text-sm">
                     {release.judul}
                   </h3>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                  <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300 font-medium">
+                    <Calendar className="w-3.5 h-3.5 text-[#0052FF] dark:text-[#00B4D8]" />
                     <span className="font-mono text-[11px]">
                       {new Date(release.tanggal + 'T00:00:00').toLocaleDateString('id-ID', {
                         day: 'numeric',
@@ -309,7 +328,7 @@ export default function Changelog() {
                   {isKPA && release.id && (
                     <button
                       onClick={() => handleDeleteChangelog(release.id, release.versi)}
-                      className="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
+                      className="p-1.5 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg border border-transparent hover:border-[#1E293B] transition-colors"
                       title="Hapus Catatan Rilis"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -319,7 +338,7 @@ export default function Changelog() {
               </div>
 
               {/* Release Items */}
-              <div className="p-5 divide-y divide-slate-100 dark:divide-slate-800">
+              <div className="p-5 divide-y-2 divide-[#1E293B]/10 dark:divide-slate-700/80">
                 {filteredItems.map((item, i) => {
                   const style = KATEGORI_STYLES[item.kategori] || {
                     badge: 'badge-gray',
@@ -335,12 +354,12 @@ export default function Changelog() {
 
                       <div className="flex-1 min-w-0">
                         {item.platform && (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded mb-1.5">
+                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1E293B] dark:text-slate-200 bg-[#F4F6F9] dark:bg-slate-800 border border-[#1E293B]/40 dark:border-slate-500 px-2 py-0.5 rounded-md mb-1.5">
                             {getPlatformIcon(item.platform)}
                             {item.platform}
                           </span>
                         )}
-                        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                        <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">
                           {item.deskripsi}
                         </p>
                       </div>
@@ -357,10 +376,10 @@ export default function Changelog() {
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px] animate-fade-in" onClick={() => setModalOpen(false)} />
-          <div className="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-elevated w-full max-w-2xl animate-fade-in-up max-h-[90vh] flex flex-col">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
-              <h3 className="font-semibold text-sm text-slate-900 dark:text-white">Tambah Catatan Rilis</h3>
-              <button onClick={() => setModalOpen(false)} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-500">
+          <div className="relative bg-white dark:bg-[#1E293B] border-2 border-[#1E293B] dark:border-slate-400 rounded-2xl shadow-[5px_6px_0px_#1E293B] dark:shadow-[5px_6px_0px_#020617] w-full max-w-2xl animate-fade-in-up max-h-[90vh] flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-4 border-b-2 border-[#1E293B] dark:border-slate-600 bg-[#F4F6F9] dark:bg-slate-800">
+              <h3 className="font-bold text-sm text-[#1E293B] dark:text-white">Tambah Catatan Rilis</h3>
+              <button onClick={() => setModalOpen(false)} className="p-1.5 bg-white dark:bg-slate-700 border-[1.5px] border-[#1E293B] dark:border-slate-500 shadow-[1px_2px_0px_#1E293B] dark:shadow-[1px_2px_0px_#020617] rounded-lg text-[#1E293B] dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -372,7 +391,7 @@ export default function Changelog() {
                   <input
                     className="input font-mono"
                     required
-                    placeholder="v1.4.0"
+                    placeholder="v1.5.0"
                     value={form.versi}
                     onChange={e => setForm({ ...form, versi: e.target.value })}
                   />
@@ -406,13 +425,13 @@ export default function Changelog() {
                 <input
                   className="input"
                   required
-                  placeholder="Contoh: Peningkatan Performa & Desain Minimalis"
+                  placeholder="Contoh: Peningkatan Performa &amp; Fitur Baru"
                   value={form.judul}
                   onChange={e => setForm({ ...form, judul: e.target.value })}
                 />
               </div>
 
-              <div className="space-y-3 border-t border-slate-100 dark:border-slate-800 pt-3">
+              <div className="space-y-3 border-t-2 border-[#1E293B]/15 dark:border-slate-700 pt-3">
                 <div className="flex items-center justify-between">
                   <label className="label mb-0">Daftar Perubahan *</label>
                   <button type="button" onClick={addFormItem} className="btn-secondary btn-sm">
@@ -421,7 +440,7 @@ export default function Changelog() {
                 </div>
 
                 {form.items.map((item, idx) => (
-                  <div key={idx} className="p-3 bg-slate-50/80 dark:bg-slate-800/60 rounded-xl space-y-2 border border-slate-200/70 dark:border-slate-700">
+                  <div key={idx} className="p-3 bg-[#F4F6F9] dark:bg-slate-800/70 rounded-xl space-y-2 border-2 border-[#1E293B] dark:border-slate-500">
                     <div className="grid grid-cols-2 sm:grid-cols-[1fr_1fr_auto] gap-2">
                       <select
                         className="input text-xs"
@@ -437,11 +456,11 @@ export default function Changelog() {
                         value={item.platform}
                         onChange={e => updateFormItem(idx, { platform: e.target.value })}
                       >
-                        <option value="Web & Mobile">Web & Mobile</option>
+                        <option value="Web & Mobile">Web &amp; Mobile</option>
                         <option value="Web">Web</option>
                         <option value="Mobile">Mobile</option>
                         <option value="Backend">Backend</option>
-                        <option value="Web, Mobile & Backend">Web, Mobile & Backend</option>
+                        <option value="Web, Mobile & Backend">Web, Mobile &amp; Backend</option>
                       </select>
                       {form.items.length > 1 && (
                         <button
@@ -465,12 +484,12 @@ export default function Changelog() {
                 ))}
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex justify-end gap-2 pt-3 border-t-2 border-[#1E293B]/15 dark:border-slate-700">
                 <button type="button" onClick={() => setModalOpen(false)} className="btn-secondary">
                   Batal
                 </button>
-                <button type="submit" disabled={submitting} className="btn-primary">
-                  {submitting ? 'Menyimpan...' : 'Publikasikan'}
+                <button type="submit" disabled={submitting} className="btn-teal">
+                  {submitting ? 'Menyimpan...' : 'BERES! Publikasikan'}
                 </button>
               </div>
             </form>

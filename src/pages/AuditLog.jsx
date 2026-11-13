@@ -79,24 +79,24 @@ export default function AuditLog() {
       <div className="card overflow-hidden">
         {loading ? (
           <div className="flex justify-center py-12">
-            <div className="w-5 h-5 border-2 border-primary-600 dark:border-sky-400 border-t-transparent rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-[#0052FF] dark:border-[#00B4D8] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : logs.length === 0 ? (
           <div className="flex flex-col items-center py-14 text-slate-400 dark:text-slate-500">
-            <Activity className="w-8 h-8 mb-2" strokeWidth={1.5} />
-            <p className="text-xs">Tidak ada riwayat aktivitas</p>
+            <Activity className="w-8 h-8 mb-2" strokeWidth={1.8} />
+            <p className="text-xs font-medium">Tidak ada riwayat aktivitas</p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
+          <div className="divide-y-2 divide-[#1E293B]/10 dark:divide-slate-700/80">
             {logs.map(log => {
               const actionConfig = ACTION_LABELS[log.action] || { label: log.action, color: 'badge-gray' };
               return (
-                <div key={log.id} className="px-5 py-3.5 flex items-start gap-3 hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
-                  <span className="w-2 h-2 bg-primary-600 dark:bg-sky-400 rounded-full mt-2 flex-shrink-0" />
+                <div key={log.id} className="px-5 py-3.5 flex items-start gap-3 hover:bg-[#F4F6F9]/80 dark:hover:bg-slate-800/50 transition-colors">
+                  <span className="w-2.5 h-2.5 bg-[#0052FF] dark:bg-[#00B4D8] border border-[#1E293B] rounded-full mt-1.5 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className={actionConfig.color}>{actionConfig.label}</span>
-                      <span className="text-sm font-medium text-slate-800 dark:text-slate-100">{log.pegawai_nama || log.username || '—'}</span>
+                      <span className="text-sm font-bold text-[#1E293B] dark:text-slate-100">{log.pegawai_nama || log.username || '—'}</span>
                       {log.resource_type && log.resource_id && (
                         <span className="font-mono text-xs text-slate-400">#{log.resource_id}</span>
                       )}

@@ -3,12 +3,13 @@ import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import {
   Plus, Edit2, Trash2, Eye, X, Check, ChevronLeft, ChevronRight,
-  CalendarDays, List, RefreshCw, Upload, Link as LinkIcon, Download,
+  List, RefreshCw, Upload, Link as LinkIcon, Download,
   Printer, MapPin, Paperclip, Minus
 } from 'lucide-react';
+import { KjCalendarIcon, KjDailyLogIcon } from '../components/Brand/KasiJadiIcons';
 
 const STATUS_LABELS = {
-  selesai: { label: 'Selesai', class: 'badge-success' },
+  selesai: { label: 'BERES!', class: 'badge-success' },
   dalam_proses: { label: 'Dalam Proses', class: 'badge-warning' },
   ditunda: { label: 'Ditunda', class: 'badge-gray' },
   dibatalkan: { label: 'Dibatalkan', class: 'badge-danger' },
@@ -17,23 +18,23 @@ const STATUS_LABELS = {
 const STATUS_CONFIG = {
   lengkap: {
     label: 'Sudah Diisi',
-    dot: 'bg-emerald-500',
-    tile: 'bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 border-emerald-200/70 dark:border-emerald-800/50',
+    dot: 'bg-[#00B4D8]',
+    tile: 'bg-[#00B4D8]/15 dark:bg-[#00B4D8]/20 text-[#1E293B] dark:text-[#7ce8ff] border-[#1E293B] dark:border-slate-500 shadow-[1px_2px_0px_#1E293B] dark:shadow-[1px_2px_0px_#020617]',
   },
   sebagian: {
     label: 'Belum Lengkap',
-    dot: 'bg-amber-500',
-    tile: 'bg-amber-50/70 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border-amber-200/70 dark:border-amber-800/50',
+    dot: 'bg-[#FF6B35]',
+    tile: 'bg-[#FF6B35]/15 dark:bg-[#FF6B35]/20 text-[#1E293B] dark:text-[#ffb499] border-[#1E293B] dark:border-slate-500 shadow-[1px_2px_0px_#1E293B] dark:shadow-[1px_2px_0px_#020617]',
   },
   belum: {
     label: 'Belum Diisi',
     dot: 'bg-rose-500',
-    tile: 'bg-rose-50/60 dark:bg-rose-950/30 text-rose-900 dark:text-rose-200 border-rose-200/70 dark:border-rose-800/50',
+    tile: 'bg-rose-50 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 border-[#1E293B]/60 dark:border-slate-600',
   },
   weekend: {
     label: 'Hari Libur',
     dot: 'bg-slate-300 dark:bg-slate-700',
-    tile: 'bg-slate-50/60 dark:bg-slate-900/40 text-slate-400 dark:text-slate-600 border-transparent',
+    tile: 'bg-[#F4F6F9]/60 dark:bg-slate-900/40 text-slate-400 dark:text-slate-600 border-transparent',
   },
 };
 
@@ -51,10 +52,10 @@ function Modal({ open, onClose, title, children, size = 'md' }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px] animate-fade-in" onClick={onClose} />
-      <div className={`relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-elevated w-full ${sizeMap[size]} animate-fade-in-up max-h-[90vh] flex flex-col`}>
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex-shrink-0">
-          <h3 className="font-semibold text-sm text-slate-900 dark:text-white">{title}</h3>
-          <button onClick={onClose} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-500 transition-colors">
+      <div className={`relative bg-white dark:bg-[#1E293B] border-2 border-[#1E293B] dark:border-slate-400 rounded-2xl shadow-[5px_6px_0px_#1E293B] dark:shadow-[5px_6px_0px_#020617] w-full ${sizeMap[size]} animate-fade-in-up max-h-[90vh] flex flex-col overflow-hidden`}>
+        <div className="flex items-center justify-between px-5 py-4 border-b-2 border-[#1E293B] dark:border-slate-600 bg-[#F4F6F9] dark:bg-slate-800 flex-shrink-0">
+          <h3 className="font-bold text-sm text-[#1E293B] dark:text-white">{title}</h3>
+          <button onClick={onClose} className="p-1.5 bg-white dark:bg-slate-700 border-[1.5px] border-[#1E293B] dark:border-slate-500 shadow-[1px_2px_0px_#1E293B] dark:shadow-[1px_2px_0px_#020617] rounded-lg text-[#1E293B] dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -66,18 +67,18 @@ function Modal({ open, onClose, title, children, size = 'md' }) {
 
 function TabSwitch({ tabs, active, onChange }) {
   return (
-    <div className="inline-flex gap-1 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-lg border border-slate-200/70 dark:border-slate-700/70 w-fit">
+    <div className="inline-flex gap-1.5 bg-[#F4F6F9] dark:bg-slate-800 p-1.5 rounded-xl border-2 border-[#1E293B] dark:border-slate-500 shadow-[2px_3px_0px_#1E293B] dark:shadow-[2px_3px_0px_#020617] w-fit">
       {tabs.map(t => (
         <button
           key={t.id}
           onClick={() => onChange(t.id)}
-          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-semibold transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
             active === t.id
-              ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-card'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+              ? 'bg-[#0052FF] text-white border-2 border-[#1E293B] dark:border-slate-400 shadow-[1px_2px_0px_#1E293B] dark:shadow-[1px_2px_0px_#020617]'
+              : 'border-2 border-transparent text-[#1E293B] dark:text-slate-300 hover:bg-white/70 dark:hover:bg-slate-700/60'
           }`}
         >
-          {t.icon && <t.icon className="w-3.5 h-3.5" />}
+          {t.icon && <t.icon className="w-4 h-4" />}
           {t.label}
         </button>
       ))}
@@ -165,12 +166,12 @@ function KegiatanForm({ periods, employees, onSubmit, loading, initialData }) {
         </div>
         <div className="form-group">
           <label className="label">Capaian</label>
-          <div className={`input font-mono font-semibold tabular-num bg-slate-50 dark:bg-slate-800/70 ${
+          <div className={`input font-mono font-extrabold tabular-num bg-[#F4F6F9] dark:bg-slate-800/70 ${
             capaian >= 100
-              ? 'text-emerald-600 dark:text-emerald-400'
+              ? 'text-[#00B4D8]'
               : capaian >= 70
-                ? 'text-primary-600 dark:text-sky-400'
-                : 'text-amber-600 dark:text-amber-400'
+                ? 'text-[#0052FF] dark:text-[#60A5FA]'
+                : 'text-[#FF6B35]'
           }`}>
             {capaian}%
           </div>
@@ -181,7 +182,7 @@ function KegiatanForm({ periods, employees, onSubmit, loading, initialData }) {
         <div className="form-group">
           <label className="label">Status Kegiatan</label>
           <select className="input" value={form.status_kegiatan} onChange={e => setForm({ ...form, status_kegiatan: e.target.value })}>
-            <option value="selesai">Selesai</option>
+            <option value="selesai">BERES! (Selesai)</option>
             <option value="dalam_proses">Dalam Proses</option>
             <option value="ditunda">Ditunda</option>
             <option value="dibatalkan">Dibatalkan</option>
@@ -194,7 +195,7 @@ function KegiatanForm({ periods, employees, onSubmit, loading, initialData }) {
       </div>
 
       {/* Bukti Dukung */}
-      <div className="space-y-3 border-t border-slate-100 dark:border-slate-800 pt-4">
+      <div className="space-y-3 border-t-2 border-[#1E293B]/15 dark:border-slate-700 pt-4">
         <p className="label">Bukti Dukung (opsional)</p>
         <div className="flex gap-2 flex-wrap">
           <label className="btn-secondary btn-sm cursor-pointer">
@@ -206,10 +207,10 @@ function KegiatanForm({ periods, employees, onSubmit, loading, initialData }) {
             <LinkIcon className="w-3.5 h-3.5" /> Tambah Link
           </button>
         </div>
-        <p className="text-[11px] text-slate-400 dark:text-slate-500">Format: JPG, PNG, PDF, DOC, XLS, PPT, ZIP (maks 10MB). Dapat ditambahkan kapan saja di menu Bukti Dukung.</p>
+        <p className="text-[11px] text-slate-500 dark:text-slate-400">Format: JPG, PNG, PDF, DOC, XLS, PPT, ZIP (maks 10MB). Dapat ditambahkan kapan saja di menu Bukti Dukung.</p>
         {files.map((f, i) => (
-          <div key={i} className="flex items-center justify-between gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700 rounded-lg text-xs">
-            <span className="truncate font-medium">{f.name}</span>
+          <div key={i} className="flex items-center justify-between gap-2 px-3 py-2 bg-[#F4F6F9] dark:bg-slate-800/70 border-2 border-[#1E293B] dark:border-slate-500 rounded-lg text-xs">
+            <span className="truncate font-bold">{f.name}</span>
             <button type="button" onClick={() => setFiles(fs => fs.filter((_, idx) => idx !== i))} className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded">
               <X className="w-3.5 h-3.5" />
             </button>
@@ -226,9 +227,9 @@ function KegiatanForm({ periods, employees, onSubmit, loading, initialData }) {
         ))}
       </div>
 
-      <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-        <button type="submit" disabled={loading} className="btn-primary">
-          {loading ? 'Menyimpan...' : initialData?.id ? 'Perbarui Kegiatan' : 'Simpan Kegiatan'}
+      <div className="flex justify-end gap-2 pt-3 border-t-2 border-[#1E293B]/15 dark:border-slate-700">
+        <button type="submit" disabled={loading} className={initialData?.id ? 'btn-teal' : 'btn-orange'}>
+          {loading ? 'Menyimpan...' : initialData?.id ? 'BERES! Perbarui' : 'GAS SIMPAN!'}
         </button>
       </div>
     </form>
@@ -333,7 +334,7 @@ function CalendarView({ periods, employees, canSeeAll }) {
             <button onClick={prevMonth} className="btn-secondary btn-sm btn-icon" aria-label="Bulan sebelumnya">
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <h2 className="font-semibold text-sm text-slate-900 dark:text-white">{MONTHS_ID[month]} {year}</h2>
+            <h2 className="font-extrabold text-sm text-[#1E293B] dark:text-white tracking-tight">{MONTHS_ID[month]} {year}</h2>
             <button onClick={nextMonth} className="btn-secondary btn-sm btn-icon" aria-label="Bulan berikutnya">
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -341,11 +342,11 @@ function CalendarView({ periods, employees, canSeeAll }) {
 
           <div className="grid grid-cols-7 mb-1.5">
             {DAYS_ID.map(d => (
-              <div key={d} className={`text-center text-[11px] font-semibold uppercase tracking-wider py-2 ${d === 'Min' || d === 'Sab' ? 'text-slate-400 dark:text-slate-600' : 'text-slate-500 dark:text-slate-400'}`}>{d}</div>
+              <div key={d} className={`text-center text-[11px] font-bold uppercase tracking-wider py-2 ${d === 'Min' || d === 'Sab' ? 'text-slate-400 dark:text-slate-600' : 'text-[#1E293B] dark:text-slate-300'}`}>{d}</div>
             ))}
           </div>
 
-          <div className="grid grid-cols-7 gap-1.5">
+          <div className="grid grid-cols-7 gap-2">
             {Array.from({ length: firstDay }).map((_, i) => (
               <div key={`empty-${i}`} />
             ))}
@@ -364,19 +365,19 @@ function CalendarView({ periods, employees, canSeeAll }) {
                   onClick={() => !isWeekend(year, month, day) && handleDateClick(day)}
                   disabled={isWeekend(year, month, day)}
                   className={`
-                    relative rounded-lg p-2 min-h-[58px] flex flex-col items-center justify-between transition-all border
-                    ${status === 'weekend' ? 'cursor-default' : 'cursor-pointer hover:border-primary-400 dark:hover:border-sky-500'}
+                    relative rounded-xl p-2 min-h-[60px] flex flex-col items-center justify-between transition-all border-2
+                    ${status === 'weekend' ? 'cursor-default' : 'cursor-pointer hover:border-[#0052FF] dark:hover:border-[#00B4D8] hover:-translate-y-0.5'}
                     ${cfg.tile}
-                    ${isToday ? 'ring-1 ring-primary-600 dark:ring-sky-400 font-bold' : ''}
-                    ${isSelected ? 'ring-2 ring-primary-600 dark:ring-sky-400' : ''}
+                    ${isToday ? 'ring-2 ring-[#FF6B35] font-extrabold' : ''}
+                    ${isSelected ? 'ring-2 ring-[#0052FF] dark:ring-[#00B4D8]' : ''}
                   `}
                 >
-                  <span className={`font-mono text-xs tabular-num ${isToday ? 'font-bold' : 'font-medium'}`}>{day}</span>
+                  <span className={`font-mono text-xs tabular-num ${isToday ? 'font-extrabold' : 'font-bold'}`}>{day}</span>
                   {status !== 'weekend' && (
-                    <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
+                    <span className={`w-2 h-2 rounded-full border border-[#1E293B]/60 ${cfg.dot}`} />
                   )}
                   {d && d.jumlah_kegiatan > 0 ? (
-                    <span className="font-mono text-[10px] opacity-80 tabular-num">{d.jumlah_kegiatan} keg</span>
+                    <span className="font-mono text-[10px] font-bold tabular-num">{d.jumlah_kegiatan} keg</span>
                   ) : (
                     <span className="text-[10px] opacity-0">0</span>
                   )}
@@ -386,11 +387,11 @@ function CalendarView({ periods, employees, canSeeAll }) {
           </div>
 
           {/* Legend */}
-          <div className="flex flex-wrap gap-4 mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex flex-wrap gap-4 mt-5 pt-4 border-t-2 border-[#1E293B]/15 dark:border-slate-700">
             {Object.entries(STATUS_CONFIG).filter(([k]) => k !== 'weekend').map(([k, v]) => (
               <div key={k} className="flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${v.dot}`} />
-                <span className="text-xs text-slate-500 dark:text-slate-400">{v.label}</span>
+                <span className={`w-2.5 h-2.5 rounded-full border border-[#1E293B] ${v.dot}`} />
+                <span className="text-xs font-bold text-[#1E293B] dark:text-slate-300">{v.label}</span>
               </div>
             ))}
           </div>
@@ -400,30 +401,30 @@ function CalendarView({ periods, employees, canSeeAll }) {
         <div className="card p-5">
           {selectedDate ? (
             <>
-              <h3 className="font-semibold text-sm text-slate-900 dark:text-white mb-4">
+              <h3 className="font-bold text-sm text-[#1E293B] dark:text-white mb-4">
                 {new Date(selectedDate + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' })}
               </h3>
 
               {canSeeAll && dailyStatus ? (
                 <div className="space-y-3">
-                  <div className="flex justify-between text-xs pb-2 border-b border-slate-100 dark:border-slate-800">
-                    <span className="text-slate-500 dark:text-slate-400">Total Pegawai</span>
-                    <span className="font-mono font-semibold text-slate-800 dark:text-slate-100">{dailyStatus.employees?.length}</span>
+                  <div className="flex justify-between text-xs pb-2 border-b-2 border-[#1E293B]/15 dark:border-slate-700">
+                    <span className="text-slate-500 dark:text-slate-400 font-medium">Total Pegawai</span>
+                    <span className="font-mono font-bold text-[#1E293B] dark:text-slate-100">{dailyStatus.employees?.length}</span>
                   </div>
                   <div className="flex gap-2">
-                    <span className="badge-success tabular-num">{dailyStatus.employees?.filter(e => e.status !== 'belum').length} Sudah</span>
+                    <span className="badge-success tabular-num">{dailyStatus.employees?.filter(e => e.status !== 'belum').length} BERES!</span>
                     <span className="badge-danger tabular-num">{dailyStatus.employees?.filter(e => e.status === 'belum').length} Belum</span>
                   </div>
                   <div className="space-y-1 max-h-72 overflow-y-auto pt-1">
                     {dailyStatus.employees?.map(emp => (
-                      <div key={emp.id} className="flex items-center gap-2.5 py-2 border-b border-slate-100 dark:border-slate-800/70 last:border-0">
-                        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${emp.status === 'belum' ? 'bg-rose-500' : emp.status === 'lengkap' ? 'bg-emerald-500' : 'bg-amber-400'}`} />
+                      <div key={emp.id} className="flex items-center gap-2.5 py-2 border-b border-[#1E293B]/10 dark:border-slate-800/70 last:border-0">
+                        <span className={`w-2.5 h-2.5 rounded-full border border-[#1E293B] flex-shrink-0 ${emp.status === 'belum' ? 'bg-rose-500' : emp.status === 'lengkap' ? 'bg-[#00B4D8]' : 'bg-[#FF6B35]'}`} />
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate">{emp.nama}</p>
+                          <p className="text-xs font-bold text-[#1E293B] dark:text-slate-200 truncate">{emp.nama}</p>
                         </div>
                         <div className="text-right tabular-num">
                           <p className="text-xs text-slate-500 dark:text-slate-400">{emp.jumlah_kegiatan} keg</p>
-                          {emp.avg_capaian > 0 && <p className="font-mono text-[11px] text-primary-600 dark:text-sky-400 font-semibold">{emp.avg_capaian}%</p>}
+                          {emp.avg_capaian > 0 && <p className="font-mono text-[11px] text-[#0052FF] dark:text-[#00B4D8] font-bold">{emp.avg_capaian}%</p>}
                         </div>
                       </div>
                     ))}
@@ -435,11 +436,11 @@ function CalendarView({ periods, employees, canSeeAll }) {
                     <div className="space-y-3">
                       <div className="flex justify-between text-sm">
                         <span className="text-slate-500 dark:text-slate-400">Jumlah Kegiatan</span>
-                        <span className="font-mono font-semibold text-slate-900 dark:text-white">{calendarData[selectedDate].jumlah_kegiatan}</span>
+                        <span className="font-mono font-bold text-[#1E293B] dark:text-white">{calendarData[selectedDate].jumlah_kegiatan}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-slate-500 dark:text-slate-400">Rata-rata Capaian</span>
-                        <span className="font-mono font-semibold text-primary-600 dark:text-sky-400">{Math.round(calendarData[selectedDate].avg_capaian || 0)}%</span>
+                        <span className="font-mono font-bold text-[#0052FF] dark:text-[#00B4D8]">{Math.round(calendarData[selectedDate].avg_capaian || 0)}%</span>
                       </div>
                       <div className="flex justify-between text-sm items-center">
                         <span className="text-slate-500 dark:text-slate-400">Bukti Dukung</span>
@@ -459,8 +460,8 @@ function CalendarView({ periods, employees, canSeeAll }) {
             </>
           ) : (
             <div className="text-center py-12">
-              <CalendarDays className="w-8 h-8 text-slate-300 dark:text-slate-700 mx-auto mb-2.5" strokeWidth={1.5} />
-              <p className="text-slate-400 dark:text-slate-500 text-xs">Pilih tanggal di kalender untuk melihat detail</p>
+              <KjCalendarIcon className="w-9 h-9 text-slate-400 dark:text-slate-600 mx-auto mb-2.5" />
+              <p className="text-slate-500 dark:text-slate-400 text-xs font-medium">Pilih tanggal di kalender untuk melihat detail</p>
             </div>
           )}
         </div>
@@ -596,21 +597,21 @@ function ActivityListView({ periods, employees, canEdit, isAnggota }) {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Hasil Kerja Pegawai — ${period?.nama || ''}</title>
+  <title>KASI JADI — Hasil Kerja Pegawai (${period?.nama || ''})</title>
   <style>
-    body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; color: #0f172a; }
-    h1 { font-size: 16px; text-align: center; margin-bottom: 4px; color: #0f3d6e; }
-    h2 { font-size: 13px; text-align: center; color: #64748b; margin-bottom: 20px; font-weight: normal; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
-    th { background: #0f3d6e; color: white; padding: 6px 8px; text-align: left; font-size: 11px; }
-    td { padding: 6px 8px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
-    tr:nth-child(even) td { background: #f8fafc; }
-    .emp-header { background: #f0f5fa; padding: 8px 12px; border-left: 4px solid #0f3d6e; margin: 16px 0 8px; }
-    .score-row { background: #ecfdf5; font-weight: bold; }
+    body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; color: #1E293B; }
+    h1 { font-size: 16px; text-align: center; margin-bottom: 4px; color: #0052FF; font-weight: 800; }
+    h2 { font-size: 13px; text-align: center; color: #475569; margin-bottom: 20px; font-weight: normal; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 16px; border: 2px solid #1E293B; }
+    th { background: #0052FF; color: white; padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 2px solid #1E293B; }
+    td { padding: 6px 8px; border-bottom: 1px solid #cbd5e1; vertical-align: top; }
+    tr:nth-child(even) td { background: #F4F6F9; }
+    .emp-header { background: #F4F6F9; padding: 8px 12px; border: 2px solid #1E293B; border-left: 6px solid #00B4D8; margin: 16px 0 8px; }
+    .score-row { background: #ecfeff; font-weight: bold; }
   </style>
 </head>
 <body>
-  <h1>LAPORAN HASIL KERJA HARIAN PEGAWAI (CKP)</h1>
+  <h1>KASI JADI — LAPORAN HASIL KERJA HARIAN PEGAWAI (CKP)</h1>
   <h2>Periode: ${period?.nama || '-'}</h2>
   ${data.map(d => {
     if (!d.employee) return '';
@@ -705,8 +706,8 @@ function ActivityListView({ periods, employees, canEdit, isAnggota }) {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <button onClick={handleDownloadExcel} className="btn-secondary btn-sm" title="Download Hasil Kerja Periode (.xlsx)">
-            <Download className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+          <button onClick={handleDownloadExcel} className="btn-teal btn-sm" title="Download Hasil Kerja Periode (.xlsx)">
+            <Download className="w-3.5 h-3.5" />
             Excel Periode
           </button>
           <button onClick={handlePrintPDF} className="btn-secondary btn-sm" title="Cetak / Simpan PDF Hasil Kerja Periode">
@@ -714,9 +715,9 @@ function ActivityListView({ periods, employees, canEdit, isAnggota }) {
             Cetak / PDF
           </button>
           {canEdit && (
-            <button onClick={() => { setEditData(null); setModalOpen(true); }} className="btn-primary btn-sm">
+            <button onClick={() => { setEditData(null); setModalOpen(true); }} className="btn-orange btn-sm">
               <Plus className="w-3.5 h-3.5" />
-              Tambah Kegiatan
+              GAS ISI! Kegiatan
             </button>
           )}
         </div>
@@ -724,12 +725,12 @@ function ActivityListView({ periods, employees, canEdit, isAnggota }) {
 
       {/* Table */}
       <div className="card overflow-hidden">
-        <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-          <p className="text-xs font-medium text-slate-500 dark:text-slate-400 tabular-num">{activities.length} kegiatan tercatat</p>
+        <div className="px-5 py-3.5 border-b-2 border-[#1E293B] dark:border-slate-600 bg-[#F4F6F9]/70 dark:bg-slate-800/40 flex items-center justify-between">
+          <p className="text-xs font-bold text-[#1E293B] dark:text-slate-200 tabular-num">{activities.length} kegiatan tercatat</p>
         </div>
         {loading ? (
           <div className="flex justify-center py-12">
-            <div className="w-6 h-6 border-2 border-primary-600 dark:border-sky-400 border-t-transparent rounded-full animate-spin" />
+            <div className="w-7 h-7 border-2 border-[#0052FF] dark:border-[#00B4D8] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <div className="table-container">
@@ -756,34 +757,34 @@ function ActivityListView({ periods, employees, canEdit, isAnggota }) {
                 )}
                 {activities.map(act => (
                   <tr key={act.id}>
-                    <td className="whitespace-nowrap font-mono text-xs text-slate-500 dark:text-slate-400 tabular-num">
+                    <td className="whitespace-nowrap font-mono text-xs text-slate-600 dark:text-slate-300 tabular-num">
                       {new Date(act.tanggal + 'T00:00:00').toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                     </td>
-                    {!isAnggota && <td className="font-medium text-slate-900 dark:text-slate-100">{act.pegawai_nama}</td>}
+                    {!isAnggota && <td className="font-bold text-[#1E293B] dark:text-slate-100">{act.pegawai_nama}</td>}
                     <td>
-                      <p className="font-medium text-slate-900 dark:text-slate-100 max-w-64 truncate">{act.nama_kegiatan}</p>
+                      <p className="font-bold text-[#1E293B] dark:text-slate-100 max-w-64 truncate">{act.nama_kegiatan}</p>
                       {(act.jumlah_bukti > 0 || act.jumlah_link > 0) && (
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 inline-flex items-center gap-1 mr-2">
+                        <p className="text-[11px] font-bold text-[#0052FF] dark:text-[#00B4D8] mt-0.5 inline-flex items-center gap-1 mr-2">
                           <Paperclip className="w-3 h-3" />
                           <span className="tabular-num">{(act.jumlah_bukti || 0) + (act.jumlah_link || 0)} bukti</span>
                         </p>
                       )}
                       {act.bukti_keterangan && (
-                        <p className="text-[11px] text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200/70 dark:border-emerald-800/60 rounded px-1.5 py-0.5 mt-1 inline-flex items-center gap-1 max-w-xs truncate" title={act.bukti_keterangan}>
+                        <p className="text-[11px] font-bold text-[#0077B6] dark:text-[#00B4D8] bg-[#00B4D8]/15 border border-[#1E293B]/60 dark:border-slate-500 rounded px-1.5 py-0.5 mt-1 inline-flex items-center gap-1 max-w-xs truncate" title={act.bukti_keterangan}>
                           <MapPin className="w-3 h-3 flex-shrink-0" />
                           <span className="truncate font-mono text-[10px]">{act.bukti_keterangan}</span>
                         </p>
                       )}
                     </td>
                     <td className="tabular-num">{act.target ? `${act.target} ${act.satuan || ''}` : '—'}</td>
-                    <td className="font-mono tabular-num">{act.realisasi ?? '—'}</td>
+                    <td className="font-mono font-semibold tabular-num">{act.realisasi ?? '—'}</td>
                     <td>
-                      <span className={`font-mono font-semibold tabular-num ${
+                      <span className={`font-mono font-extrabold tabular-num ${
                         (act.persentase_capaian || 0) >= 100
-                          ? 'text-emerald-600 dark:text-emerald-400'
+                          ? 'text-[#00B4D8]'
                           : (act.persentase_capaian || 0) >= 70
-                            ? 'text-primary-600 dark:text-sky-400'
-                            : 'text-amber-600 dark:text-amber-400'
+                            ? 'text-[#0052FF] dark:text-[#60A5FA]'
+                            : 'text-[#FF6B35]'
                       }`}>
                         {act.persentase_capaian || 0}%
                       </span>
@@ -794,7 +795,7 @@ function ActivityListView({ periods, employees, canEdit, isAnggota }) {
                       </span>
                     </td>
                     <td>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1.5">
                         <button onClick={() => setDetailData(act)} className="btn-icon btn-secondary btn-sm" title="Detail">
                           <Eye className="w-3.5 h-3.5" />
                         </button>
@@ -819,7 +820,7 @@ function ActivityListView({ periods, employees, canEdit, isAnggota }) {
       </div>
 
       {/* Add/Edit Modal */}
-      <Modal open={modalOpen} onClose={() => { setModalOpen(false); setEditData(null); }} title={editData ? 'Edit Kegiatan' : 'Tambah Kegiatan Harian'} size="lg">
+      <Modal open={modalOpen} onClose={() => { setModalOpen(false); setEditData(null); }} title={editData ? 'Edit Kegiatan' : 'GAS ISI! Kegiatan Harian'} size="lg">
         <KegiatanForm
           periods={periods}
           employees={employees}
@@ -836,15 +837,15 @@ function ActivityListView({ periods, employees, canEdit, isAnggota }) {
             <div className="space-y-2">
               <div className="flex justify-between gap-4">
                 <span className="text-slate-500 dark:text-slate-400">Pegawai</span>
-                <span className="font-medium text-slate-900 dark:text-white text-right">{detailData.pegawai_nama}</span>
+                <span className="font-bold text-[#1E293B] dark:text-white text-right">{detailData.pegawai_nama}</span>
               </div>
               <div className="flex justify-between gap-4">
                 <span className="text-slate-500 dark:text-slate-400">Tanggal</span>
-                <span className="font-mono font-medium text-slate-900 dark:text-white">{detailData.tanggal}</span>
+                <span className="font-mono font-bold text-[#1E293B] dark:text-white">{detailData.tanggal}</span>
               </div>
               <div>
                 <span className="text-slate-500 dark:text-slate-400 text-xs">Kegiatan</span>
-                <p className="font-semibold text-slate-900 dark:text-white mt-0.5">{detailData.nama_kegiatan}</p>
+                <p className="font-extrabold text-[#1E293B] dark:text-white mt-0.5">{detailData.nama_kegiatan}</p>
               </div>
               {detailData.deskripsi && (
                 <div>
@@ -854,33 +855,33 @@ function ActivityListView({ periods, employees, canEdit, isAnggota }) {
               )}
             </div>
 
-            <div className="grid grid-cols-3 gap-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700 p-3.5 rounded-xl">
+            <div className="grid grid-cols-3 gap-3 bg-[#F4F6F9] dark:bg-slate-800/70 border-2 border-[#1E293B] dark:border-slate-500 p-3.5 rounded-xl">
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-[11px]">Target</p>
-                <p className="font-mono font-semibold text-slate-900 dark:text-white mt-0.5">{detailData.target || '—'} {detailData.satuan}</p>
+                <p className="text-slate-500 dark:text-slate-400 text-[11px] font-bold">Target</p>
+                <p className="font-mono font-bold text-[#1E293B] dark:text-white mt-0.5">{detailData.target || '—'} {detailData.satuan}</p>
               </div>
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-[11px]">Realisasi</p>
-                <p className="font-mono font-semibold text-slate-900 dark:text-white mt-0.5">{detailData.realisasi || '—'}</p>
+                <p className="text-slate-500 dark:text-slate-400 text-[11px] font-bold">Realisasi</p>
+                <p className="font-mono font-bold text-[#1E293B] dark:text-white mt-0.5">{detailData.realisasi || '—'}</p>
               </div>
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-[11px]">Capaian</p>
-                <p className="font-mono font-bold text-primary-600 dark:text-sky-400 mt-0.5">{detailData.persentase_capaian || 0}%</p>
+                <p className="text-slate-500 dark:text-slate-400 text-[11px] font-bold">Capaian</p>
+                <p className="font-mono font-extrabold text-[#0052FF] dark:text-[#00B4D8] mt-0.5">{detailData.persentase_capaian || 0}%</p>
               </div>
             </div>
 
             {detailData.bukti_keterangan && (
-              <div className="p-3 bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/70 dark:border-emerald-800/60 rounded-xl text-xs text-emerald-800 dark:text-emerald-200">
-                <p className="font-semibold inline-flex items-center gap-1.5 mb-1">
-                  <MapPin className="w-3.5 h-3.5" />
-                  Geotag & Timestamp Bukti Foto
+              <div className="p-3 bg-[#00B4D8]/15 dark:bg-[#00B4D8]/20 border-2 border-[#1E293B] dark:border-slate-500 rounded-xl text-xs text-[#1E293B] dark:text-slate-100">
+                <p className="font-bold inline-flex items-center gap-1.5 mb-1">
+                  <MapPin className="w-3.5 h-3.5 text-[#0052FF] dark:text-[#00B4D8]" />
+                  Geotag &amp; Timestamp Bukti Foto
                 </p>
                 <p className="font-mono text-[11px]">{detailData.bukti_keterangan}</p>
               </div>
             )}
 
-            <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
-              <span className="text-slate-500 dark:text-slate-400">Status</span>
+            <div className="flex items-center justify-between pt-2 border-t-2 border-[#1E293B]/15 dark:border-slate-700">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">Status</span>
               <span className={STATUS_LABELS[detailData.status_kegiatan]?.class || 'badge-gray'}>
                 {STATUS_LABELS[detailData.status_kegiatan]?.label}
               </span>
@@ -916,8 +917,8 @@ export default function Kegiatan() {
   }, [isAnggota]);
 
   const TABS = [
-    { id: 'daftar', label: 'Daftar Kegiatan', icon: List },
-    { id: 'kalender', label: 'Kalender', icon: CalendarDays },
+    { id: 'daftar', label: 'Daftar Kegiatan', icon: KjDailyLogIcon },
+    { id: 'kalender', label: 'Kalender', icon: KjCalendarIcon },
   ];
 
   return (

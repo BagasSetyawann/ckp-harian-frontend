@@ -15,81 +15,87 @@
   }
 
   body {
-    @apply font-sans bg-[#F8FAFC] text-slate-900 dark:bg-[#090E1A] dark:text-slate-100 antialiased transition-colors duration-200;
+    @apply font-sans bg-[#F4F6F9] text-[#1E293B] dark:bg-[#0B1120] dark:text-slate-100 antialiased transition-colors duration-200;
     font-size: 14px;
     line-height: 1.5;
   }
 
   h1, h2, h3, h4 {
-    letter-spacing: -0.018em;
+    letter-spacing: -0.02em;
   }
 
-  h1 { @apply text-2xl font-bold text-slate-900 dark:text-white; }
-  h2 { @apply text-xl font-semibold text-slate-900 dark:text-white; }
-  h3 { @apply text-base font-semibold text-slate-800 dark:text-slate-100; }
+  h1 { @apply text-2xl font-extrabold text-[#1E293B] dark:text-white; }
+  h2 { @apply text-xl font-extrabold text-[#1E293B] dark:text-white; }
+  h3 { @apply text-base font-bold text-[#1E293B] dark:text-slate-100; }
 }
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-1 dark:focus:ring-offset-slate-900 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-  .btn-primary {
-    @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500/40 dark:bg-sky-500 dark:text-slate-950 dark:font-semibold dark:hover:bg-sky-400 dark:focus:ring-sky-400/40 shadow-card;
-  }
-  .btn-secondary {
-    @apply btn bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 focus:ring-slate-300/60 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800 dark:hover:border-slate-600;
-  }
-  .btn-ghost {
-    @apply btn bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white;
-  }
-  .btn-danger {
-    @apply btn bg-rose-600 text-white hover:bg-rose-700 focus:ring-rose-500/40 dark:bg-rose-500 dark:hover:bg-rose-600 shadow-card;
-  }
-  .btn-success {
-    @apply btn bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-500/40 dark:bg-emerald-500 dark:text-slate-950 dark:font-semibold dark:hover:bg-emerald-400 shadow-card;
-  }
-  .btn-sm {
-    @apply px-3 py-1.5 text-xs;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border-2 border-[#1E293B] dark:border-slate-500 font-bold tracking-wide text-sm shadow-[2px_3px_0px_#1E293B] dark:shadow-[2px_3px_0px_#020617] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-none transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#0052FF]/40 disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0;
   }
   .btn-icon {
-    @apply btn p-2;
+    @apply btn p-2 rounded-xl bg-white dark:bg-slate-800 text-[#1E293B] dark:text-slate-100 shadow-[2px_2px_0px_#1E293B] dark:shadow-[2px_2px_0px_#020617];
+  }
+  .btn-primary {
+    @apply btn bg-[#0052FF] hover:bg-[#0042d4] text-white;
+  }
+  .btn-orange {
+    @apply btn bg-[#FF6B35] hover:bg-[#e85d2a] text-white;
+  }
+  .btn-teal, .btn-success {
+    @apply btn bg-[#00B4D8] hover:bg-[#009ec0] text-white;
+  }
+  .btn-secondary {
+    @apply btn bg-white hover:bg-[#F4F6F9] text-[#1E293B] dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700;
+  }
+  .btn-danger {
+    @apply btn bg-rose-600 hover:bg-rose-700 text-white;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl font-semibold text-sm text-[#1E293B] dark:text-slate-200 hover:bg-slate-200/70 dark:hover:bg-slate-800 transition-colors;
+  }
+  .btn-sm {
+    @apply px-3.5 py-1.5 text-xs;
+  }
+  .btn-icon.btn-sm {
+    @apply p-1.5;
   }
 
   .card {
-    @apply bg-white dark:bg-slate-900 rounded-xl shadow-card border border-slate-200/80 dark:border-slate-800;
+    @apply bg-white dark:bg-[#1E293B] rounded-xl border-2 border-[#1E293B] dark:border-slate-500 shadow-[3px_4px_0px_#1E293B] dark:shadow-[3px_4px_0px_#020617];
   }
   .card-hover {
-    @apply card hover:shadow-card-hover hover:border-slate-300/80 dark:hover:border-slate-700 transition-all duration-150;
+    @apply card hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_6px_0px_#1E293B] dark:hover:shadow-[5px_6px_0px_#020617] transition-all duration-150;
   }
 
   .input {
-    @apply w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800/80 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 dark:focus:ring-sky-400/20 dark:focus:border-sky-400 transition-colors;
+    @apply w-full px-3.5 py-2 border-2 border-[#1E293B] dark:border-slate-500 rounded-xl text-sm font-medium text-[#1E293B] dark:text-slate-100 bg-white dark:bg-slate-900 placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-[2px_2px_0px_#1E293B] dark:shadow-[2px_2px_0px_#020617] focus:outline-none focus:border-[#0052FF] dark:focus:border-[#00B4D8] transition-colors;
   }
   .input-error {
-    @apply input border-rose-400 focus:ring-rose-400/25 focus:border-rose-500;
+    @apply input border-rose-500 focus:border-rose-600;
   }
 
   .label {
-    @apply block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5;
+    @apply block text-xs font-bold text-[#1E293B] dark:text-slate-200 mb-1.5;
   }
 
   .badge {
-    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-medium border whitespace-nowrap;
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border-[1.5px] border-[#1E293B] dark:border-slate-400 whitespace-nowrap;
   }
   .badge-success {
-    @apply badge bg-emerald-50 text-emerald-700 border-emerald-200/70 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/60;
+    @apply badge bg-[#00B4D8]/15 text-[#007a94] dark:bg-[#00B4D8]/25 dark:text-[#67e8f9];
   }
   .badge-warning {
-    @apply badge bg-amber-50 text-amber-700 border-amber-200/70 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/60;
+    @apply badge bg-[#FF6B35]/15 text-[#c2410c] dark:bg-[#FF6B35]/25 dark:text-[#fdba74];
   }
   .badge-danger {
-    @apply badge bg-rose-50 text-rose-700 border-rose-200/70 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/60;
+    @apply badge bg-rose-100 text-rose-700 dark:bg-rose-950/80 dark:text-rose-300;
   }
   .badge-info {
-    @apply badge bg-primary-50 text-primary-700 border-primary-200/70 dark:bg-sky-950/60 dark:text-sky-300 dark:border-sky-800/60;
+    @apply badge bg-[#0052FF]/10 text-[#0052FF] dark:bg-[#0052FF]/30 dark:text-[#93C5FD];
   }
   .badge-gray {
-    @apply badge bg-slate-100 text-slate-600 border-slate-200/80 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700;
+    @apply badge bg-[#F4F6F9] text-[#1E293B] dark:bg-slate-800 dark:text-slate-200;
   }
 
   .table-container {
@@ -99,30 +105,30 @@
     @apply w-full text-sm;
   }
   .table thead {
-    @apply bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800;
+    @apply bg-[#F4F6F9] dark:bg-slate-900/70 border-b-2 border-[#1E293B] dark:border-slate-500;
   }
   .table th {
-    @apply px-4 py-3 text-left text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider;
+    @apply px-4 py-3 text-left text-[11px] font-extrabold text-[#1E293B] dark:text-slate-200 uppercase tracking-wider;
   }
   .table td {
-    @apply px-4 py-3 text-slate-700 dark:text-slate-300 border-b border-slate-100 dark:border-slate-800/80;
+    @apply px-4 py-3 text-[#1E293B] dark:text-slate-200 border-b border-slate-200 dark:border-slate-700/80;
   }
   .table tbody tr:last-child td {
     @apply border-b-0;
   }
   .table tbody tr:hover {
-    @apply bg-slate-50/70 dark:bg-slate-800/40;
+    @apply bg-[#F4F6F9]/80 dark:bg-slate-800/50;
   }
 
   .stat-card {
-    @apply card p-4 sm:p-5 flex items-start gap-3.5;
+    @apply card p-4 flex items-start gap-3.5;
   }
   .stat-icon {
-    @apply w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 border;
+    @apply w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 border-2 border-[#1E293B] dark:border-slate-500;
   }
 
   .progress-bar {
-    @apply h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden;
+    @apply h-2.5 rounded-full bg-[#F4F6F9] dark:bg-slate-900 border-[1.5px] border-[#1E293B] dark:border-slate-500 overflow-hidden;
   }
   .progress-fill {
     @apply h-full rounded-full transition-all duration-500;
@@ -132,17 +138,17 @@
     @apply flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6;
   }
   .page-title {
-    @apply text-xl font-bold text-slate-900 dark:text-white tracking-tight;
+    @apply text-xl font-extrabold text-[#1E293B] dark:text-white tracking-tight;
   }
   .page-subtitle {
-    @apply text-sm text-slate-500 dark:text-slate-400 mt-0.5;
+    @apply text-sm font-medium text-slate-500 dark:text-slate-300 mt-0.5;
   }
 
   .sidebar-link {
-    @apply flex items-center gap-3 px-3 py-2 rounded-lg text-[13.5px] font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-slate-900 dark:hover:text-slate-100 transition-colors duration-150;
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-bold text-[#1E293B]/80 dark:text-slate-300 hover:bg-[#F4F6F9] dark:hover:bg-slate-800/80 hover:text-[#1E293B] dark:hover:text-white border-2 border-transparent transition-all duration-150;
   }
   .sidebar-link.active {
-    @apply bg-primary-600 text-white hover:bg-primary-700 hover:text-white dark:bg-slate-800 dark:text-white dark:border dark:border-slate-700 shadow-card;
+    @apply bg-[#0052FF] text-white border-2 border-[#1E293B] dark:border-slate-300 shadow-[2px_3px_0px_#1E293B] dark:shadow-[2px_3px_0px_#020617] hover:bg-[#0052FF] hover:text-white;
   }
 
   .form-group {
@@ -150,7 +156,7 @@
   }
 
   .section-title {
-    @apply text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3;
+    @apply text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3;
   }
 
   .tabular-num {
@@ -158,11 +164,29 @@
   }
 }
 
+/* Geometric Tenun Ketupat Pattern */
+.kj-tenun-h {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='16' viewBox='0 0 24 16'%3E%3Cpath d='M12 1L23 8L12 15L1 8Z' fill='none' stroke='%231E293B' stroke-width='1.2'/%3E%3Cpath d='M12 4.5L17.5 8L12 11.5L6.5 8Z' fill='none' stroke='%231E293B' stroke-width='1'/%3E%3Ccircle cx='12' cy='8' r='1' fill='%231E293B'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: 24px 16px;
+}
+html.dark .kj-tenun-h {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='16' viewBox='0 0 24 16'%3E%3Cpath d='M12 1L23 8L12 15L1 8Z' fill='none' stroke='%2394A3B8' stroke-width='1.2'/%3E%3Cpath d='M12 4.5L17.5 8L12 11.5L6.5 8Z' fill='none' stroke='%2394A3B8' stroke-width='1'/%3E%3Ccircle cx='12' cy='8' r='1' fill='%2394A3B8'/%3E%3C/svg%3E");
+}
+.kj-tenun-v {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='28' viewBox='0 0 20 28'%3E%3Cpath d='M10 1.5L18.5 14L10 26.5L1.5 14Z' fill='none' stroke='%231E293B' stroke-width='1.2'/%3E%3Cpath d='M10 7L14.5 14L10 21L5.5 14Z' fill='none' stroke='%231E293B' stroke-width='1'/%3E%3Ccircle cx='10' cy='14' r='1.1' fill='%231E293B'/%3E%3C/svg%3E");
+  background-repeat: repeat-y;
+  background-size: 20px 28px;
+}
+html.dark .kj-tenun-v {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='28' viewBox='0 0 20 28'%3E%3Cpath d='M10 1.5L18.5 14L10 26.5L1.5 14Z' fill='none' stroke='%2394A3B8' stroke-width='1.2'/%3E%3Cpath d='M10 7L14.5 14L10 21L5.5 14Z' fill='none' stroke='%2394A3B8' stroke-width='1'/%3E%3Ccircle cx='10' cy='14' r='1.1' fill='%2394A3B8'/%3E%3C/svg%3E");
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #1E293B; }
 html.dark ::-webkit-scrollbar-thumb { background: #334155; }
 html.dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
 

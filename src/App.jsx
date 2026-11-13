@@ -14,10 +14,10 @@ import Changelog from './pages/Changelog';
 function ProtectedRoute({ children, roles }) {
   const { user, loading } = useAuth();
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] dark:bg-[#090E1A]">
+    <div className="min-h-screen flex items-center justify-center bg-[#F4F6F9] dark:bg-[#0B1120]">
       <div className="flex flex-col items-center gap-3">
-        <div className="w-7 h-7 border-2 border-primary-600 dark:border-sky-400 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Memuat sistem...</p>
+        <div className="w-8 h-8 border-2 border-[#0052FF] dark:border-[#00B4D8] border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-xs font-bold text-[#1E293B] dark:text-slate-300">Memuat KASI JADI...</p>
       </div>
     </div>
   );
