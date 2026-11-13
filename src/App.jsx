@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Layout from './components/Layout/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Kegiatan from './pages/Kegiatan';
-import RencanaKinerja from './pages/RencanaKinerja';
 import BuktiDukung from './pages/BuktiDukung';
 import NilaiCKP from './pages/NilaiCKP';
 import Pengaturan from './pages/Pengaturan';
@@ -14,10 +14,10 @@ import Changelog from './pages/Changelog';
 function ProtectedRoute({ children, roles }) {
   const { user, loading } = useAuth();
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
+    <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] dark:bg-[#090E1A]">
       <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-3 border-primary-600 border-t-transparent rounded-full animate-spin" style={{borderWidth:'3px'}}></div>
-        <p className="text-sm text-slate-500">Memuat...</p>
+        <div className="w-7 h-7 border-2 border-primary-600 dark:border-sky-400 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Memuat sistem...</p>
       </div>
     </div>
   );
@@ -43,7 +43,7 @@ function AppRoutes() {
         <Route path="pengaturan" element={<ProtectedRoute roles={['KPA']}><Pengaturan /></ProtectedRoute>} />
         <Route path="audit-log" element={<ProtectedRoute roles={['KPA']}><AuditLog /></ProtectedRoute>} />
 
-        {/* Redirects from old routes to new merged pages */}
+        {/* Redirects from old routes */}
         <Route path="cek-harian" element={<Navigate to="/kegiatan" replace />} />
         <Route path="monitoring-pk" element={<Navigate to="/kegiatan" replace />} />
         <Route path="penilaian-perilaku" element={<Navigate to="/nilai-ckp" replace />} />
@@ -57,10 +57,12 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }

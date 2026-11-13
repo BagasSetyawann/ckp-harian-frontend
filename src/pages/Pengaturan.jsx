@@ -3,8 +3,6 @@ import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { Save, Plus, AlertCircle, Download, FileSpreadsheet, Printer } from 'lucide-react';
 
-// ─── Export Tab (from OutputHasilKerja) ───
-
 function ExportView() {
   const { isAnggota } = useAuth();
   const [periods, setPeriods] = useState([]);
@@ -20,7 +18,7 @@ function ExportView() {
       if (active) setFilterPeriod(String(active.id));
     });
     if (!isAnggota) api.get('/users/employees').then(r => setEmployees(r.data.filter(e => e.role === 'Anggota')));
-  }, []);
+  }, [isAnggota]);
 
   const handleExcelExport = async () => {
     if (!filterPeriod) return alert('Pilih periode terlebih dahulu');
@@ -38,7 +36,7 @@ function ExportView() {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
-    } catch (err) {
+    } catch {
       alert('Gagal mengekspor Excel');
     } finally { setLoading(false); }
   };
@@ -57,7 +55,7 @@ function ExportView() {
       printWindow.document.write(html);
       printWindow.document.close();
       printWindow.print();
-    } catch (err) {
+    } catch {
       alert('Gagal membuat laporan');
     } finally { setLoading(false); }
   };
@@ -69,16 +67,16 @@ function ExportView() {
   <meta charset="UTF-8">
   <title>Rekap CKP — ${period?.nama}</title>
   <style>
-    body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; }
-    h1 { font-size: 16px; text-align: center; margin-bottom: 4px; }
-    h2 { font-size: 13px; text-align: center; color: #555; margin-bottom: 20px; }
-    h3 { font-size: 13px; margin: 16px 0 8px; color: #003580; }
+    body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; color: #0f172a; }
+    h1 { font-size: 16px; text-align: center; margin-bottom: 4px; color: #0f3d6e; }
+    h2 { font-size: 13px; text-align: center; color: #64748b; margin-bottom: 20px; font-weight: normal; }
+    h3 { font-size: 13px; margin: 16px 0 8px; color: #0f3d6e; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
-    th { background: #003580; color: white; padding: 6px 8px; text-align: left; font-size: 11px; }
-    td { padding: 5px 8px; border-bottom: 1px solid #eee; }
-    tr:nth-child(even) td { background: #f9f9f9; }
-    .emp-header { background: #e8f0fe; padding: 8px; border-left: 4px solid #003580; margin: 16px 0 8px; }
-    .score-row { background: #e8f9e8; font-weight: bold; }
+    th { background: #0f3d6e; color: white; padding: 6px 8px; text-align: left; font-size: 11px; }
+    td { padding: 5px 8px; border-bottom: 1px solid #e2e8f0; }
+    tr:nth-child(even) td { background: #f8fafc; }
+    .emp-header { background: #f0f5fa; padding: 8px 12px; border-left: 4px solid #0f3d6e; margin: 16px 0 8px; }
+    .score-row { background: #ecfdf5; font-weight: bold; }
     @media print { .no-print { display: none; } }
   </style>
 </head>
@@ -110,7 +108,7 @@ ${d.ckp ? `
 </div>` : ''}
 `;
 }).join('<hr style="margin: 20px 0;">')}
-<div style="margin-top:30px; text-align:right; color:#888; font-size:11px;">
+<div style="margin-top:30px; text-align:right; color:#64748b; font-size:11px;">
   Dicetak pada: ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
 </div>
 </body>
@@ -119,7 +117,6 @@ ${d.ckp ? `
 
   return (
     <div className="space-y-5">
-      {/* Filter */}
       <div className="card p-4 flex flex-wrap gap-3">
         <div>
           <label className="label">Periode *</label>
@@ -139,35 +136,38 @@ ${d.ckp ? `
         )}
       </div>
 
-      {/* Export options */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <div className="card p-6 text-center space-y-4">
-          <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto">
-            <FileSpreadsheet className="w-8 h-8 text-green-600" />
+        <div className="card p-6 flex flex-col justify-between gap-4">
+          <div className="flex items-start gap-3.5">
+            <div className="w-11 h-11 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/70 dark:border-emerald-800/60 rounded-xl flex items-center justify-center flex-shrink-0">
+              <FileSpreadsheet className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-sm text-slate-900 dark:text-white">Export Excel (.xlsx)</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                Ekspor rekap kegiatan harian, capaian PK, dan nilai akhir CKP dalam format spreadsheet.
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-semibold text-slate-800">Export Excel</h3>
-            <p className="text-sm text-slate-500 mt-1">
-              Ekspor rekap kegiatan, PK, dan nilai CKP dalam format Excel (.xlsx).
-            </p>
-          </div>
-          <button onClick={handleExcelExport} disabled={loading} className="btn-success w-full justify-center">
+          <button onClick={handleExcelExport} disabled={loading} className="btn-success w-full">
             <Download className="w-4 h-4" />
             {loading ? 'Memproses...' : 'Download Excel'}
           </button>
         </div>
 
-        <div className="card p-6 text-center space-y-4">
-          <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto">
-            <Printer className="w-8 h-8 text-red-600" />
+        <div className="card p-6 flex flex-col justify-between gap-4">
+          <div className="flex items-start gap-3.5">
+            <div className="w-11 h-11 bg-primary-50 dark:bg-sky-950/60 border border-primary-200/70 dark:border-sky-800/60 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Printer className="w-5 h-5 text-primary-600 dark:text-sky-400" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-sm text-slate-900 dark:text-white">Cetak Laporan (PDF)</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                Buka tampilan cetak resmi siap simpan sebagai dokumen PDF atau cetak langsung.
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-semibold text-slate-800">Cetak Laporan (PDF)</h3>
-            <p className="text-sm text-slate-500 mt-1">
-              Buka jendela cetak browser untuk menyimpan sebagai PDF atau mencetak langsung.
-            </p>
-          </div>
-          <button onClick={handlePrintPDF} disabled={loading} className="btn-danger w-full justify-center">
+          <button onClick={handlePrintPDF} disabled={loading} className="btn-primary w-full">
             <Printer className="w-4 h-4" />
             {loading ? 'Memproses...' : 'Cetak / Simpan PDF'}
           </button>
@@ -177,19 +177,14 @@ ${d.ckp ? `
   );
 }
 
-// ─── Main Page ───
-
 export default function Pengaturan() {
-  const { isKPA } = useAuth();
   const [periods, setPeriods] = useState([]);
-  const [components, setComponents] = useState([]);
   const [settings, setSettings] = useState({});
   const [activePeriodWeights, setActivePeriodWeights] = useState([]);
   const [activePeriod, setActivePeriod] = useState(null);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('periode');
 
-  // Period form
   const [periodForm, setPeriodForm] = useState({ nama: '', tahun: 2026, bulan: '', tanggal_mulai: '', tanggal_akhir: '', batas_pengisian: '', status: 'draft' });
 
   useEffect(() => {
@@ -197,13 +192,12 @@ export default function Pengaturan() {
   }, []);
 
   const fetchAll = async () => {
-    const [periodsRes, compRes, settingsRes] = await Promise.all([
+    const [periodsRes, , settingsRes] = await Promise.all([
       api.get('/periods'),
       api.get('/ckp-config/components'),
       api.get('/ckp-config/settings'),
     ]);
     setPeriods(periodsRes.data);
-    setComponents(compRes.data);
     setSettings(settingsRes.data);
 
     const active = periodsRes.data.find(p => p.is_active);
@@ -268,21 +262,25 @@ export default function Pengaturan() {
   ];
 
   return (
-    <div className="space-y-5">
-      <div className="page-header">
+    <div className="space-y-6">
+      <div className="page-header mb-0">
         <div>
-          <h2 className="page-title">Pengaturan Sistem</h2>
-          <p className="page-subtitle">Konfigurasi SI-CKP — Hanya KPA</p>
+          <h2 className="page-title">Pengaturan & Export</h2>
+          <p className="page-subtitle">Konfigurasi periode, bobot komponen penilaian, dan ekspor laporan (Khusus KPA)</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-slate-100 p-1 rounded-xl w-fit">
+      <div className="inline-flex flex-wrap gap-1 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-lg border border-slate-200/70 dark:border-slate-700/70">
         {TABS.map(t => (
           <button
             key={t.id}
             onClick={() => setActiveTab(t.id)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === t.id ? 'bg-white text-primary-700 shadow-sm' : 'text-slate-600 hover:text-slate-800'}`}
+            className={`px-3.5 py-1.5 rounded-md text-xs font-semibold transition-all ${
+              activeTab === t.id
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-card'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+            }`}
           >
             {t.label}
           </button>
@@ -292,9 +290,8 @@ export default function Pengaturan() {
       {/* Periode Tab */}
       {activeTab === 'periode' && (
         <div className="space-y-5">
-          {/* Add period form */}
           <div className="card p-5">
-            <h3 className="font-semibold text-slate-700 mb-4">Tambah Periode Baru</h3>
+            <h3 className="font-semibold text-sm text-slate-900 dark:text-white mb-4">Tambah Periode Baru</h3>
             <form onSubmit={handleCreatePeriod} className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               <div className="form-group col-span-2 sm:col-span-1">
                 <label className="label">Nama Periode *</label>
@@ -302,26 +299,26 @@ export default function Pengaturan() {
               </div>
               <div className="form-group">
                 <label className="label">Bulan *</label>
-                <select className="input" required value={periodForm.bulan} onChange={e => setPeriodForm({ ...periodForm, bulan: e.target.value })}>
+                <select className="input font-mono" required value={periodForm.bulan} onChange={e => setPeriodForm({ ...periodForm, bulan: e.target.value })}>
                   <option value="">Pilih</option>
                   {Array.from({length: 12}, (_, i) => <option key={i+1} value={i+1}>{i+1}</option>)}
                 </select>
               </div>
               <div className="form-group">
                 <label className="label">Tahun *</label>
-                <input className="input" type="number" required value={periodForm.tahun} onChange={e => setPeriodForm({ ...periodForm, tahun: e.target.value })} />
+                <input className="input font-mono" type="number" required value={periodForm.tahun} onChange={e => setPeriodForm({ ...periodForm, tahun: e.target.value })} />
               </div>
               <div className="form-group">
                 <label className="label">Tanggal Mulai *</label>
-                <input className="input" type="date" required value={periodForm.tanggal_mulai} onChange={e => setPeriodForm({ ...periodForm, tanggal_mulai: e.target.value })} />
+                <input className="input font-mono" type="date" required value={periodForm.tanggal_mulai} onChange={e => setPeriodForm({ ...periodForm, tanggal_mulai: e.target.value })} />
               </div>
               <div className="form-group">
                 <label className="label">Tanggal Akhir *</label>
-                <input className="input" type="date" required value={periodForm.tanggal_akhir} onChange={e => setPeriodForm({ ...periodForm, tanggal_akhir: e.target.value })} />
+                <input className="input font-mono" type="date" required value={periodForm.tanggal_akhir} onChange={e => setPeriodForm({ ...periodForm, tanggal_akhir: e.target.value })} />
               </div>
               <div className="form-group">
                 <label className="label">Batas Pengisian</label>
-                <input className="input" type="date" value={periodForm.batas_pengisian} onChange={e => setPeriodForm({ ...periodForm, batas_pengisian: e.target.value })} />
+                <input className="input font-mono" type="date" value={periodForm.batas_pengisian} onChange={e => setPeriodForm({ ...periodForm, batas_pengisian: e.target.value })} />
               </div>
               <div className="form-group">
                 <label className="label">Status</label>
@@ -338,8 +335,7 @@ export default function Pengaturan() {
             </form>
           </div>
 
-          {/* Periods list */}
-          <div className="card">
+          <div className="card overflow-hidden">
             <div className="table-container">
               <table className="table">
                 <thead>
@@ -355,18 +351,25 @@ export default function Pengaturan() {
                 </thead>
                 <tbody>
                   {periods.map(p => (
-                    <tr key={p.id} className={p.is_active ? 'bg-emerald-50/50' : ''}>
-                      <td className="font-medium">{p.nama}</td>
-                      <td>{p.tanggal_mulai}</td>
-                      <td>{p.tanggal_akhir}</td>
-                      <td>{p.batas_pengisian || '—'}</td>
+                    <tr key={p.id} className={p.is_active ? 'bg-emerald-50/40 dark:bg-emerald-950/20' : ''}>
+                      <td className="font-medium text-slate-900 dark:text-slate-100">{p.nama}</td>
+                      <td className="font-mono text-xs">{p.tanggal_mulai}</td>
+                      <td className="font-mono text-xs">{p.tanggal_akhir}</td>
+                      <td className="font-mono text-xs">{p.batas_pengisian || '—'}</td>
                       <td>
                         <span className={p.status === 'aktif' ? 'badge-success' : p.status === 'tutup' ? 'badge-gray' : 'badge-warning'}>{p.status}</span>
                       </td>
-                      <td>{p.is_active ? <span className="badge-success">🟢 Aktif</span> : '—'}</td>
+                      <td>
+                        {p.is_active ? (
+                          <span className="badge-success">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            Aktif
+                          </span>
+                        ) : '—'}
+                      </td>
                       <td>
                         {!p.is_active && (
-                          <button onClick={() => handleActivatePeriod(p.id)} className="btn-success btn-sm">Aktifkan</button>
+                          <button onClick={() => handleActivatePeriod(p.id)} className="btn-secondary btn-sm">Aktifkan</button>
                         )}
                       </td>
                     </tr>
@@ -380,35 +383,35 @@ export default function Pengaturan() {
 
       {/* Bobot Tab */}
       {activeTab === 'bobot' && (
-        <div className="card p-5">
-          <div className="flex items-center justify-between mb-4">
+        <div className="card p-5 space-y-5">
+          <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-slate-700">Bobot Komponen CKP</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Untuk periode: {activePeriod?.nama || 'Tidak ada periode aktif'}</p>
+              <h3 className="font-semibold text-sm text-slate-900 dark:text-white">Bobot Komponen CKP</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Periode aktif: {activePeriod?.nama || 'Tidak ada periode aktif'}</p>
             </div>
-            <div className={`text-right ${Math.abs(totalBobot - 100) < 0.01 ? 'text-emerald-600' : 'text-red-500'}`}>
-              <p className="text-xs">Total Bobot</p>
-              <p className="text-2xl font-bold">{totalBobot.toFixed(0)}%</p>
+            <div className={`text-right ${Math.abs(totalBobot - 100) < 0.01 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+              <p className="text-[11px] font-medium">Total Bobot</p>
+              <p className="font-mono text-2xl font-bold tabular-num">{totalBobot.toFixed(0)}%</p>
             </div>
           </div>
 
           {Math.abs(totalBobot - 100) > 0.01 && (
-            <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm mb-4">
-              <AlertCircle className="w-4 h-4" /> Total bobot harus tepat 100%
+            <div className="flex items-center gap-2 p-3 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800/70 rounded-lg text-rose-700 dark:text-rose-300 text-xs">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" /> Total bobot harus tepat 100%
             </div>
           )}
 
-          <div className="space-y-3 mb-4">
+          <div className="space-y-3">
             {activePeriodWeights.map((w, i) => (
-              <div key={w.component_id} className="flex items-center gap-4 p-4 bg-slate-50 rounded-xl">
-                <div className="flex-1">
-                  <p className="text-sm font-semibold text-slate-700">{w.nama}</p>
-                  <p className="text-xs text-slate-400">{w.deskripsi}</p>
+              <div key={w.component_id} className="flex items-center gap-4 p-4 bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-800 rounded-xl">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{w.nama}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">{w.deskripsi}</p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <input
                     type="number" min="0" max="100" step="5"
-                    className="input w-24 text-center font-semibold"
+                    className="input w-24 text-center font-mono font-semibold"
                     value={w.bobot}
                     onChange={e => {
                       const updated = [...activePeriodWeights];
@@ -416,13 +419,13 @@ export default function Pengaturan() {
                       setActivePeriodWeights(updated);
                     }}
                   />
-                  <span className="text-sm text-slate-500">%</span>
+                  <span className="font-mono text-sm text-slate-500">%</span>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 pt-2">
             <button onClick={handleSaveWeights} disabled={saving || Math.abs(totalBobot - 100) > 0.01} className="btn-primary">
               <Save className="w-4 h-4" /> {saving ? 'Menyimpan...' : 'Simpan Bobot'}
             </button>
@@ -432,8 +435,8 @@ export default function Pengaturan() {
 
       {/* General Settings Tab */}
       {activeTab === 'pengaturan' && (
-        <div className="card p-5 space-y-4">
-          <h3 className="font-semibold text-slate-700 mb-4">Pengaturan Umum</h3>
+        <div className="card p-5 space-y-5">
+          <h3 className="font-semibold text-sm text-slate-900 dark:text-white">Pengaturan Umum</h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="form-group">
@@ -449,17 +452,19 @@ export default function Pengaturan() {
           <div className="form-group">
             <label className="label">Hari Kerja (Pengisian Wajib)</label>
             <input className="input" value={settings.hari_kerja || ''} onChange={e => setSettings({ ...settings, hari_kerja: e.target.value })} placeholder="senin,selasa,rabu,kamis,jumat" />
-            <p className="text-xs text-slate-400 mt-1">Pisahkan dengan koma. Contoh: senin,selasa,rabu,kamis,jumat</p>
+            <p className="text-[11px] text-slate-400 mt-1">Pisahkan dengan koma. Contoh: senin,selasa,rabu,kamis,jumat</p>
           </div>
 
           <div className="form-group">
             <label className="label">Toleransi Keterlambatan Pengisian (hari)</label>
-            <input className="input w-32" type="number" min="0" value={settings.toleransi_hari || ''} onChange={e => setSettings({ ...settings, toleransi_hari: e.target.value })} />
+            <input className="input font-mono w-32" type="number" min="0" value={settings.toleransi_hari || ''} onChange={e => setSettings({ ...settings, toleransi_hari: e.target.value })} />
           </div>
 
           <div className="form-group">
-            <label className="label flex items-center gap-2">
-              <input type="checkbox"
+            <label className="inline-flex items-center gap-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer">
+              <input
+                type="checkbox"
+                className="w-4 h-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
                 checked={settings.reminder_enabled === 'true'}
                 onChange={e => setSettings({ ...settings, reminder_enabled: e.target.checked ? 'true' : 'false' })}
               />
@@ -473,7 +478,6 @@ export default function Pengaturan() {
         </div>
       )}
 
-      {/* Export Tab (from OutputHasilKerja) */}
       {activeTab === 'export' && <ExportView />}
     </div>
   );

@@ -2,11 +2,10 @@ import { useEffect, useState, useCallback } from 'react';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import {
-  Plus, Edit2, Trash2, Eye, X, Check, Clock, ChevronLeft, ChevronRight,
-  CalendarDays, List, RefreshCw, Upload, Link as LinkIcon, Smartphone, Download, Printer, MapPin
+  Plus, Edit2, Trash2, Eye, X, Check, ChevronLeft, ChevronRight,
+  CalendarDays, List, RefreshCw, Upload, Link as LinkIcon, Download,
+  Printer, MapPin, Paperclip, Minus
 } from 'lucide-react';
-
-// ─── Shared Components ───
 
 const STATUS_LABELS = {
   selesai: { label: 'Selesai', class: 'badge-success' },
@@ -16,10 +15,26 @@ const STATUS_LABELS = {
 };
 
 const STATUS_CONFIG = {
-  lengkap: { label: 'Sudah Diisi', emoji: '🟢', class: 'bg-emerald-100 text-emerald-800 border-emerald-200' },
-  sebagian: { label: 'Belum Lengkap', emoji: '🟡', class: 'bg-amber-100 text-amber-800 border-amber-200' },
-  belum: { label: 'Belum Diisi', emoji: '🔴', class: 'bg-red-100 text-red-800 border-red-200' },
-  weekend: { label: 'Hari Libur', emoji: '—', class: 'bg-slate-50 text-slate-400' },
+  lengkap: {
+    label: 'Sudah Diisi',
+    dot: 'bg-emerald-500',
+    tile: 'bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 border-emerald-200/70 dark:border-emerald-800/50',
+  },
+  sebagian: {
+    label: 'Belum Lengkap',
+    dot: 'bg-amber-500',
+    tile: 'bg-amber-50/70 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border-amber-200/70 dark:border-amber-800/50',
+  },
+  belum: {
+    label: 'Belum Diisi',
+    dot: 'bg-rose-500',
+    tile: 'bg-rose-50/60 dark:bg-rose-950/30 text-rose-900 dark:text-rose-200 border-rose-200/70 dark:border-rose-800/50',
+  },
+  weekend: {
+    label: 'Hari Libur',
+    dot: 'bg-slate-300 dark:bg-slate-700',
+    tile: 'bg-slate-50/60 dark:bg-slate-900/40 text-slate-400 dark:text-slate-600 border-transparent',
+  },
 };
 
 const MONTHS_ID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
@@ -35,12 +50,12 @@ function Modal({ open, onClose, title, children, size = 'md' }) {
   const sizeMap = { sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl', xl: 'max-w-4xl' };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/40 animate-fade-in" onClick={onClose} />
-      <div className={`relative bg-white rounded-2xl shadow-2xl w-full ${sizeMap[size]} animate-fade-in-up max-h-[90vh] flex flex-col`}>
-        <div className="flex items-center justify-between p-5 border-b border-slate-100 flex-shrink-0">
-          <h3 className="font-semibold text-slate-800">{title}</h3>
-          <button onClick={onClose} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
-            <X className="w-4 h-4 text-slate-500" />
+      <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px] animate-fade-in" onClick={onClose} />
+      <div className={`relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-elevated w-full ${sizeMap[size]} animate-fade-in-up max-h-[90vh] flex flex-col`}>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex-shrink-0">
+          <h3 className="font-semibold text-sm text-slate-900 dark:text-white">{title}</h3>
+          <button onClick={onClose} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-500 transition-colors">
+            <X className="w-4 h-4" />
           </button>
         </div>
         <div className="overflow-y-auto flex-1 p-5">{children}</div>
@@ -51,32 +66,24 @@ function Modal({ open, onClose, title, children, size = 'md' }) {
 
 function TabSwitch({ tabs, active, onChange }) {
   return (
-    <div className="flex gap-1 bg-slate-100 p-1 rounded-xl w-fit">
+    <div className="inline-flex gap-1 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-lg border border-slate-200/70 dark:border-slate-700/70 w-fit">
       {tabs.map(t => (
         <button
           key={t.id}
           onClick={() => onChange(t.id)}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-            active === t.id ? 'bg-white text-primary-700 shadow-sm' : 'text-slate-600 hover:text-slate-800'
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-semibold transition-all ${
+            active === t.id
+              ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-card'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
           }`}
         >
-          {t.icon && <t.icon className="w-4 h-4" />}
+          {t.icon && <t.icon className="w-3.5 h-3.5" />}
           {t.label}
         </button>
       ))}
     </div>
   );
 }
-
-function CalendarIcon({ className }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-    </svg>
-  );
-}
-
-// ─── Kegiatan Form ───
 
 function KegiatanForm({ periods, employees, onSubmit, loading, initialData }) {
   const { isAnggota, user } = useAuth();
@@ -129,13 +136,13 @@ function KegiatanForm({ periods, employees, onSubmit, loading, initialData }) {
         )}
         <div className="form-group">
           <label className="label">Tanggal *</label>
-          <input className="input" type="date" required value={form.tanggal} onChange={e => setForm({ ...form, tanggal: e.target.value })} />
+          <input className="input font-mono" type="date" required value={form.tanggal} onChange={e => setForm({ ...form, tanggal: e.target.value })} />
         </div>
       </div>
 
       <div className="form-group">
         <label className="label">Nama Kegiatan *</label>
-        <input className="input" required placeholder="Contoh: Melakukan pemeriksaan data hasil survei" value={form.nama_kegiatan} onChange={e => setForm({ ...form, nama_kegiatan: e.target.value })} />
+        <input className="input" required placeholder="Contoh: Pemeriksaan data hasil survei lapangan" value={form.nama_kegiatan} onChange={e => setForm({ ...form, nama_kegiatan: e.target.value })} />
       </div>
 
       <div className="form-group">
@@ -144,21 +151,27 @@ function KegiatanForm({ periods, employees, onSubmit, loading, initialData }) {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="form-group col-span-1">
+        <div className="form-group">
           <label className="label">Target</label>
-          <input className="input" type="number" min="0" placeholder="0" value={form.target} onChange={e => setForm({ ...form, target: e.target.value })} />
+          <input className="input font-mono" type="number" min="0" placeholder="0" value={form.target} onChange={e => setForm({ ...form, target: e.target.value })} />
         </div>
-        <div className="form-group col-span-1">
+        <div className="form-group">
           <label className="label">Satuan</label>
-          <input className="input" placeholder="Dokumen, dsb" value={form.satuan} onChange={e => setForm({ ...form, satuan: e.target.value })} />
+          <input className="input" placeholder="Dokumen" value={form.satuan} onChange={e => setForm({ ...form, satuan: e.target.value })} />
         </div>
-        <div className="form-group col-span-1">
+        <div className="form-group">
           <label className="label">Realisasi</label>
-          <input className="input" type="number" min="0" placeholder="0" value={form.realisasi} onChange={e => setForm({ ...form, realisasi: e.target.value })} />
+          <input className="input font-mono" type="number" min="0" placeholder="0" value={form.realisasi} onChange={e => setForm({ ...form, realisasi: e.target.value })} />
         </div>
-        <div className="form-group col-span-1">
+        <div className="form-group">
           <label className="label">Capaian</label>
-          <div className={`input bg-slate-50 font-semibold ${capaian >= 100 ? 'text-emerald-600' : capaian >= 70 ? 'text-primary-600' : 'text-amber-600'}`}>
+          <div className={`input font-mono font-semibold tabular-num bg-slate-50 dark:bg-slate-800/70 ${
+            capaian >= 100
+              ? 'text-emerald-600 dark:text-emerald-400'
+              : capaian >= 70
+                ? 'text-primary-600 dark:text-sky-400'
+                : 'text-amber-600 dark:text-amber-400'
+          }`}>
             {capaian}%
           </div>
         </div>
@@ -180,8 +193,8 @@ function KegiatanForm({ periods, employees, onSubmit, loading, initialData }) {
         </div>
       </div>
 
-      {/* Bukti Dukung (opsional) */}
-      <div className="space-y-3 border-t border-slate-100 pt-4">
+      {/* Bukti Dukung */}
+      <div className="space-y-3 border-t border-slate-100 dark:border-slate-800 pt-4">
         <p className="label">Bukti Dukung (opsional)</p>
         <div className="flex gap-2 flex-wrap">
           <label className="btn-secondary btn-sm cursor-pointer">
@@ -193,23 +206,27 @@ function KegiatanForm({ periods, employees, onSubmit, loading, initialData }) {
             <LinkIcon className="w-3.5 h-3.5" /> Tambah Link
           </button>
         </div>
-        <p className="text-xs text-slate-400">Format: JPG, PNG, PDF, DOC, XLS, PPT, ZIP (maks 10MB). Bisa juga diisi nanti di menu Bukti Dukung.</p>
+        <p className="text-[11px] text-slate-400 dark:text-slate-500">Format: JPG, PNG, PDF, DOC, XLS, PPT, ZIP (maks 10MB). Dapat ditambahkan kapan saja di menu Bukti Dukung.</p>
         {files.map((f, i) => (
-          <div key={i} className="flex items-center justify-between gap-2 p-2 bg-slate-50 rounded-lg text-sm">
-            <span className="truncate">{f.name}</span>
-            <button type="button" onClick={() => setFiles(fs => fs.filter((_, idx) => idx !== i))} className="p-1 hover:bg-slate-200 rounded"><X className="w-3.5 h-3.5" /></button>
+          <div key={i} className="flex items-center justify-between gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700 rounded-lg text-xs">
+            <span className="truncate font-medium">{f.name}</span>
+            <button type="button" onClick={() => setFiles(fs => fs.filter((_, idx) => idx !== i))} className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded">
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
         ))}
         {links.map((l, i) => (
           <div key={i} className="grid grid-cols-1 sm:grid-cols-[1fr_1.5fr_auto] gap-2 items-center">
             <input className="input" placeholder="Judul link" value={l.judul} onChange={e => updateLink(i, { judul: e.target.value })} />
             <input className="input" type="url" placeholder="https://drive.google.com/..." value={l.url} onChange={e => updateLink(i, { url: e.target.value })} />
-            <button type="button" onClick={() => removeLink(i)} className="p-1.5 hover:bg-slate-100 rounded-lg"><X className="w-4 h-4 text-slate-500" /></button>
+            <button type="button" onClick={() => removeLink(i)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+              <X className="w-4 h-4 text-slate-500" />
+            </button>
           </div>
         ))}
       </div>
 
-      <div className="flex gap-3 pt-2 border-t border-slate-50">
+      <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
         <button type="submit" disabled={loading} className="btn-primary">
           {loading ? 'Menyimpan...' : initialData?.id ? 'Perbarui Kegiatan' : 'Simpan Kegiatan'}
         </button>
@@ -217,8 +234,6 @@ function KegiatanForm({ periods, employees, onSubmit, loading, initialData }) {
     </form>
   );
 }
-
-// ─── Calendar View (from CekHarian) ───
 
 function CalendarView({ periods, employees, canSeeAll }) {
   const today = new Date();
@@ -288,7 +303,6 @@ function CalendarView({ periods, employees, canSeeAll }) {
 
   return (
     <div className="space-y-5">
-      {/* Filters */}
       <div className="card p-4 flex flex-wrap gap-3 items-end">
         <div>
           <label className="label">Periode</label>
@@ -308,30 +322,30 @@ function CalendarView({ periods, employees, canSeeAll }) {
         )}
         <button onClick={fetchCalendar} className="btn-secondary btn-sm" disabled={loading}>
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-          Refresh
+          Segarkan
         </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Calendar */}
         <div className="lg:col-span-2 card p-5">
-          <div className="flex items-center justify-between mb-4">
-            <button onClick={prevMonth} className="btn-secondary btn-sm btn-icon">
+          <div className="flex items-center justify-between mb-5">
+            <button onClick={prevMonth} className="btn-secondary btn-sm btn-icon" aria-label="Bulan sebelumnya">
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <h2 className="font-semibold text-slate-800">{MONTHS_ID[month]} {year}</h2>
-            <button onClick={nextMonth} className="btn-secondary btn-sm btn-icon">
+            <h2 className="font-semibold text-sm text-slate-900 dark:text-white">{MONTHS_ID[month]} {year}</h2>
+            <button onClick={nextMonth} className="btn-secondary btn-sm btn-icon" aria-label="Bulan berikutnya">
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="grid grid-cols-7 mb-1">
+          <div className="grid grid-cols-7 mb-1.5">
             {DAYS_ID.map(d => (
-              <div key={d} className={`text-center text-xs font-semibold py-2 ${d === 'Min' || d === 'Sab' ? 'text-slate-400' : 'text-slate-500'}`}>{d}</div>
+              <div key={d} className={`text-center text-[11px] font-semibold uppercase tracking-wider py-2 ${d === 'Min' || d === 'Sab' ? 'text-slate-400 dark:text-slate-600' : 'text-slate-500 dark:text-slate-400'}`}>{d}</div>
             ))}
           </div>
 
-          <div className="grid grid-cols-7 gap-1">
+          <div className="grid grid-cols-7 gap-1.5">
             {Array.from({ length: firstDay }).map((_, i) => (
               <div key={`empty-${i}`} />
             ))}
@@ -350,19 +364,21 @@ function CalendarView({ periods, employees, canSeeAll }) {
                   onClick={() => !isWeekend(year, month, day) && handleDateClick(day)}
                   disabled={isWeekend(year, month, day)}
                   className={`
-                    relative rounded-lg p-1.5 text-center transition-all border
-                    ${status === 'weekend' ? 'border-transparent cursor-default' : 'cursor-pointer hover:ring-2 hover:ring-primary-300'}
-                    ${cfg.class}
-                    ${isToday ? 'ring-2 ring-primary-500 font-bold' : ''}
-                    ${isSelected ? 'ring-2 ring-primary-600' : ''}
+                    relative rounded-lg p-2 min-h-[58px] flex flex-col items-center justify-between transition-all border
+                    ${status === 'weekend' ? 'cursor-default' : 'cursor-pointer hover:border-primary-400 dark:hover:border-sky-500'}
+                    ${cfg.tile}
+                    ${isToday ? 'ring-1 ring-primary-600 dark:ring-sky-400 font-bold' : ''}
+                    ${isSelected ? 'ring-2 ring-primary-600 dark:ring-sky-400' : ''}
                   `}
                 >
-                  <span className={`text-xs block ${isToday ? 'font-bold' : ''}`}>{day}</span>
+                  <span className={`font-mono text-xs tabular-num ${isToday ? 'font-bold' : 'font-medium'}`}>{day}</span>
                   {status !== 'weekend' && (
-                    <span className="text-xs block">{cfg.emoji}</span>
+                    <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
                   )}
-                  {d && d.jumlah_kegiatan > 0 && (
-                    <span className="text-xs block">{d.jumlah_kegiatan}keg</span>
+                  {d && d.jumlah_kegiatan > 0 ? (
+                    <span className="font-mono text-[10px] opacity-80 tabular-num">{d.jumlah_kegiatan} keg</span>
+                  ) : (
+                    <span className="text-[10px] opacity-0">0</span>
                   )}
                 </button>
               );
@@ -370,44 +386,44 @@ function CalendarView({ periods, employees, canSeeAll }) {
           </div>
 
           {/* Legend */}
-          <div className="flex flex-wrap gap-3 mt-4 pt-3 border-t border-slate-50">
+          <div className="flex flex-wrap gap-4 mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
             {Object.entries(STATUS_CONFIG).filter(([k]) => k !== 'weekend').map(([k, v]) => (
-              <div key={k} className="flex items-center gap-1.5">
-                <span className="text-sm">{v.emoji}</span>
-                <span className="text-xs text-slate-500">{v.label}</span>
+              <div key={k} className="flex items-center gap-2">
+                <span className={`w-2 h-2 rounded-full ${v.dot}`} />
+                <span className="text-xs text-slate-500 dark:text-slate-400">{v.label}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Daily detail panel */}
+        {/* Daily Detail */}
         <div className="card p-5">
           {selectedDate ? (
             <>
-              <h3 className="font-semibold text-slate-700 mb-3">
+              <h3 className="font-semibold text-sm text-slate-900 dark:text-white mb-4">
                 {new Date(selectedDate + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' })}
               </h3>
 
               {canSeeAll && dailyStatus ? (
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm mb-3">
-                    <span className="text-slate-500">Total Pegawai</span>
-                    <span className="font-semibold">{dailyStatus.employees?.length}</span>
+                <div className="space-y-3">
+                  <div className="flex justify-between text-xs pb-2 border-b border-slate-100 dark:border-slate-800">
+                    <span className="text-slate-500 dark:text-slate-400">Total Pegawai</span>
+                    <span className="font-mono font-semibold text-slate-800 dark:text-slate-100">{dailyStatus.employees?.length}</span>
                   </div>
-                  <div className="flex gap-3 text-xs mb-3">
-                    <span className="badge-success">{dailyStatus.employees?.filter(e => e.status !== 'belum').length} Sudah</span>
-                    <span className="badge-danger">{dailyStatus.employees?.filter(e => e.status === 'belum').length} Belum</span>
+                  <div className="flex gap-2">
+                    <span className="badge-success tabular-num">{dailyStatus.employees?.filter(e => e.status !== 'belum').length} Sudah</span>
+                    <span className="badge-danger tabular-num">{dailyStatus.employees?.filter(e => e.status === 'belum').length} Belum</span>
                   </div>
-                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                  <div className="space-y-1 max-h-72 overflow-y-auto pt-1">
                     {dailyStatus.employees?.map(emp => (
-                      <div key={emp.id} className="flex items-center gap-2 py-1.5 border-b border-slate-50">
-                        <div className={`w-2 h-2 rounded-full ${emp.status === 'belum' ? 'bg-red-400' : emp.status === 'lengkap' ? 'bg-emerald-500' : 'bg-amber-400'}`} />
+                      <div key={emp.id} className="flex items-center gap-2.5 py-2 border-b border-slate-100 dark:border-slate-800/70 last:border-0">
+                        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${emp.status === 'belum' ? 'bg-rose-500' : emp.status === 'lengkap' ? 'bg-emerald-500' : 'bg-amber-400'}`} />
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium text-slate-700 truncate">{emp.nama}</p>
+                          <p className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate">{emp.nama}</p>
                         </div>
-                        <div className="text-right">
-                          <p className="text-xs text-slate-500">{emp.jumlah_kegiatan} keg</p>
-                          {emp.avg_capaian > 0 && <p className="text-xs text-primary-600 font-semibold">{emp.avg_capaian}%</p>}
+                        <div className="text-right tabular-num">
+                          <p className="text-xs text-slate-500 dark:text-slate-400">{emp.jumlah_kegiatan} keg</p>
+                          {emp.avg_capaian > 0 && <p className="font-mono text-[11px] text-primary-600 dark:text-sky-400 font-semibold">{emp.avg_capaian}%</p>}
                         </div>
                       </div>
                     ))}
@@ -418,30 +434,33 @@ function CalendarView({ periods, employees, canSeeAll }) {
                   {calendarData[selectedDate] ? (
                     <div className="space-y-3">
                       <div className="flex justify-between text-sm">
-                        <span className="text-slate-500">Jumlah Kegiatan</span>
-                        <span className="font-semibold">{calendarData[selectedDate].jumlah_kegiatan}</span>
+                        <span className="text-slate-500 dark:text-slate-400">Jumlah Kegiatan</span>
+                        <span className="font-mono font-semibold text-slate-900 dark:text-white">{calendarData[selectedDate].jumlah_kegiatan}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-slate-500">Rata-rata Capaian</span>
-                        <span className="font-semibold text-primary-600">{Math.round(calendarData[selectedDate].avg_capaian || 0)}%</span>
+                        <span className="text-slate-500 dark:text-slate-400">Rata-rata Capaian</span>
+                        <span className="font-mono font-semibold text-primary-600 dark:text-sky-400">{Math.round(calendarData[selectedDate].avg_capaian || 0)}%</span>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-slate-500">Bukti Dukung</span>
-                        <span>{calendarData[selectedDate].has_bukti ? '✅ Ada' : '❌ Belum'}</span>
+                      <div className="flex justify-between text-sm items-center">
+                        <span className="text-slate-500 dark:text-slate-400">Bukti Dukung</span>
+                        {calendarData[selectedDate].has_bukti
+                          ? <span className="badge-success"><Check className="w-3 h-3" /> Ada</span>
+                          : <span className="badge-gray"><Minus className="w-3 h-3" /> Belum</span>
+                        }
                       </div>
                     </div>
                   ) : (
-                    <div className="text-center py-6">
-                      <p className="text-slate-400 text-sm">Belum ada kegiatan</p>
+                    <div className="text-center py-8">
+                      <p className="text-slate-400 dark:text-slate-500 text-xs">Belum ada kegiatan pada tanggal ini</p>
                     </div>
                   )}
                 </div>
               )}
             </>
           ) : (
-            <div className="text-center py-10">
-              <CalendarIcon className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-              <p className="text-slate-400 text-sm">Klik tanggal untuk melihat detail</p>
+            <div className="text-center py-12">
+              <CalendarDays className="w-8 h-8 text-slate-300 dark:text-slate-700 mx-auto mb-2.5" strokeWidth={1.5} />
+              <p className="text-slate-400 dark:text-slate-500 text-xs">Pilih tanggal di kalender untuk melihat detail</p>
             </div>
           )}
         </div>
@@ -450,9 +469,7 @@ function CalendarView({ periods, employees, canSeeAll }) {
   );
 }
 
-// ─── Activity List View ───
-
-function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubbag, isAnggota }) {
+function ActivityListView({ periods, employees, canEdit, isAnggota }) {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -561,7 +578,7 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
-    } catch (err) {
+    } catch {
       alert('Gagal mengunduh Excel hasil kerja');
     }
   };
@@ -581,14 +598,14 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
   <meta charset="UTF-8">
   <title>Hasil Kerja Pegawai — ${period?.nama || ''}</title>
   <style>
-    body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; color: #1e293b; }
-    h1 { font-size: 16px; text-align: center; margin-bottom: 4px; }
-    h2 { font-size: 13px; text-align: center; color: #555; margin-bottom: 20px; }
+    body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; color: #0f172a; }
+    h1 { font-size: 16px; text-align: center; margin-bottom: 4px; color: #0f3d6e; }
+    h2 { font-size: 13px; text-align: center; color: #64748b; margin-bottom: 20px; font-weight: normal; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
-    th { background: #0284c7; color: white; padding: 6px 8px; text-align: left; font-size: 11px; }
-    td { padding: 5px 8px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+    th { background: #0f3d6e; color: white; padding: 6px 8px; text-align: left; font-size: 11px; }
+    td { padding: 6px 8px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
     tr:nth-child(even) td { background: #f8fafc; }
-    .emp-header { background: #e0f2fe; padding: 8px 12px; border-left: 4px solid #0284c7; margin: 16px 0 8px; }
+    .emp-header { background: #f0f5fa; padding: 8px 12px; border-left: 4px solid #0f3d6e; margin: 16px 0 8px; }
     .score-row { background: #ecfdf5; font-weight: bold; }
   </style>
 </head>
@@ -652,7 +669,7 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
       printWindow.document.write(html);
       printWindow.document.close();
       printWindow.print();
-    } catch (err) {
+    } catch {
       alert('Gagal mencetak laporan hasil kerja');
     }
   };
@@ -680,18 +697,17 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
           )}
           <div>
             <label className="label">Tanggal</label>
-            <input className="input" type="date" value={filterDate} onChange={e => setFilterDate(e.target.value)} />
+            <input className="input font-mono" type="date" value={filterDate} onChange={e => setFilterDate(e.target.value)} />
           </div>
           <button onClick={() => { setFilterDate(''); setFilterEmployee(''); }} className="btn-secondary btn-sm">
-            Reset Filter
+            Reset
           </button>
         </div>
 
-        {/* Download Hasil Kerja per Periode & Tambah Kegiatan */}
         <div className="flex flex-wrap items-center gap-2">
-          <button onClick={handleDownloadExcel} className="btn-success btn-sm" title="Download Hasil Kerja Periode (.xlsx)">
-            <Download className="w-3.5 h-3.5" />
-            Download Excel Periode
+          <button onClick={handleDownloadExcel} className="btn-secondary btn-sm" title="Download Hasil Kerja Periode (.xlsx)">
+            <Download className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+            Excel Periode
           </button>
           <button onClick={handlePrintPDF} className="btn-secondary btn-sm" title="Cetak / Simpan PDF Hasil Kerja Periode">
             <Printer className="w-3.5 h-3.5" />
@@ -699,7 +715,7 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
           </button>
           {canEdit && (
             <button onClick={() => { setEditData(null); setModalOpen(true); }} className="btn-primary btn-sm">
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5" />
               Tambah Kegiatan
             </button>
           )}
@@ -707,16 +723,14 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
       </div>
 
       {/* Table */}
-      <div className="card">
-        <div className="p-4 border-b border-slate-50 flex flex-wrap items-center justify-between gap-2">
-          <p className="text-sm text-slate-500">{activities.length} kegiatan tercatat</p>
-          <div className="flex items-center gap-1.5 text-xs font-medium text-primary-700 bg-primary-50 border border-primary-100 px-3 py-1.5 rounded-lg">
-            <Smartphone className="w-3.5 h-3.5" />
-            <span>Bisa diinput melalui Web maupun Aplikasi Mobile SI-CKP (Kamera Geotag & Timestamp)</span>
-          </div>
+      <div className="card overflow-hidden">
+        <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <p className="text-xs font-medium text-slate-500 dark:text-slate-400 tabular-num">{activities.length} kegiatan tercatat</p>
         </div>
         {loading ? (
-          <div className="flex justify-center py-10"><div className="w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" style={{borderWidth:'2px'}}></div></div>
+          <div className="flex justify-center py-12">
+            <div className="w-6 h-6 border-2 border-primary-600 dark:border-sky-400 border-t-transparent rounded-full animate-spin" />
+          </div>
         ) : (
           <div className="table-container">
             <table className="table">
@@ -734,32 +748,43 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
               </thead>
               <tbody>
                 {activities.length === 0 && (
-                  <tr><td colSpan="8" className="text-center text-slate-400 py-8">Belum ada kegiatan</td></tr>
+                  <tr>
+                    <td colSpan="8" className="text-center text-slate-400 dark:text-slate-500 py-10">
+                      Belum ada kegiatan tercatat
+                    </td>
+                  </tr>
                 )}
                 {activities.map(act => (
                   <tr key={act.id}>
-                    <td className="whitespace-nowrap">
+                    <td className="whitespace-nowrap font-mono text-xs text-slate-500 dark:text-slate-400 tabular-num">
                       {new Date(act.tanggal + 'T00:00:00').toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                     </td>
-                    {!isAnggota && <td className="font-medium">{act.pegawai_nama}</td>}
+                    {!isAnggota && <td className="font-medium text-slate-900 dark:text-slate-100">{act.pegawai_nama}</td>}
                     <td>
-                      <p className="font-medium text-slate-700 max-w-64 truncate">{act.nama_kegiatan}</p>
+                      <p className="font-medium text-slate-900 dark:text-slate-100 max-w-64 truncate">{act.nama_kegiatan}</p>
                       {(act.jumlah_bukti > 0 || act.jumlah_link > 0) && (
-                        <p className="text-xs text-slate-500 mt-0.5">
-                          📎 {(act.jumlah_bukti || 0) + (act.jumlah_link || 0)} bukti
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 inline-flex items-center gap-1 mr-2">
+                          <Paperclip className="w-3 h-3" />
+                          <span className="tabular-num">{(act.jumlah_bukti || 0) + (act.jumlah_link || 0)} bukti</span>
                         </p>
                       )}
                       {act.bukti_keterangan && (
-                        <p className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-1.5 py-0.5 mt-1 inline-flex items-center gap-1 max-w-xs truncate" title={act.bukti_keterangan}>
+                        <p className="text-[11px] text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200/70 dark:border-emerald-800/60 rounded px-1.5 py-0.5 mt-1 inline-flex items-center gap-1 max-w-xs truncate" title={act.bukti_keterangan}>
                           <MapPin className="w-3 h-3 flex-shrink-0" />
-                          <span className="truncate">{act.bukti_keterangan}</span>
+                          <span className="truncate font-mono text-[10px]">{act.bukti_keterangan}</span>
                         </p>
                       )}
                     </td>
-                    <td>{act.target ? `${act.target} ${act.satuan || ''}` : '—'}</td>
-                    <td>{act.realisasi ?? '—'}</td>
+                    <td className="tabular-num">{act.target ? `${act.target} ${act.satuan || ''}` : '—'}</td>
+                    <td className="font-mono tabular-num">{act.realisasi ?? '—'}</td>
                     <td>
-                      <span className={`font-semibold ${(act.persentase_capaian || 0) >= 100 ? 'text-emerald-600' : (act.persentase_capaian || 0) >= 70 ? 'text-primary-600' : 'text-amber-600'}`}>
+                      <span className={`font-mono font-semibold tabular-num ${
+                        (act.persentase_capaian || 0) >= 100
+                          ? 'text-emerald-600 dark:text-emerald-400'
+                          : (act.persentase_capaian || 0) >= 70
+                            ? 'text-primary-600 dark:text-sky-400'
+                            : 'text-amber-600 dark:text-amber-400'
+                      }`}>
                         {act.persentase_capaian || 0}%
                       </span>
                     </td>
@@ -807,32 +832,72 @@ function ActivityListView({ periods, plans, employees, canEdit, isKPA, isKasubba
       {/* Detail Modal */}
       <Modal open={!!detailData} onClose={() => setDetailData(null)} title="Detail Kegiatan" size="md">
         {detailData && (
-          <div className="space-y-3 text-sm">
-            <div><span className="text-slate-500">Pegawai:</span> <span className="font-medium">{detailData.pegawai_nama}</span></div>
-            <div><span className="text-slate-500">Tanggal:</span> <span className="font-medium">{detailData.tanggal}</span></div>
-            <div><span className="text-slate-500">Kegiatan:</span> <span className="font-medium">{detailData.nama_kegiatan}</span></div>
-            {detailData.deskripsi && <div><span className="text-slate-500">Deskripsi:</span> <p className="text-slate-700 mt-1">{detailData.deskripsi}</p></div>}
-            <div className="grid grid-cols-3 gap-3 bg-slate-50 p-3 rounded-lg">
-              <div><p className="text-slate-500 text-xs">Target</p><p className="font-semibold">{detailData.target || '—'} {detailData.satuan}</p></div>
-              <div><p className="text-slate-500 text-xs">Realisasi</p><p className="font-semibold">{detailData.realisasi || '—'}</p></div>
-              <div><p className="text-slate-500 text-xs">Capaian</p><p className="font-bold text-primary-600">{detailData.persentase_capaian || 0}%</p></div>
+          <div className="space-y-4 text-sm">
+            <div className="space-y-2">
+              <div className="flex justify-between gap-4">
+                <span className="text-slate-500 dark:text-slate-400">Pegawai</span>
+                <span className="font-medium text-slate-900 dark:text-white text-right">{detailData.pegawai_nama}</span>
+              </div>
+              <div className="flex justify-between gap-4">
+                <span className="text-slate-500 dark:text-slate-400">Tanggal</span>
+                <span className="font-mono font-medium text-slate-900 dark:text-white">{detailData.tanggal}</span>
+              </div>
+              <div>
+                <span className="text-slate-500 dark:text-slate-400 text-xs">Kegiatan</span>
+                <p className="font-semibold text-slate-900 dark:text-white mt-0.5">{detailData.nama_kegiatan}</p>
+              </div>
+              {detailData.deskripsi && (
+                <div>
+                  <span className="text-slate-500 dark:text-slate-400 text-xs">Deskripsi</span>
+                  <p className="text-slate-700 dark:text-slate-300 mt-0.5 leading-relaxed">{detailData.deskripsi}</p>
+                </div>
+              )}
             </div>
+
+            <div className="grid grid-cols-3 gap-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700 p-3.5 rounded-xl">
+              <div>
+                <p className="text-slate-500 dark:text-slate-400 text-[11px]">Target</p>
+                <p className="font-mono font-semibold text-slate-900 dark:text-white mt-0.5">{detailData.target || '—'} {detailData.satuan}</p>
+              </div>
+              <div>
+                <p className="text-slate-500 dark:text-slate-400 text-[11px]">Realisasi</p>
+                <p className="font-mono font-semibold text-slate-900 dark:text-white mt-0.5">{detailData.realisasi || '—'}</p>
+              </div>
+              <div>
+                <p className="text-slate-500 dark:text-slate-400 text-[11px]">Capaian</p>
+                <p className="font-mono font-bold text-primary-600 dark:text-sky-400 mt-0.5">{detailData.persentase_capaian || 0}%</p>
+              </div>
+            </div>
+
             {detailData.bukti_keterangan && (
-              <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-800">
-                <p className="font-semibold mb-0.5">📍 Informasi Geotag & Timestamp Bukti Foto:</p>
-                <p>{detailData.bukti_keterangan}</p>
+              <div className="p-3 bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/70 dark:border-emerald-800/60 rounded-xl text-xs text-emerald-800 dark:text-emerald-200">
+                <p className="font-semibold inline-flex items-center gap-1.5 mb-1">
+                  <MapPin className="w-3.5 h-3.5" />
+                  Geotag & Timestamp Bukti Foto
+                </p>
+                <p className="font-mono text-[11px]">{detailData.bukti_keterangan}</p>
               </div>
             )}
-            <div><span className="text-slate-500">Status:</span> <span className={`${STATUS_LABELS[detailData.status_kegiatan]?.class || 'badge-gray'} ml-2`}>{STATUS_LABELS[detailData.status_kegiatan]?.label}</span></div>
-            {detailData.catatan && <div><span className="text-slate-500">Catatan:</span> <p>{detailData.catatan}</p></div>}
+
+            <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
+              <span className="text-slate-500 dark:text-slate-400">Status</span>
+              <span className={STATUS_LABELS[detailData.status_kegiatan]?.class || 'badge-gray'}>
+                {STATUS_LABELS[detailData.status_kegiatan]?.label}
+              </span>
+            </div>
+
+            {detailData.catatan && (
+              <div>
+                <span className="text-slate-500 dark:text-slate-400 text-xs">Catatan</span>
+                <p className="text-slate-700 dark:text-slate-300 mt-0.5">{detailData.catatan}</p>
+              </div>
+            )}
           </div>
         )}
       </Modal>
     </div>
   );
 }
-
-// ─── Main Page ───
 
 export default function Kegiatan() {
   const { isKPA, isKasubbag, isAnggota } = useAuth();
@@ -856,11 +921,11 @@ export default function Kegiatan() {
   ];
 
   return (
-    <div className="space-y-5">
-      <div className="page-header">
+    <div className="space-y-6">
+      <div className="page-header mb-0">
         <div>
           <h2 className="page-title">Kegiatan Harian</h2>
-          <p className="page-subtitle">Input, kelola, dan unduh hasil kerja kegiatan harian pegawai per periode (Web & Mobile)</p>
+          <p className="page-subtitle">Input, kelola, dan ekspor laporan kegiatan harian per periode</p>
         </div>
         <TabSwitch tabs={TABS} active={activeTab} onChange={setActiveTab} />
       </div>
@@ -870,8 +935,6 @@ export default function Kegiatan() {
           periods={periods}
           employees={employees}
           canEdit={canEdit}
-          isKPA={isKPA}
-          isKasubbag={isKasubbag}
           isAnggota={isAnggota}
         />
       )}

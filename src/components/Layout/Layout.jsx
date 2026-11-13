@@ -10,7 +10,7 @@ export default function Layout() {
   const { unreadNotifications } = useAuth();
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50">
+    <div className="flex h-screen overflow-hidden bg-[#F8FAFC] dark:bg-[#090E1A]">
       <Sidebar
         collapsed={collapsed}
         setCollapsed={setCollapsed}
@@ -22,7 +22,7 @@ export default function Layout() {
           setMobileOpen={setMobileOpen}
           unreadNotifications={unreadNotifications}
         />
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-7">
           <div className="max-w-7xl mx-auto animate-fade-in-up">
             <Outlet />
           </div>

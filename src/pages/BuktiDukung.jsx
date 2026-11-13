@@ -1,18 +1,20 @@
 import { useEffect, useState, useCallback } from 'react';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
-import { Upload, Link, Trash2, X, ExternalLink, FileText, Image, File, Smartphone } from 'lucide-react';
+import { Upload, Link as LinkIcon, Trash2, X, ExternalLink, FileText, Image, File, MapPin } from 'lucide-react';
 
 function Modal({ open, onClose, title, children, size = 'md' }) {
   if (!open) return null;
   const sizeMap = { sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl' };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/40 animate-fade-in" onClick={onClose} />
-      <div className={`relative bg-white rounded-2xl shadow-2xl w-full ${sizeMap[size]} animate-fade-in-up max-h-[90vh] flex flex-col`}>
-        <div className="flex items-center justify-between p-5 border-b border-slate-100 flex-shrink-0">
-          <h3 className="font-semibold text-slate-800">{title}</h3>
-          <button onClick={onClose} className="p-1.5 hover:bg-slate-100 rounded-lg"><X className="w-4 h-4 text-slate-500" /></button>
+      <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px] animate-fade-in" onClick={onClose} />
+      <div className={`relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-elevated w-full ${sizeMap[size]} animate-fade-in-up max-h-[90vh] flex flex-col`}>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex-shrink-0">
+          <h3 className="font-semibold text-sm text-slate-900 dark:text-white">{title}</h3>
+          <button onClick={onClose} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-500">
+            <X className="w-4 h-4" />
+          </button>
         </div>
         <div className="overflow-y-auto flex-1 p-5">{children}</div>
       </div>
@@ -21,9 +23,9 @@ function Modal({ open, onClose, title, children, size = 'md' }) {
 }
 
 function getFileIcon(mime) {
-  if (mime?.startsWith('image/')) return <Image className="w-4 h-4 text-blue-500" />;
-  if (mime === 'application/pdf') return <FileText className="w-4 h-4 text-red-500" />;
-  return <File className="w-4 h-4 text-slate-500" />;
+  if (mime?.startsWith('image/')) return <Image className="w-4 h-4 text-primary-600 dark:text-sky-400" />;
+  if (mime === 'application/pdf') return <FileText className="w-4 h-4 text-rose-500" />;
+  return <File className="w-4 h-4 text-slate-500 dark:text-slate-400" />;
 }
 
 function formatFileSize(bytes) {
@@ -34,7 +36,7 @@ function formatFileSize(bytes) {
 }
 
 export default function BuktiDukung() {
-  const { isKPA, isKasubbag, isAnggota } = useAuth();
+  const { isAnggota } = useAuth();
   const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [evidence, setEvidence] = useState({ files: [], links: [] });
@@ -53,7 +55,7 @@ export default function BuktiDukung() {
       if (active) setFilterPeriod(String(active.id));
     });
     if (!isAnggota) api.get('/users/employees').then(r => setEmployees(r.data.filter(e => e.role === 'Anggota')));
-  }, []);
+  }, [isAnggota]);
 
   const fetchActivities = useCallback(async () => {
     const params = {};
@@ -93,9 +95,7 @@ export default function BuktiDukung() {
         await fetch(signedUrl, {
           method: 'PUT',
           body: file,
-          headers: {
-            'Content-Type': file.type || 'application/octet-stream'
-          }
+          headers: { 'Content-Type': file.type || 'application/octet-stream' }
         });
 
         await api.post(`/evidence/file/${selectedActivity.id}`, {
@@ -137,11 +137,11 @@ export default function BuktiDukung() {
   };
 
   return (
-    <div className="space-y-5">
-      <div className="page-header">
+    <div className="space-y-6">
+      <div className="page-header mb-0">
         <div>
           <h2 className="page-title">Bukti Dukung Kegiatan</h2>
-          <p className="page-subtitle">Kelola dokumentasi file, foto (ber-geotag & timestamp), dan tautan bukti kegiatan (Web & Mobile)</p>
+          <p className="page-subtitle">Dokumentasi file, foto lapangan ber-geotag & timestamp, dan tautan lampiran</p>
         </div>
       </div>
 
@@ -150,7 +150,7 @@ export default function BuktiDukung() {
         <div>
           <label className="label">Periode</label>
           <select className="input w-44" value={filterPeriod} onChange={e => setFilterPeriod(e.target.value)}>
-            <option value="">Semua</option>
+            <option value="">Semua Periode</option>
             {periods.map(p => <option key={p.id} value={p.id}>{p.nama}</option>)}
           </select>
         </div>
@@ -158,7 +158,7 @@ export default function BuktiDukung() {
           <div>
             <label className="label">Pegawai</label>
             <select className="input w-48" value={filterEmployee} onChange={e => setFilterEmployee(e.target.value)}>
-              <option value="">Semua</option>
+              <option value="">Semua Pegawai</option>
               {employees.map(e => <option key={e.id} value={e.id}>{e.nama}</option>)}
             </select>
           </div>
@@ -167,52 +167,67 @@ export default function BuktiDukung() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Activity list */}
-        <div className="card">
-          <div className="p-4 border-b border-slate-50">
-            <h3 className="font-semibold text-slate-700">Pilih Kegiatan</h3>
+        <div className="card overflow-hidden">
+          <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+            <h3 className="font-semibold text-sm text-slate-900 dark:text-white">Pilih Kegiatan</h3>
           </div>
-          <div className="divide-y divide-slate-50 max-h-96 overflow-y-auto">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800 max-h-[28rem] overflow-y-auto">
             {activities.length === 0 && (
-              <p className="text-sm text-slate-400 text-center py-8">Tidak ada kegiatan</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 text-center py-10">Tidak ada kegiatan pada filter ini</p>
             )}
-            {activities.map(act => (
-              <button
-                key={act.id}
-                onClick={() => selectActivity(act)}
-                className={`w-full text-left p-4 hover:bg-slate-50 transition-colors ${selectedActivity?.id === act.id ? 'bg-primary-50 border-l-2 border-primary-500' : ''}`}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-slate-700 truncate">{act.nama_kegiatan}</p>
-                    <p className="text-xs text-slate-400">{act.tanggal} · {act.pegawai_nama}</p>
-                  </div>
-                  <div className="flex-shrink-0 text-right">
-                    <div className="flex gap-1 justify-end">
-                      {act.jumlah_bukti > 0 && <span className="badge-info text-xs">{act.jumlah_bukti} file</span>}
-                      {act.jumlah_link > 0 && <span className="badge-purple text-xs">{act.jumlah_link} link</span>}
+            {activities.map(act => {
+              const isSelected = selectedActivity?.id === act.id;
+              return (
+                <button
+                  key={act.id}
+                  onClick={() => selectActivity(act)}
+                  className={`w-full text-left px-5 py-3.5 transition-colors border-l-2 ${
+                    isSelected
+                      ? 'bg-primary-50/70 dark:bg-slate-800/80 border-primary-600 dark:border-sky-400'
+                      : 'border-transparent hover:bg-slate-50/70 dark:hover:bg-slate-800/40'
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{act.nama_kegiatan}</p>
+                      <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+                        <span className="font-mono">{act.tanggal}</span> · {act.pegawai_nama}
+                      </p>
                     </div>
-                    <p className={`text-sm font-bold mt-1 ${act.persentase_capaian >= 100 ? 'text-emerald-600' : 'text-primary-600'}`}>{act.persentase_capaian || 0}%</p>
+                    <div className="flex-shrink-0 text-right">
+                      <div className="flex gap-1 justify-end">
+                        {act.jumlah_bukti > 0 && <span className="badge-info text-[10px]">{act.jumlah_bukti} file</span>}
+                        {act.jumlah_link > 0 && <span className="badge-gray text-[10px]">{act.jumlah_link} link</span>}
+                      </div>
+                      <p className={`font-mono text-xs font-semibold mt-1 tabular-num ${
+                        act.persentase_capaian >= 100
+                          ? 'text-emerald-600 dark:text-emerald-400'
+                          : 'text-primary-600 dark:text-sky-400'
+                      }`}>
+                        {act.persentase_capaian || 0}%
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </button>
-            ))}
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Evidence panel */}
-        <div className="card">
+        <div className="card overflow-hidden">
           {selectedActivity ? (
             <>
-              <div className="p-4 border-b border-slate-50 flex items-center justify-between gap-2">
+              <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <h3 className="font-semibold text-slate-700 truncate">{selectedActivity.nama_kegiatan}</h3>
-                  <p className="text-xs text-slate-400 mt-1">{selectedActivity.tanggal}</p>
+                  <h3 className="font-semibold text-sm text-slate-900 dark:text-white truncate">{selectedActivity.nama_kegiatan}</h3>
+                  <p className="font-mono text-[11px] text-slate-400 mt-0.5">{selectedActivity.tanggal}</p>
                 </div>
                 {isAnggota && (
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <label className="btn-primary btn-sm cursor-pointer">
                       <Upload className="w-3.5 h-3.5" />
-                      {uploading ? 'Mengunggah...' : 'Upload File'}
+                      <span>{uploading ? 'Mengunggah...' : 'Upload File'}</span>
                       <input
                         type="file"
                         className="hidden"
@@ -223,27 +238,27 @@ export default function BuktiDukung() {
                       />
                     </label>
                     <button onClick={() => setLinkModal(true)} className="btn-secondary btn-sm">
-                      <Link className="w-3.5 h-3.5" />
-                      Tambah Link
+                      <LinkIcon className="w-3.5 h-3.5" />
+                      <span>Tambah Link</span>
                     </button>
                   </div>
                 )}
               </div>
-              <div className="p-4 space-y-4">
-                {/* Files */}
+              <div className="p-5 space-y-5">
                 {evidence.files.length > 0 && (
                   <div>
                     <p className="section-title">File Bukti</p>
                     <div className="space-y-2">
                       {evidence.files.map(f => (
-                        <div key={f.id} className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+                        <div key={f.id} className="flex items-center gap-3 p-3 bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-800 rounded-xl">
                           {getFileIcon(f.mime_type)}
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-slate-700 truncate">{f.nama_file}</p>
-                            <p className="text-xs text-slate-400">{f.jenis} · {formatFileSize(f.ukuran_file)}</p>
+                            <p className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate">{f.nama_file}</p>
+                            <p className="font-mono text-[11px] text-slate-400 mt-0.5">{f.jenis} · {formatFileSize(f.ukuran_file)}</p>
                             {f.keterangan && (
-                              <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-2 py-0.5 mt-1 inline-block">
-                                {f.keterangan}
+                              <p className="text-[11px] text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/70 dark:border-emerald-800/60 rounded px-2 py-0.5 mt-1.5 inline-flex items-center gap-1 font-mono">
+                                <MapPin className="w-3 h-3 flex-shrink-0" />
+                                <span>{f.keterangan}</span>
                               </p>
                             )}
                           </div>
@@ -263,18 +278,17 @@ export default function BuktiDukung() {
                   </div>
                 )}
 
-                {/* Links */}
                 {evidence.links.length > 0 && (
                   <div>
                     <p className="section-title">Link Bukti</p>
                     <div className="space-y-2">
                       {evidence.links.map(l => (
-                        <div key={l.id} className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
-                          <Link className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                        <div key={l.id} className="flex items-center gap-3 p-3 bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-800 rounded-xl">
+                          <LinkIcon className="w-4 h-4 text-primary-600 dark:text-sky-400 flex-shrink-0" />
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-slate-700 truncate">{l.judul}</p>
-                            <p className="text-xs text-slate-400 truncate">{l.url}</p>
-                            {l.platform && <span className="badge-purple text-xs">{l.platform}</span>}
+                            <p className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate">{l.judul}</p>
+                            <p className="text-xs text-slate-400 truncate mt-0.5">{l.url}</p>
+                            {l.platform && <span className="badge-info text-[10px] mt-1">{l.platform}</span>}
                           </div>
                           <div className="flex gap-1">
                             <a href={l.url} target="_blank" rel="noopener noreferrer" className="btn-icon btn-secondary btn-sm" title="Buka Tautan">
@@ -293,17 +307,19 @@ export default function BuktiDukung() {
                 )}
 
                 {evidence.files.length === 0 && evidence.links.length === 0 && (
-                  <div className="text-center py-6">
-                    <FileText className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-                    <p className="text-sm text-slate-400">Belum ada bukti dukung</p>
+                  <div className="text-center py-8">
+                    <FileText className="w-8 h-8 text-slate-300 dark:text-slate-700 mx-auto mb-2" strokeWidth={1.5} />
+                    <p className="text-xs text-slate-400 dark:text-slate-500">Belum ada bukti dukung untuk kegiatan ini</p>
                   </div>
                 )}
               </div>
             </>
           ) : (
-            <div className="flex flex-col items-center justify-center py-16 px-8 text-center">
-              <FileText className="w-12 h-12 text-slate-200 mb-3" />
-              <p className="text-slate-400">Pilih kegiatan dari daftar sebelah kiri untuk melihat atau mengunggah bukti dukung</p>
+            <div className="flex flex-col items-center justify-center py-20 px-8 text-center">
+              <FileText className="w-10 h-10 text-slate-300 dark:text-slate-700 mb-3" strokeWidth={1.5} />
+              <p className="text-xs text-slate-400 dark:text-slate-500 max-w-xs leading-relaxed">
+                Pilih kegiatan dari daftar di sebelah kiri untuk melihat atau mengunggah bukti dukung
+              </p>
             </div>
           )}
         </div>
@@ -311,7 +327,7 @@ export default function BuktiDukung() {
 
       {/* Add Link Modal */}
       <Modal open={linkModal} onClose={() => setLinkModal(false)} title="Tambah Link Bukti Dukung" size="sm">
-        <div className="space-y-3">
+        <div className="space-y-4">
           <div className="form-group">
             <label className="label">Judul *</label>
             <input className="input" placeholder="Laporan di Google Drive" value={linkForm.judul} onChange={e => setLinkForm({ ...linkForm, judul: e.target.value })} />
@@ -332,9 +348,9 @@ export default function BuktiDukung() {
             <label className="label">Keterangan</label>
             <input className="input" placeholder="Keterangan tambahan..." value={linkForm.keterangan} onChange={e => setLinkForm({ ...linkForm, keterangan: e.target.value })} />
           </div>
-          <div className="flex gap-3 pt-2">
-            <button onClick={handleAddLink} className="btn-primary">Tambah Link</button>
+          <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
             <button onClick={() => setLinkModal(false)} className="btn-secondary">Batal</button>
+            <button onClick={handleAddLink} className="btn-primary">Tambah Link</button>
           </div>
         </div>
       </Modal>

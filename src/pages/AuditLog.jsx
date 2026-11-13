@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../utils/api';
-import { useAuth } from '../context/AuthContext';
-import { Activity, Filter } from 'lucide-react';
+import { Activity } from 'lucide-react';
 
 const ACTION_LABELS = {
   LOGIN: { label: 'Login', color: 'badge-success' },
@@ -13,8 +12,8 @@ const ACTION_LABELS = {
   CREATE_PERFORMANCE_PLAN: { label: 'Tambah PK', color: 'badge-info' },
   UPDATE_PERFORMANCE_PLAN: { label: 'Edit PK', color: 'badge-warning' },
   DELETE_PERFORMANCE_PLAN: { label: 'Hapus PK', color: 'badge-danger' },
-  UPLOAD_EVIDENCE: { label: 'Upload Bukti', color: 'badge-purple' },
-  ADD_EVIDENCE_LINK: { label: 'Tambah Link', color: 'badge-purple' },
+  UPLOAD_EVIDENCE: { label: 'Upload Bukti', color: 'badge-info' },
+  ADD_EVIDENCE_LINK: { label: 'Tambah Link', color: 'badge-info' },
   CREATE_BEHAVIOR: { label: 'Input Perilaku', color: 'badge-info' },
   UPDATE_BEHAVIOR: { label: 'Edit Perilaku', color: 'badge-warning' },
   FINALIZE_CKP: { label: 'Finalisasi CKP', color: 'badge-success' },
@@ -27,7 +26,6 @@ const ACTION_LABELS = {
 };
 
 export default function AuditLog() {
-  const { isKPA, isKasubbag } = useAuth();
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filterAction, setFilterAction] = useState('');
@@ -48,11 +46,11 @@ export default function AuditLog() {
   };
 
   return (
-    <div className="space-y-5">
-      <div className="page-header">
+    <div className="space-y-6">
+      <div className="page-header mb-0">
         <div>
           <h2 className="page-title">Riwayat Aktivitas</h2>
-          <p className="page-subtitle">Audit trail semua perubahan data sistem</p>
+          <p className="page-subtitle">Jejak audit perubahan data dan aktivitas pengguna sistem</p>
         </div>
       </div>
 
@@ -69,7 +67,7 @@ export default function AuditLog() {
         </div>
         <div>
           <label className="label">Tampilkan</label>
-          <select className="input w-28" value={limit} onChange={e => setLimit(e.target.value)}>
+          <select className="input w-28 font-mono" value={limit} onChange={e => setLimit(e.target.value)}>
             <option value={25}>25</option>
             <option value={50}>50</option>
             <option value={100}>100</option>
@@ -78,38 +76,40 @@ export default function AuditLog() {
       </div>
 
       {/* Logs */}
-      <div className="card">
+      <div className="card overflow-hidden">
         {loading ? (
-          <div className="flex justify-center py-10"><div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" style={{borderWidth:'2px'}}></div></div>
+          <div className="flex justify-center py-12">
+            <div className="w-5 h-5 border-2 border-primary-600 dark:border-sky-400 border-t-transparent rounded-full animate-spin" />
+          </div>
         ) : logs.length === 0 ? (
-          <div className="flex flex-col items-center py-12 text-slate-400">
-            <Activity className="w-10 h-10 mb-2" />
-            <p>Tidak ada riwayat aktivitas</p>
+          <div className="flex flex-col items-center py-14 text-slate-400 dark:text-slate-500">
+            <Activity className="w-8 h-8 mb-2" strokeWidth={1.5} />
+            <p className="text-xs">Tidak ada riwayat aktivitas</p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-50">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {logs.map(log => {
               const actionConfig = ACTION_LABELS[log.action] || { label: log.action, color: 'badge-gray' };
               return (
-                <div key={log.id} className="p-4 flex items-start gap-3 hover:bg-slate-50/50 transition-colors">
-                  <div className="w-2 h-2 bg-primary-400 rounded-full mt-2 flex-shrink-0" />
+                <div key={log.id} className="px-5 py-3.5 flex items-start gap-3 hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                  <span className="w-2 h-2 bg-primary-600 dark:bg-sky-400 rounded-full mt-2 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className={actionConfig.color}>{actionConfig.label}</span>
-                      <span className="text-sm font-medium text-slate-700">{log.pegawai_nama || log.username || '—'}</span>
+                      <span className="text-sm font-medium text-slate-800 dark:text-slate-100">{log.pegawai_nama || log.username || '—'}</span>
                       {log.resource_type && log.resource_id && (
-                        <span className="text-xs text-slate-400">#{log.resource_id}</span>
+                        <span className="font-mono text-xs text-slate-400">#{log.resource_id}</span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-400 mt-1">
+                    <p className="font-mono text-[11px] text-slate-400 dark:text-slate-500 mt-1">
                       {new Date(log.created_at).toLocaleDateString('id-ID', {
-                        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+                        weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
                         hour: '2-digit', minute: '2-digit', second: '2-digit'
                       })}
                     </p>
                   </div>
                   {log.resource_type && (
-                    <span className="badge-gray text-xs flex-shrink-0">{log.resource_type}</span>
+                    <span className="badge-gray font-mono text-[11px] flex-shrink-0">{log.resource_type}</span>
                   )}
                 </div>
               );
